@@ -11,17 +11,21 @@ namespace WMS.Infastrukture.Database
 {
     public class WMSContext : DbContext
     {
-        public string ConnectionString { get; }
+        //     public string ConnectionString { get; }
 
+        
+        
+        public WMSContext(DbContextOptions<WMSContext> options) : base(options)
+        {
+
+        }
+        
+        /* atkomentuoti jeigu reikia sukurti duobaze ir uzkomentuoti kita konstruktoriu. Kitaip nesusikuria DB
         public WMSContext()
         {
-            // %LOCALAPPDATA%
-            var folder = Environment.SpecialFolder.LocalApplicationData;
-            var path = Environment.GetFolderPath(folder);
-            ConnectionString = Path.Join(path, "WMSDb.db");
+
         }
-
-
+        */
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Inventory> Inventories { get; set; }
         public DbSet<Order> Orders { get; set; }
@@ -39,7 +43,18 @@ namespace WMS.Infastrukture.Database
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite($"Data Source={ConnectionString}");
+            if (!optionsBuilder.IsConfigured)
+            {
+                string ConnectionString;
+                // %LOCALAPPDATA%
+               // var folder = Environment.SpecialFolder.LocalApplicationData;
+                var path = Environment.CurrentDirectory;
+
+                //var path = Environment.GetFolderPath(folder);
+
+                ConnectionString = Path.Join(path, "WMSDb.db");
+                optionsBuilder.UseSqlite($"Data Source={ConnectionString}");
+            }
         }
     }
 }
