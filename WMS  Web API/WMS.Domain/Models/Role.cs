@@ -10,8 +10,12 @@ namespace WMS.Domain.Models
         public int Id { get; set; }
 
         [Required]
-        [MaxLength(20)]
-        public string Name { get; set; }
+        [MaxLength(20)] public string Name { get; set; } = null!;
+
+        [Required]
+        [MaxLength(100)] 
+        public string Description { get; set; } = null!;
+
 
         public virtual ICollection<WMSuser> WMSusers { get; set; }
     }

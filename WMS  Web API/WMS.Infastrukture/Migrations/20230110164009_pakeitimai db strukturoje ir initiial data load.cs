@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace WMS.Infastrukture.Migrations
 {
-    public partial class Inititial : Migration
+    public partial class pakeitimaidbstrukturojeirinitiialdataload : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -38,7 +38,8 @@ namespace WMS.Infastrukture.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", maxLength: 20, nullable: false)
+                    Name = table.Column<string>(type: "TEXT", maxLength: 20, nullable: false),
+                    Description = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -51,7 +52,8 @@ namespace WMS.Infastrukture.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", maxLength: 20, nullable: false)
+                    Name = table.Column<string>(type: "TEXT", maxLength: 20, nullable: false),
+                    Description = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -64,10 +66,9 @@ namespace WMS.Infastrukture.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    SKU = table.Column<string>(type: "TEXT", maxLength: 20, nullable: false),
+                    SKU = table.Column<string>(type: "TEXT", maxLength: 10, nullable: false),
                     Name = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     Description = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
-                    Location = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     Volume = table.Column<decimal>(type: "TEXT", nullable: false),
                     Weigth = table.Column<decimal>(type: "TEXT", nullable: false)
                 },
@@ -82,7 +83,8 @@ namespace WMS.Infastrukture.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", maxLength: 20, nullable: false)
+                    Name = table.Column<string>(type: "TEXT", maxLength: 20, nullable: false),
+                    Description = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -95,7 +97,8 @@ namespace WMS.Infastrukture.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", maxLength: 20, nullable: false)
+                    Name = table.Column<string>(type: "TEXT", maxLength: 20, nullable: false),
+                    Description = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -309,6 +312,151 @@ namespace WMS.Infastrukture.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.InsertData(
+                table: "Customers",
+                columns: new[] { "Id", "Address", "City", "ContactPerson", "Country", "Created", "Email", "LegalCode", "Name", "PhoneNumber", "PostCode", "Status" },
+                values: new object[] { 1, "Testavimo g. 1", "Vilnius", "Contact Person", "Lietuva", new DateTime(2023, 1, 10, 18, 40, 9, 337, DateTimeKind.Local).AddTicks(1347), "test@test.com", "123456789", "UAB Bandymas", "Phone Number", "LT-12345", true });
+
+            migrationBuilder.InsertData(
+                table: "OrderStatuses",
+                columns: new[] { "Id", "Description", "Name" },
+                values: new object[] { 1, "New Order Ready", "New" });
+
+            migrationBuilder.InsertData(
+                table: "OrderStatuses",
+                columns: new[] { "Id", "Description", "Name" },
+                values: new object[] { 2, "Order Completed", "Completed" });
+
+            migrationBuilder.InsertData(
+                table: "OrderStatuses",
+                columns: new[] { "Id", "Description", "Name" },
+                values: new object[] { 3, "Order Canceled", "Canceled" });
+
+            migrationBuilder.InsertData(
+                table: "OrderTypes",
+                columns: new[] { "Id", "Description", "Name" },
+                values: new object[] { 1, "Receiving of goods", "Inbound" });
+
+            migrationBuilder.InsertData(
+                table: "OrderTypes",
+                columns: new[] { "Id", "Description", "Name" },
+                values: new object[] { 2, "Moving inventory out of warehouse", "Outbound" });
+
+            migrationBuilder.InsertData(
+                table: "Products",
+                columns: new[] { "Id", "Description", "Name", "SKU", "Volume", "Weigth" },
+                values: new object[] { 1, "Daugiafunkcis spausdintuvas", "Epson ECOTANK L3256", "A-000001", 0.023292375m, 3.9m });
+
+            migrationBuilder.InsertData(
+                table: "Products",
+                columns: new[] { "Id", "Description", "Name", "SKU", "Volume", "Weigth" },
+                values: new object[] { 2, "Daugiafunkcis spausdintuvas", "Kyocera Ecosys M5526CDW", "A-000002", 0.0903m, 26m });
+
+            migrationBuilder.InsertData(
+                table: "Products",
+                columns: new[] { "Id", "Description", "Name", "SKU", "Volume", "Weigth" },
+                values: new object[] { 3, "Televizorius", "Samsung QE55Q60BAUXXH, QLED, 55", "A-000003", 0.026199m, 15.8m });
+
+            migrationBuilder.InsertData(
+                table: "Products",
+                columns: new[] { "Id", "Description", "Name", "SKU", "Volume", "Weigth" },
+                values: new object[] { 4, "Įmontuojamas šaldytuvas", "Whirlpool SP40 802 EU 2", "A-000004", 0.7257765m, 74m });
+
+            migrationBuilder.InsertData(
+                table: "Products",
+                columns: new[] { "Id", "Description", "Name", "SKU", "Volume", "Weigth" },
+                values: new object[] { 5, "Indukcinė viryklė su elektrine orkaite", "Gorenje Advanced Line GEIT5C60BPG", "A-000005", 0.25075m, 42m });
+
+            migrationBuilder.InsertData(
+                table: "Products",
+                columns: new[] { "Id", "Description", "Name", "SKU", "Volume", "Weigth" },
+                values: new object[] { 6, "Įmontuojama indaplovė", "Electrolux EEM69410L", "A-000006", 0.262845m, 38.39m });
+
+            migrationBuilder.InsertData(
+                table: "Products",
+                columns: new[] { "Id", "Description", "Name", "SKU", "Volume", "Weigth" },
+                values: new object[] { 7, "Skalbimo mašina", "Beko WUE6511BS, 6 kg, balta", "A-000007", 0.22176m, 35m });
+
+            migrationBuilder.InsertData(
+                table: "Products",
+                columns: new[] { "Id", "Description", "Name", "SKU", "Volume", "Weigth" },
+                values: new object[] { 8, "Džiovyklė", "Samsung DV90T6240LE/S7", "A-000008", 0.306m, 50m });
+
+            migrationBuilder.InsertData(
+                table: "Products",
+                columns: new[] { "Id", "Description", "Name", "SKU", "Volume", "Weigth" },
+                values: new object[] { 9, "Įmontuojamas gartraukis", "Faber Flexa NG AM/XA60", "A-000009", 0.03024m, 7.5m });
+
+            migrationBuilder.InsertData(
+                table: "Products",
+                columns: new[] { "Id", "Description", "Name", "SKU", "Volume", "Weigth" },
+                values: new object[] { 10, "Šaldiklis", "Beko RFNE312E43XN", "A-000010", 0.7215m, 70m });
+
+            migrationBuilder.InsertData(
+                table: "Roles",
+                columns: new[] { "Id", "Description", "Name" },
+                values: new object[] { 1, "Warehouse Management System Administrator", "Administrator" });
+
+            migrationBuilder.InsertData(
+                table: "Roles",
+                columns: new[] { "Id", "Description", "Name" },
+                values: new object[] { 2, "Warehouse Manager", "Manager" });
+
+            migrationBuilder.InsertData(
+                table: "Roles",
+                columns: new[] { "Id", "Description", "Name" },
+                values: new object[] { 3, "Warehouse Supervisor", "Supervisor" });
+
+            migrationBuilder.InsertData(
+                table: "Roles",
+                columns: new[] { "Id", "Description", "Name" },
+                values: new object[] { 4, "Warehouse Client", "Customer" });
+
+            migrationBuilder.InsertData(
+                table: "ShipmentStatuses",
+                columns: new[] { "Id", "Description", "Name" },
+                values: new object[] { 1, "Goods arrived to warehouse", "Arrived" });
+
+            migrationBuilder.InsertData(
+                table: "ShipmentStatuses",
+                columns: new[] { "Id", "Description", "Name" },
+                values: new object[] { 2, "Warehouse loading of the goods complete", "Loading Complete" });
+
+            migrationBuilder.InsertData(
+                table: "ShipmentStatuses",
+                columns: new[] { "Id", "Description", "Name" },
+                values: new object[] { 3, "Goods dispached from warehouse", "Dispached" });
+
+            migrationBuilder.InsertData(
+                table: "ShipmentStatuses",
+                columns: new[] { "Id", "Description", "Name" },
+                values: new object[] { 4, "Goods dispatching complete", "Dispatching Complete" });
+
+            migrationBuilder.InsertData(
+                table: "ShipmentStatuses",
+                columns: new[] { "Id", "Description", "Name" },
+                values: new object[] { 5, "Awaiting goods arrival", "Awaiting Arrival" });
+
+            migrationBuilder.InsertData(
+                table: "ShipmentStatuses",
+                columns: new[] { "Id", "Description", "Name" },
+                values: new object[] { 6, "Awaiting goods dispatch", "Awaiting Dispatch" });
+
+            migrationBuilder.InsertData(
+                table: "Warehouses",
+                columns: new[] { "Id", "Description", "Location", "Name", "TotalVolume", "TotalWeigth" },
+                values: new object[] { 1, "Sektorius Nr.1", "Vilnius, Sandėlių gatve", "Sandėlis Nr.1", 100m, 200m });
+
+            migrationBuilder.InsertData(
+                table: "Warehouses",
+                columns: new[] { "Id", "Description", "Location", "Name", "TotalVolume", "TotalWeigth" },
+                values: new object[] { 2, "Sektorius Nr.2", "Vilnius, Sandėlių gatve", "Sandėlis Nr.2", 200m, 250m });
+
+            migrationBuilder.InsertData(
+                table: "Warehouses",
+                columns: new[] { "Id", "Description", "Location", "Name", "TotalVolume", "TotalWeigth" },
+                values: new object[] { 3, "Sektorius Nr.3", "Vilnius, Sandėlių gatve", "Sandėlis Nr.3", 300m, 400m });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Inventories_ProductId",

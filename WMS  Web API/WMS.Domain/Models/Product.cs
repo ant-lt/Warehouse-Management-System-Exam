@@ -15,16 +15,13 @@ namespace WMS.Domain.Models
         public int Id { get; set; }
 
         [Required]
-        [MaxLength(20)] public string SKU { get; set; } = null!; 
+        [MaxLength(10)] public string SKU { get; set; } = null!; 
 
         [Required]
         [MaxLength(50)] public string Name { get; set; } = null!;
 
         [Required]
         [MaxLength(100)] public string Description { get; set; } = null!;
-
-        [Required]
-        [MaxLength(50)] public string Location { get; set; } = null!;
 
         [Required]
         public decimal Volume { get; set; }

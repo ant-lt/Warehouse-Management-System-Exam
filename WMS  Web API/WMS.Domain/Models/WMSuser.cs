@@ -10,16 +10,16 @@ namespace WMS.Domain.Models
         public int Id { get; set; }
 
         [Required]
-        [MaxLength(15)]
-        public string Username { get; set; }
+        [MaxLength(15)] 
+        public string Username { get; set; } = null!;
 
         [Required]
-        [MaxLength(100)]
-        public string Name { get; set; }
+        [MaxLength(100)] 
+        public string Name { get; set; } = null!;
         
-        public byte[] PasswordHash { get; set; }
+        public byte[] PasswordHash { get; set; } = null!;
 
-        public byte[] PasswordSalt { get; set; }
+        public byte[] PasswordSalt { get; set; } = null!;
 
         [Required]
         public bool Active { get; set; } = false;
