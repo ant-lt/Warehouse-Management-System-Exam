@@ -9,22 +9,26 @@ namespace WMS.Infastrukture.Database.InitialData
             new Role
             {
                 Id= 1,
-                Name = "Administrator"
+                Name = "Administrator",
+                Description = "Warehouse Management System Administrator"
             },
             new Role
             { 
                 Id= 2,
-                Name = "Secretary"
+                Name = "Manager",
+                Description = "Warehouse Manager"
             },
             new Role
             {
                 Id= 3,
-                Name = "Librarian"
+                Name = "Supervisor",
+                Description = "Warehouse Supervisor"
             },
             new Role
             { 
                 Id= 4,
-                Name = "Reader"
+                Name = "Customer",
+                Description = "Warehouse Client"
             }
         };
     }

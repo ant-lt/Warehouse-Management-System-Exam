@@ -77,6 +77,23 @@ namespace WMS.Infastrukture.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Customers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Address = "Testavimo g. 1",
+                            City = "Vilnius",
+                            ContactPerson = "Contact Person",
+                            Country = "Lietuva",
+                            Created = new DateTime(2023, 1, 10, 18, 40, 9, 337, DateTimeKind.Local).AddTicks(1347),
+                            Email = "test@test.com",
+                            LegalCode = "123456789",
+                            Name = "UAB Bandymas",
+                            PhoneNumber = "Phone Number",
+                            PostCode = "LT-12345",
+                            Status = true
+                        });
                 });
 
             modelBuilder.Entity("WMS.Domain.Models.Inventory", b =>
@@ -173,6 +190,11 @@ namespace WMS.Infastrukture.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(20)
@@ -181,6 +203,26 @@ namespace WMS.Infastrukture.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("OrderStatuses");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "New Order Ready",
+                            Name = "New"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Order Completed",
+                            Name = "Completed"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Order Canceled",
+                            Name = "Canceled"
+                        });
                 });
 
             modelBuilder.Entity("WMS.Domain.Models.OrderType", b =>
@@ -188,6 +230,11 @@ namespace WMS.Infastrukture.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -197,6 +244,20 @@ namespace WMS.Infastrukture.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("OrderTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Receiving of goods",
+                            Name = "Inbound"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Moving inventory out of warehouse",
+                            Name = "Outbound"
+                        });
                 });
 
             modelBuilder.Entity("WMS.Domain.Models.Product", b =>
@@ -210,11 +271,6 @@ namespace WMS.Infastrukture.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Location")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -222,7 +278,7 @@ namespace WMS.Infastrukture.Migrations
 
                     b.Property<string>("SKU")
                         .IsRequired()
-                        .HasMaxLength(20)
+                        .HasMaxLength(10)
                         .HasColumnType("TEXT");
 
                     b.Property<decimal>("Volume")
@@ -234,6 +290,98 @@ namespace WMS.Infastrukture.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Products");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Daugiafunkcis spausdintuvas",
+                            Name = "Epson ECOTANK L3256",
+                            SKU = "A-000001",
+                            Volume = 0.023292375m,
+                            Weigth = 3.9m
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Daugiafunkcis spausdintuvas",
+                            Name = "Kyocera Ecosys M5526CDW",
+                            SKU = "A-000002",
+                            Volume = 0.0903m,
+                            Weigth = 26m
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Televizorius",
+                            Name = "Samsung QE55Q60BAUXXH, QLED, 55",
+                            SKU = "A-000003",
+                            Volume = 0.026199m,
+                            Weigth = 15.8m
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Description = "Įmontuojamas šaldytuvas",
+                            Name = "Whirlpool SP40 802 EU 2",
+                            SKU = "A-000004",
+                            Volume = 0.7257765m,
+                            Weigth = 74m
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Description = "Indukcinė viryklė su elektrine orkaite",
+                            Name = "Gorenje Advanced Line GEIT5C60BPG",
+                            SKU = "A-000005",
+                            Volume = 0.25075m,
+                            Weigth = 42m
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Description = "Įmontuojama indaplovė",
+                            Name = "Electrolux EEM69410L",
+                            SKU = "A-000006",
+                            Volume = 0.262845m,
+                            Weigth = 38.39m
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Description = "Skalbimo mašina",
+                            Name = "Beko WUE6511BS, 6 kg, balta",
+                            SKU = "A-000007",
+                            Volume = 0.22176m,
+                            Weigth = 35m
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Description = "Džiovyklė",
+                            Name = "Samsung DV90T6240LE/S7",
+                            SKU = "A-000008",
+                            Volume = 0.306m,
+                            Weigth = 50m
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Description = "Įmontuojamas gartraukis",
+                            Name = "Faber Flexa NG AM/XA60",
+                            SKU = "A-000009",
+                            Volume = 0.03024m,
+                            Weigth = 7.5m
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Description = "Šaldiklis",
+                            Name = "Beko RFNE312E43XN",
+                            SKU = "A-000010",
+                            Volume = 0.7215m,
+                            Weigth = 70m
+                        });
                 });
 
             modelBuilder.Entity("WMS.Domain.Models.Role", b =>
@@ -241,6 +389,11 @@ namespace WMS.Infastrukture.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -250,6 +403,32 @@ namespace WMS.Infastrukture.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Roles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Warehouse Management System Administrator",
+                            Name = "Administrator"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Warehouse Manager",
+                            Name = "Manager"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Warehouse Supervisor",
+                            Name = "Supervisor"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Description = "Warehouse Client",
+                            Name = "Customer"
+                        });
                 });
 
             modelBuilder.Entity("WMS.Domain.Models.Shipment", b =>
@@ -322,6 +501,11 @@ namespace WMS.Infastrukture.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(20)
@@ -330,6 +514,44 @@ namespace WMS.Infastrukture.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ShipmentStatuses");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Goods arrived to warehouse",
+                            Name = "Arrived"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Warehouse loading of the goods complete",
+                            Name = "Loading Complete"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Goods dispached from warehouse",
+                            Name = "Dispached"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Description = "Goods dispatching complete",
+                            Name = "Dispatching Complete"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Description = "Awaiting goods arrival",
+                            Name = "Awaiting Arrival"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Description = "Awaiting goods dispatch",
+                            Name = "Awaiting Dispatch"
+                        });
                 });
 
             modelBuilder.Entity("WMS.Domain.Models.Warehouse", b =>
@@ -362,6 +584,35 @@ namespace WMS.Infastrukture.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Warehouses");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Sektorius Nr.1",
+                            Location = "Vilnius, Sandėlių gatve",
+                            Name = "Sandėlis Nr.1",
+                            TotalVolume = 100m,
+                            TotalWeigth = 200m
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Sektorius Nr.2",
+                            Location = "Vilnius, Sandėlių gatve",
+                            Name = "Sandėlis Nr.2",
+                            TotalVolume = 200m,
+                            TotalWeigth = 250m
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Sektorius Nr.3",
+                            Location = "Vilnius, Sandėlių gatve",
+                            Name = "Sandėlis Nr.3",
+                            TotalVolume = 300m,
+                            TotalWeigth = 400m
+                        });
                 });
 
             modelBuilder.Entity("WMS.Domain.Models.WMSuser", b =>

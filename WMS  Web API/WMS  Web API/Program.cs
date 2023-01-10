@@ -20,6 +20,7 @@ namespace WMS__Web_API
 
             // Add services to the container.
 
+            //From MS EF documentation. The AddDbContext extension method registers DbContext types with a scoped lifetime by default.
             builder.Services.AddDbContext<WMSContext>(option =>
             {
                 option.UseSqlite(builder.Configuration.GetConnectionString("WMSDBConnection"));
