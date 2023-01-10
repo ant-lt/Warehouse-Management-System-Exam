@@ -29,6 +29,14 @@ namespace WMS__Web_API
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IPasswordService, PasswordService>();
             builder.Services.AddScoped<IJwtService, JwtService>();
+            
+            builder.Services.AddTransient<IWMSwrapper, WMSwrapper>();
+
+
+            builder.Services.AddScoped<IProductRepository, ProductRepository>();
+            builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+            builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+            builder.Services.AddScoped<IShipmentRepository, ShipmentRepository>();
 
 
             var key = builder.Configuration.GetValue<string>("ApiSettings:Secret");
