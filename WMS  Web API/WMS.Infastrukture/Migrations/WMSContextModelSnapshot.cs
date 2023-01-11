@@ -3,11 +3,11 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using WMS.Infastrukture.Database;
+using WMS.Infastructure.Database;
 
 #nullable disable
 
-namespace WMS.Infastrukture.Migrations
+namespace WMS.Infastructure.Migrations
 {
     [DbContext(typeof(WMSContext))]
     partial class WMSContextModelSnapshot : ModelSnapshot

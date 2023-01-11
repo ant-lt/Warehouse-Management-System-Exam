@@ -2,10 +2,10 @@
 using System.Text;
 using WMS.Domain.Models;
 using WMS.Domain.Models.DTO;
-using WMS.Infastrukture.Database;
-using WMS.Infastrukture.Interfaces;
+using WMS.Infastructure.Database;
+using WMS.Infastructure.Interfaces;
 
-namespace WMS.Infastrukture.Repositories
+namespace WMS.Infastructure.Repositories
 {
     public class UserRepository : IUserRepository
     {
@@ -51,6 +51,8 @@ namespace WMS.Infastrukture.Repositories
                 };
             }
 
+           // var test = user.;
+
             var userRole = await _db.Roles.FirstOrDefaultAsync(x => x.Id == user.RoleId);
             var userRoleName = userRole.Name;
 
@@ -64,6 +66,7 @@ namespace WMS.Infastrukture.Repositories
                 UserName = user.Username,
                 Active= user.Active,
                 Token = token,
+                Role = userRoleName
             };
 
             return loginResponse;

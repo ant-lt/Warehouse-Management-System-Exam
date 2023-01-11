@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WMS.Domain.Models;
-using WMS.Infastrukture.Database;
-using WMS.Infastrukture.Interfaces;
+using WMS.Infastructure.Database;
+using WMS.Infastructure.Interfaces;
 
-namespace WMS.Infastrukture.Repositories
+namespace WMS.Infastructure.Repositories
 {
     public class ProductRepository : Repository<Product>, IProductRepository
     {

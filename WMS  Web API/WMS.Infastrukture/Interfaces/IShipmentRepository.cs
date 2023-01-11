@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WMS.Domain.Models;
 
-namespace WMS.Infastrukture.Interfaces
+namespace WMS.Infastructure.Interfaces
 {
     public interface IShipmentRepository : IRepository<Shipment>
     {

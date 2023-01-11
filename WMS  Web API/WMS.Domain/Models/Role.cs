@@ -6,6 +6,11 @@ namespace WMS.Domain.Models
     [Table("Roles")]
     public class Role
     {
+        public Role() 
+        {
+            WMSusers = new HashSet<WMSuser>();
+        }
+        
         [Key]
         public int Id { get; set; }
 

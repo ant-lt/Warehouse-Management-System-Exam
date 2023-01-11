@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace WMS.Infastrukture.Migrations
+namespace WMS.Infastructure.Migrations
 {
     public partial class pakeitimaidbstrukturojeirinitiialdataload : Migration
     {

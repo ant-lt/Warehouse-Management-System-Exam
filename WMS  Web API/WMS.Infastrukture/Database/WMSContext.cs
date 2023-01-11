@@ -6,9 +6,9 @@ using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 using WMS.Domain.Models;
-using WMS.Infastrukture.Database.InitialData;
+using WMS.Infastructure.Database.InitialData;
 
-namespace WMS.Infastrukture.Database
+namespace WMS.Infastructure.Database
 {
     public class WMSContext : DbContext
     {
