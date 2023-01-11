@@ -5,10 +5,10 @@ using Microsoft.OpenApi.Models;
 using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
-using WMS.Infastrukture.Database;
-using WMS.Infastrukture.Interfaces;
-using WMS.Infastrukture.Repositories;
-using WMS.Infastrukture.Services;
+using WMS.Infastructure.Database;
+using WMS.Infastructure.Interfaces;
+using WMS.Infastructure.Repositories;
+using WMS.Infastructure.Services;
 
 namespace WMS__Web_API
 {
@@ -26,17 +26,18 @@ namespace WMS__Web_API
                 option.UseSqlite(builder.Configuration.GetConnectionString("WMSDBConnection"));
             });
 
-            builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IPasswordService, PasswordService>();
             builder.Services.AddScoped<IJwtService, JwtService>();
             
             builder.Services.AddTransient<IWMSwrapper, WMSwrapper>();
 
-
+            // Add repositories
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
             builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
             builder.Services.AddScoped<IShipmentRepository, ShipmentRepository>();
+            builder.Services.AddScoped<IInventoryRepository, InventoryRepository>();
 
 
             var key = builder.Configuration.GetValue<string>("ApiSettings:Secret");

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
 using WMS.Domain.Models.DTO;
-using WMS.Infastrukture.Interfaces;
+using WMS.Infastructure.Interfaces;
 
 namespace WMS__Web_API.Controllers
 {

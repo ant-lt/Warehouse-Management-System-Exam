@@ -9,11 +9,11 @@ using WMS.Infastructure.Interfaces;
 
 namespace WMS.Infastructure.Repositories
 {
-    public class CustomerRepository : Repository<Customer>, ICustomerRepository
+    public class InventoryRepository : Repository<Inventory>, IInventoryRepository
     {
         private readonly WMSContext _db;
 
-        public CustomerRepository(WMSContext db) : base(db)
+        public InventoryRepository(WMSContext db) : base(db)
         {
             _db = db;
         }

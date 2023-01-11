@@ -1,8 +1,8 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
-using WMS.Infastrukture.Interfaces;
+using WMS.Infastructure.Interfaces;
 
-namespace WMS.Infastrukture.Services
+namespace WMS.Infastructure.Services
 {
     public class PasswordService : IPasswordService
     {

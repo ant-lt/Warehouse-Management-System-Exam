@@ -2,7 +2,7 @@
 using System.Net;
 using WMS.Domain.Models;
 
-namespace WMS.Infastrukture.Database.InitialData
+namespace WMS.Infastructure.Database.InitialData
 {
     public static class CustomerInitialData
     {

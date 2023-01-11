@@ -7,7 +7,8 @@ using WMS.Domain.Models;
 
 namespace WMS.Infastructure.Interfaces
 {
-    public interface IOrderRepository : IRepository<Order>
+    public interface IInventoryRepository : IRepository<Inventory>
     {
+
     }
 }

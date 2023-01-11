@@ -1,6 +1,6 @@
 ﻿using WMS.Domain.Models.DTO;
 
-namespace WMS.Infastrukture.Interfaces
+namespace WMS.Infastructure.Interfaces
 {
     public interface IUserRepository
     {

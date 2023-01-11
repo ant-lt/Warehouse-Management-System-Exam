@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
 using WMS.Domain.Models;
 using WMS.Domain.Models.DTO;
-using WMS.Infastrukture.Interfaces;
+using WMS.Infastructure.Interfaces;
 
 namespace WMS__Web_API.Controllers
 {
@@ -13,10 +13,10 @@ namespace WMS__Web_API.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProductRepository _productRepo;
-        private readonly ILogger<UserController> _logger;
+        private readonly ILogger<CustomerController> _logger;
         private readonly IWMSwrapper _wrapper;
 
-        public ProductController(IProductRepository productRepo, ILogger<UserController> logger, IWMSwrapper wmsWrapper)
+        public ProductController(IProductRepository productRepo, ILogger<CustomerController> logger, IWMSwrapper wmsWrapper)
         {
             _productRepo = productRepo ;
             _logger = logger;

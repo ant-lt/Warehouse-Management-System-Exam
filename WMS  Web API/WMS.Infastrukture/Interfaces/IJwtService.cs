@@ -1,4 +1,4 @@
-﻿namespace WMS.Infastrukture.Interfaces
+﻿namespace WMS.Infastructure.Interfaces
 {
     public interface IJwtService
     {

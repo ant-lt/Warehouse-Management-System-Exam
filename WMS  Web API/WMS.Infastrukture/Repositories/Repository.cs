@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using WMS.Infastrukture.Database;
-using WMS.Infastrukture.Interfaces;
+using WMS.Infastructure.Database;
+using WMS.Infastructure.Interfaces;
 
-namespace WMS.Infastrukture.Repositories
+namespace WMS.Infastructure.Repositories
 {
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     {
@@ -48,6 +48,32 @@ namespace WMS.Infastrukture.Repositories
             return await query.ToListAsync();
         }
 
+        public async Task<List<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>>? filter, ICollection<string> includeTables)
+        {
+            IQueryable<TEntity> query = _dbSet;
+            if (filter != null) query = query.Where(filter);
+            foreach (var tableName in includeTables)
+            {
+                query = query.Include(tableName);
+            }
+            return await query.ToListAsync();
+        }
+
+
+        public async Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> filter, ICollection<string> includeTables, bool tracked = true)
+        {
+
+            IQueryable<TEntity> query = _dbSet;
+            if (!tracked) query = query.AsNoTracking();
+            query = query.Where(filter);
+            foreach (var tableName in includeTables)
+            {
+                query = query.Include(tableName);
+            }
+            return await query.FirstOrDefaultAsync();
+        }
+
+
         public async Task RemoveAsync(TEntity entity)
         {
             _dbSet.Remove(entity);
@@ -57,6 +83,12 @@ namespace WMS.Infastrukture.Repositories
         public async Task SaveAsync()
         {
             await _db.SaveChangesAsync();
+        }
+
+        public async Task UpdateAsync(TEntity entity)
+        {
+            _dbSet.Update(entity);
+            await SaveAsync();
         }
     }
 }

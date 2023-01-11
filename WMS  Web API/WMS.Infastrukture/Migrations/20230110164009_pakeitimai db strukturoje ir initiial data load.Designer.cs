@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using WMS.Infastrukture.Database;
+using WMS.Infastructure.Database;
 
 #nullable disable
 
-namespace WMS.Infastrukture.Migrations
+namespace WMS.Infastructure.Migrations
 {
     [DbContext(typeof(WMSContext))]
     [Migration("20230110164009_pakeitimai db strukturoje ir initiial data load")]
