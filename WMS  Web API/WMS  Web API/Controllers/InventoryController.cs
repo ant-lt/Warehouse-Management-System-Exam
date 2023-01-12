@@ -39,9 +39,8 @@ namespace WMS__Web_API.Controllers
             _logger.LogInformation($"{DateTime.Now} Executed GetInventories.");
 
             try
-            {
-                var inventories = await _inventoryRepo.GetAllAsync();
-
+            {                
+                var inventories = await _inventoryRepo.GetAllAsync(null, new List<string> { "Warehouse", "Product" });
 
                 IEnumerable<GetInventoryDto> getInventoryDto = inventories.Select(d => _wrapper.Bind(d)).ToList();
 

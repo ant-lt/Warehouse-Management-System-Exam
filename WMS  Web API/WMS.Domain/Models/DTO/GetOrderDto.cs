@@ -18,13 +18,13 @@ namespace WMS.Domain.Models.DTO
 
         public DateTime? ExecutionDate { get; set; }
 
-        public int OrderStatusId { get; set; }
+        public string OrderStatus { get; set; }
 
-        public int OrderTypeId { get; set; }
+        public string OrderType { get; set; }
 
-        public int CustomerId { get; set; }
+        public string CustomerName { get; set; }
 
-        public int WMSuserId { get; set; }
+        public string CreatedByUser { get; set; }
 
     }
 }

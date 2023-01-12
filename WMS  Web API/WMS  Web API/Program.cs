@@ -36,7 +36,9 @@ namespace WMS__Web_API
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
             builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+            builder.Services.AddScoped<IOrderItemRepository, OrderItemRepository>();
             builder.Services.AddScoped<IShipmentRepository, ShipmentRepository>();
+            builder.Services.AddScoped<IShipmentItemRepository, ShipmentItemRepository>();
             builder.Services.AddScoped<IInventoryRepository, InventoryRepository>();
 
 

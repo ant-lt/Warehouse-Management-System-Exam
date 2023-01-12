@@ -1,4 +1,6 @@
-﻿using System.Diagnostics.Metrics;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.Metrics;
 using System.Net;
 using System.Xml.Linq;
 using WMS.Domain.Models;
@@ -50,10 +52,10 @@ namespace WMS.Infastructure.Services
                 Date = order.Date,
                 ScheduledDate = order.ScheduledDate,
                 ExecutionDate = order.ExecutionDate,
-                OrderStatusId = order.OrderStatusId,
-                OrderTypeId = order.OrderTypeId,
-                CustomerId = order.CustomerId,
-                WMSuserId = order.WMSuserId
+                OrderStatus = order.OrderStatus.Name,
+                OrderType = order.OrderType.Name,
+                CustomerName = order.Customer.Name,
+                CreatedByUser = order.RWMSuser.Name
             };
         }
 
@@ -78,8 +80,10 @@ namespace WMS.Infastructure.Services
             {
                 Id = inventory.Id,
                 Quantity = inventory.Quantity,
-                WarehouseId = inventory.WarehouseId,
-                ProductId = inventory.ProductId
+                WarehouseName = inventory.Warehouse.Name,
+                ProductName = inventory.Product.Name,
+                ProductSKU = inventory.Product.SKU,
+                ProductDecription = inventory.Product.Description
             };
         }
 
@@ -142,10 +146,39 @@ namespace WMS.Infastructure.Services
             return new GetOrderItemDto
             {
                 Id= orderItem.Id,
-                OrderId = orderItem.OrderId,
+                
                 Quantity= orderItem.Quantity,
-                ProductId= orderItem.ProductId
+                ProductSKU = orderItem.Product.SKU,
+                ProductName = orderItem.Product.Name,
+                ProductDescription = orderItem.Product.Description
             };
+        }
+
+        public GetShipmentItemDto Bind(ShipmentItem shipmentItem)
+        {
+            return new GetShipmentItemDto
+            {
+                Id = shipmentItem.Id,
+                Quantity = shipmentItem.Quantity,
+                ProductId = shipmentItem.ProductId
+            };
+        }
+
+        public OrderItem Bind(CreateOrderItemDto orderItem)
+        {
+            return new OrderItem
+            {
+                Quantity = orderItem.Quantity,
+                OrderId = orderItem.OrderId,
+                ProductId = orderItem.ProductId
+            };
+        }
+
+        public OrderItem Bind(UpdateOrderItemDto updateOrderItemDto, OrderItem orderItem)
+        {
+            orderItem.Quantity = updateOrderItemDto.Quantity;
+            orderItem.ProductId = updateOrderItemDto.ProductId;
+            return orderItem;
         }
     }
 }
