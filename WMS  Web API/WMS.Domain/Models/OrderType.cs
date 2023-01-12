@@ -12,6 +12,7 @@ namespace WMS.Domain.Models
     public class OrderType
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         [Required]

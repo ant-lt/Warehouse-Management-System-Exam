@@ -52,7 +52,7 @@ namespace WMS__Web_API.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"{DateTime.Now} HttpPost Login nuluzo.");
+                _logger.LogError(ex, $"{DateTime.Now} HttpPost Login exception error.");
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
@@ -93,7 +93,7 @@ namespace WMS__Web_API.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"{DateTime.Now} HttpPost Register nuluzo.");
+                _logger.LogError(ex, $"{DateTime.Now} HttpPost Register exception error.");
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }

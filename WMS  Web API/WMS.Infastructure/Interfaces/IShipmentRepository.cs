@@ -9,5 +9,6 @@ namespace WMS.Infastructure.Interfaces
 {
     public interface IShipmentRepository : IRepository<Shipment>
     {
+        Task<List<OrderItem>> GetShipmentItemsByIdAsync(int shipmentId);
     }
 }
