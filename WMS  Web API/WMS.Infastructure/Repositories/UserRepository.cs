@@ -11,13 +11,18 @@ namespace WMS.Infastructure.Repositories
     {
         private readonly WMSContext _db;
         private readonly IPasswordService _passwordService;
-        private readonly IJwtService _jwtService;
+     
 
         public UserRepository(WMSContext db, IPasswordService passwordService, IJwtService jwtService)
         {
             _db = db;
             _passwordService = passwordService;
-            _jwtService = jwtService;
+        }
+
+        public async Task<Role?> GetRolebyNameAsync(string roleName)
+        {
+            var userRole = await _db.Roles.FirstOrDefaultAsync(x => x.Name == roleName);
+            return userRole;
         }
 
         /// <summary>
@@ -35,66 +40,43 @@ namespace WMS.Infastructure.Repositories
             return false;
         }
 
-        public async Task<LoginResponse> LoginAsync(LoginRequest loginRequest)
+        /// <summary>
+        /// Login to WMS
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <param name="password"></param>
+        /// <returns>WMSuser</returns>
+        public async Task<WMSuser?> LoginAsync(string userName, string password)
         {
-            var inputPasswordBytes = Encoding.UTF8.GetBytes(loginRequest.Password);
-            var user = await _db.WMSusers.FirstOrDefaultAsync(x => x.Username.ToLower() == loginRequest.Username.ToLower());
+        
+            var user = await _db.WMSusers.FirstOrDefaultAsync(x => x.Username.ToLower() == userName.ToLower());
 
-
-            if (user == null || !_passwordService.VerifyPasswordHash(loginRequest.Password, user.PasswordHash, user.PasswordSalt))
+            if (user == null || !_passwordService.VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
             {
-                return new LoginResponse
-                {
-                    UserName = "",
-                    Token = "",        
-                    Active= false,
-                };
+                return null;
             }
 
-           // var test = user.;
+            var userRole = await _db.Roles.FirstOrDefaultAsync(x => x.Id == user.RoleId );
+            if (userRole == null) 
+            { 
+                return null;
+            }
 
-            var userRole = await _db.Roles.FirstOrDefaultAsync(x => x.Id == user.RoleId);
-            var userRoleName = userRole.Name;
+            user.Role= userRole;
 
-            //var token = _jwtService.GetJwtToken(user.Id, user.RoleName);
-            var token = _jwtService.GetJwtToken(user.Id, userRoleName);
-
-            user.Role = null;
-
-            LoginResponse loginResponse = new()
-            {
-                UserName = user.Username,
-                Active= user.Active,
-                Token = token,
-                Role = userRoleName
-            };
-
-            return loginResponse;
+            return user;
         }
 
-        // Add RegistrationResponse (Should not include password)
-        // Add adapter classes to map to wanted classes
-        public async Task<bool> RegisterAsync(RegistrationRequest registrationRequest)
+ 
+        /// <summary>
+        /// New user registration on WMS
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns>bool</returns>
+        public async Task<bool> RegisterAsync(WMSuser user)
         {
-
-            _passwordService.CreatePasswordHash(registrationRequest.Password, out byte[] passwordHash, out byte[] passwordSalt);
-
-            var userRole = await _db.Roles.FirstOrDefaultAsync(x => x.Name == registrationRequest.Role);
-           
-            WMSuser user = new()
-            {
-                Username = registrationRequest.Username,
-                PasswordHash = passwordHash,
-                PasswordSalt = passwordSalt,
-                Name = registrationRequest.Name,
-                Role = userRole,
-                Active = true,
-
-            };
-
             _db.WMSusers.Add(user);
             await _db.SaveChangesAsync();
-
             return true;
         }
     }

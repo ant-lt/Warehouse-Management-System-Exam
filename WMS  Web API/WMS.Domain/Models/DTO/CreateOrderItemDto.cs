@@ -8,16 +8,14 @@ using System.Threading.Tasks;
 
 namespace WMS.Domain.Models.DTO
 {
-    public class GetOrderItemDto
+    public class CreateOrderItemDto
     {
-        public int Id { get; set; }
 
         public decimal Quantity { get; set; }
+        
+        public int OrderId { get; set; }
 
-        public string ProductSKU { get; set; }
+        public int ProductId { get; set; }
 
-        public string ProductName { get; set; }
-
-        public string ProductDescription { get; set; }
     }
 }

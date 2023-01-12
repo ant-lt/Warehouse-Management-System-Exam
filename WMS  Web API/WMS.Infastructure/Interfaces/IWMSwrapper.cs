@@ -15,5 +15,8 @@ namespace WMS.Infastructure.Interfaces
         public Order Bind(CreateOrderDto req);
         public Order Bind(UpdateOrderDto updateOrderDto, Order order);
         public GetOrderItemDto Bind(OrderItem orderItem);
+        public GetShipmentItemDto Bind(ShipmentItem shipmentItem);
+        public OrderItem Bind(CreateOrderItemDto orderItem);
+        public OrderItem Bind(UpdateOrderItemDto updateOrderItemDto, OrderItem orderItem);
     }
 }

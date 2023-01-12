@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,5 +18,15 @@ namespace WMS.Infastructure.Repositories
         {
             _db= db;
         }
+
+        public async Task<List<ShipmentItem>> GetShipmentItemsByIdAsync(int shipmentId)
+        {
+            IQueryable<ShipmentItem> shipmentItems = _db.ShipmentItems.Where(e => e.ShipmentId == shipmentId);
+
+            return await shipmentItems.ToListAsync();
+
+        }
+
+
     }
 }

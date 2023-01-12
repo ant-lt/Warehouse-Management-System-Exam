@@ -7,8 +7,8 @@ using WMS.Domain.Models;
 
 namespace WMS.Infastructure.Interfaces
 {
-    public interface IShipmentRepository : IRepository<Shipment>
+    public interface IOrderItemRepository : IRepository<OrderItem>
     {
-        Task<List<ShipmentItem>> GetShipmentItemsByIdAsync(int shipmentId);
+
     }
 }

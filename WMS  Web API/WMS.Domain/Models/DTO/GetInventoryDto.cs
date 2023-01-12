@@ -6,8 +6,10 @@
 
         public decimal Quantity { get; set; }
 
-        public int WarehouseId { get; set; }
+        public string WarehouseName { get; set; }
 
-        public int ProductId { get; set; }
+        public string ProductName { get; set; }
+        public string ProductSKU { get; set; }
+        public string ProductDecription { get; set; }
     }
 }

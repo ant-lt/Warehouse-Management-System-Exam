@@ -41,8 +41,8 @@ namespace WMS__Web_API.Controllers
 
             try
             {
-                var orders = await _orderRepo.GetAllAsync();
-
+                
+                var orders = await _orderRepo.GetAllAsync( null, new List<string> { "OrderStatus", "OrderType", "Customer", "RWMSuser" });
 
                 IEnumerable<GetOrderDto> getOrderDto = orders.Select(d => _wrapper.Bind(d)).ToList();
 
@@ -241,7 +241,8 @@ namespace WMS__Web_API.Controllers
                     return BadRequest();
                 }
 
-                var order = await _orderRepo.GetAsync(d => d.Id == id);
+                
+                var order = await _orderRepo.GetAsync(x => x.Id == id, new List<string> { "OrderStatus", "OrderType" });
 
                 if (order == null)
                 {
@@ -258,67 +259,6 @@ namespace WMS__Web_API.Controllers
             }
 
         }
-
-        /// <summary>
-        /// Fetch registered order items with a specified order ID from DB
-        /// </summary>
-        /// <param name="id">Requested order ID</param>
-        /// <returns>Order items with specified ID</returns>
-        /// <response code="200">OK</response>        
-        /// <response code="400">Order bad request description</response>
-        /// <response code="401">Client could not authenticate a request</response>
-        /// <response code="404">Order not found </response>
-        /// <response code="500">Internal server error</response>
-        /// <remarks>
-        /// Sample request:
-        ///
-        ///     GET order/1
-        ///     {
-        ///     }
-        ///
-        /// </remarks>
-        [HttpGet("{id:int}/Items", Name = "GetOrderItemsById")]
-        //      [Authorize]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<GetOrderItemDto>))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [Produces(MediaTypeNames.Application.Json)]
-        public async Task<ActionResult<IEnumerable<GetOrderItemDto>>> GetOrderItemsById(int id)
-        {
-            _logger.LogInformation($"{DateTime.Now} Executed GetOrderItemsById = {id}");
-
-            try
-            {
-                if (id == 0)
-                {
-                    return BadRequest();
-                }
-
-                var order = await _orderRepo.GetAsync(d => d.Id == id);
-
-                if (order == null)
-                {
-                    _logger.LogInformation($"{DateTime.Now} order with id {id} not found", id);
-                    return NotFound();
-                }
-
-                var orderItems = await _orderRepo.GetOrderItemsByIdAsync(id);
-
-                IEnumerable<GetOrderItemDto> getOrderItemsDto = orderItems.Select(d => _wrapper.Bind(d)).ToList();
-
-                return Ok(getOrderItemsDto);
-
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, $"{DateTime.Now} HttpGet GetOrderItems by id ={id} exception error.");
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
-
-        }
-
 
     }
 }
