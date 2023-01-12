@@ -51,7 +51,7 @@ namespace WMS__Web_API.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"{DateTime.Now} HttpGet GetOrders nuluzo.");
+                _logger.LogError(e, $"{DateTime.Now} HttpGet GetOrders exception error.");
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
@@ -93,7 +93,7 @@ namespace WMS__Web_API.Controllers
 
             catch (Exception e)
             {
-                _logger.LogError(e, $"HttpPost CreateOrder nuluzo {DateTime.Now}");
+                _logger.LogError(e, $"{DateTime.Now} HttpPost CreateOrder exception error.");
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
@@ -141,7 +141,7 @@ namespace WMS__Web_API.Controllers
 
             catch (Exception e)
             {
-                _logger.LogError(e, $"{DateTime.Now} HttpDelete DeleteOrderById(id = {id}) nuluzo");
+                _logger.LogError(e, $"{DateTime.Now} HttpDelete DeleteOrderById(id = {id}) exception error");
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
@@ -163,11 +163,6 @@ namespace WMS__Web_API.Controllers
         ///
         ///         PUT Orders/1
         ///         {
-        ///             "id": 0,
-        ///             "isleista": "2022-12-04T11:36:24.011Z",
-        ///             "autorius": "string",
-        ///             "pavadinimas": "string",
-        ///             "knygosTipas": "string"  - allowed only from values list: Hardcover, Paperback, Electronic
         ///         }
         ///
         /// </remarks>
@@ -204,9 +199,124 @@ namespace WMS__Web_API.Controllers
 
             catch (Exception e)
             {
-                _logger.LogError(e, $"{DateTime.Now} HttpPut UpdateOrderById(id = {id}) nuluzo.");
+                _logger.LogError(e, $"{DateTime.Now} HttpPut UpdateOrderById(id = {id}) exception error.");
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
+        }
+
+        /// <summary>
+        /// Fetch registered order with a specified ID from DB
+        /// </summary>
+        /// <param name="id">Requested order ID</param>
+        /// <returns>Order with specified ID</returns>
+        /// <response code="200">OK</response>        
+        /// <response code="400">Order bad request description</response>
+        /// <response code="401">Client could not authenticate a request</response>
+        /// <response code="404">Order not found </response>
+        /// <response code="500">Internal server error</response>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     GET order/1
+        ///     {
+        ///     }
+        ///
+        /// </remarks>
+        [HttpGet("{id:int}", Name = "GetOrderById")]
+        //      [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetOrderDto))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Produces(MediaTypeNames.Application.Json)]
+        public async Task<ActionResult<GetOrderDto>> GetOrderById(int id)
+        {
+            _logger.LogInformation($"{DateTime.Now} Executed GetOrderById = {id}");
+
+            try
+            {
+                if (id == 0)
+                {
+                    return BadRequest();
+                }
+
+                var order = await _orderRepo.GetAsync(d => d.Id == id);
+
+                if (order == null)
+                {
+                    _logger.LogInformation($"{DateTime.Now} order with id {id} not found", id);
+                    return NotFound();
+                }
+
+                return Ok(_wrapper.Bind(order));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"{DateTime.Now} HttpGet GetOrder by id ={id} exception error.");
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+        }
+
+        /// <summary>
+        /// Fetch registered order items with a specified order ID from DB
+        /// </summary>
+        /// <param name="id">Requested order ID</param>
+        /// <returns>Order items with specified ID</returns>
+        /// <response code="200">OK</response>        
+        /// <response code="400">Order bad request description</response>
+        /// <response code="401">Client could not authenticate a request</response>
+        /// <response code="404">Order not found </response>
+        /// <response code="500">Internal server error</response>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     GET order/1
+        ///     {
+        ///     }
+        ///
+        /// </remarks>
+        [HttpGet("{id:int}/Items", Name = "GetOrderItemsById")]
+        //      [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<GetOrderItemDto>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Produces(MediaTypeNames.Application.Json)]
+        public async Task<ActionResult<IEnumerable<GetOrderItemDto>>> GetOrderItemsById(int id)
+        {
+            _logger.LogInformation($"{DateTime.Now} Executed GetOrderItemsById = {id}");
+
+            try
+            {
+                if (id == 0)
+                {
+                    return BadRequest();
+                }
+
+                var order = await _orderRepo.GetAsync(d => d.Id == id);
+
+                if (order == null)
+                {
+                    _logger.LogInformation($"{DateTime.Now} order with id {id} not found", id);
+                    return NotFound();
+                }
+
+                var orderItems = await _orderRepo.GetOrderItemsByIdAsync(id);
+
+                IEnumerable<GetOrderItemDto> getOrderItemsDto = orderItems.Select(d => _wrapper.Bind(d)).ToList();
+
+                return Ok(getOrderItemsDto);
+
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"{DateTime.Now} HttpGet GetOrderItems by id ={id} exception error.");
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
         }
 
 

@@ -52,7 +52,7 @@ namespace WMS__Web_API.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"{DateTime.Now} HttpGet GetCustomers nuluzo.");
+                _logger.LogError(e, $"{DateTime.Now} HttpGet GetCustomers exception error.");
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
@@ -95,7 +95,7 @@ namespace WMS__Web_API.Controllers
 
             catch (Exception e)
             {
-                _logger.LogError(e, $"HttpPost CreateCustomer nuluzo {DateTime.Now}");
+                _logger.LogError(e, $"{DateTime.Now} HttpPost CreateCustomer exception error.");
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
@@ -144,7 +144,7 @@ namespace WMS__Web_API.Controllers
 
             catch (Exception e)
             {
-                _logger.LogError(e, $"{DateTime.Now} HttpDelete DeleteCustomerById(id = {id}) nuluzo");
+                _logger.LogError(e, $"{DateTime.Now} HttpDelete DeleteCustomerById(id = {id}) exception error.");
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
@@ -207,11 +207,66 @@ namespace WMS__Web_API.Controllers
 
             catch (Exception e)
             {
-                _logger.LogError(e, $"{DateTime.Now} HttpPut UpdateCustomerById(id = {id}) nuluzo.");
+                _logger.LogError(e, $"{DateTime.Now} HttpPut UpdateCustomerById(id = {id}) exception error.");
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
+
+        /// <summary>
+        /// Fetch registered customer with a specified ID from DB
+        /// </summary>
+        /// <param name="id">Requested customer ID</param>
+        /// <returns>Customer with specified ID</returns>
+        /// <response code="200">OK</response>        
+        /// <response code="400">Customer bad request description</response>
+        /// <response code="401">Client could not authenticate a request</response>
+        /// <response code="404">Customer not found </response>
+        /// <response code="500">Internal server error</response>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     GET customer/1
+        ///     {
+        ///     }
+        ///
+        /// </remarks>
+        [HttpGet("{id:int}", Name = "GeCustomerById")]
+  //      [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetCustomerDto))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Produces(MediaTypeNames.Application.Json)]
+        public async Task<ActionResult<GetCustomerDto>> GetCustomerById(int id)
+        {
+            _logger.LogInformation($"{DateTime.Now} Executed GetCustomerById = {id}");
+
+            try
+            {
+                if (id == 0)
+                {
+                    return BadRequest();
+                }
+
+                var customer = await _customerRepo.GetAsync(d => d.Id == id);
+
+                if (customer == null)
+                {
+                    _logger.LogInformation($"{DateTime.Now} Customer with id {id} not found", id);
+                    return NotFound();
+                }
+
+                return Ok(_wrapper.Bind(customer));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"{DateTime.Now} HttpGet GetCustomer by id ={id} exception error.");
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+        }
 
 
 

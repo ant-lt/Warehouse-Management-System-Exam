@@ -136,5 +136,16 @@ namespace WMS.Infastructure.Services
             order.OrderStatusId = updateOrderDto.OrderStatusId;
             return order;
         }
+
+        public GetOrderItemDto Bind(OrderItem orderItem)
+        {
+            return new GetOrderItemDto
+            {
+                Id= orderItem.Id,
+                OrderId = orderItem.OrderId,
+                Quantity= orderItem.Quantity,
+                ProductId= orderItem.ProductId
+            };
+        }
     }
 }

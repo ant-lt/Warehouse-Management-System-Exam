@@ -50,7 +50,7 @@ namespace WMS__Web_API.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"{DateTime.Now} HttpGet GetInventories nuluzo.");
+                _logger.LogError(e, $"{DateTime.Now} HttpGet GetInventories exception error.");
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
