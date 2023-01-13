@@ -1,10 +1,31 @@
-﻿namespace WMS.Domain.Models.DTO
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace WMS.Domain.Models.DTO
 {
     public class RegistrationRequest
     {
-        public string Username { get; set; }
-        public string Name { get; set; }
-        public string Password { get; set; }
-        public string Role { get; set; }
+        /// <summary>
+        /// User registration user name
+        /// </summary>
+        [Required]
+        public string? Username { get; set; }
+
+        /// <summary>
+        /// User registration name
+        /// </summary>
+        [Required]
+        public string? Name { get; set; }
+
+        /// <summary>
+        /// User password
+        /// </summary>
+        [Required]
+        public string? Password { get; set; }
+
+        /// <summary>
+        /// User role name in Warehouse management system
+        /// </summary>
+        [Required]
+        public string? Role { get; set; }
     }
 }

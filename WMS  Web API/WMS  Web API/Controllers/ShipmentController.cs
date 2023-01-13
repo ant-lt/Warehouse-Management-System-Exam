@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
 using WMS.Domain.Models;
@@ -30,7 +31,7 @@ namespace WMS__Web_API.Controllers
         /// <response code="401">Client could not authenticate a request</response>
         /// <response code="500">Internal server error</response>
         [HttpGet(Name = "GetShipments")]
-        //     [Authorize]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<GetShipmentDto>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]

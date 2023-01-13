@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
 using WMS.Domain.Models;
@@ -31,11 +32,10 @@ namespace WMS__Web_API.Controllers
         /// <response code="500">Error</response>
         /// <response code="400">Bad request</response>
         [HttpPost("Create", Name = "CreateNewOrderItem")]
-        //       [Authorize(Roles = "Administrator")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(CreateOrderItemDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [Produces(MediaTypeNames.Application.Json)]
         public async Task<ActionResult<CreateOrderItemDto>> Create(CreateOrderItemDto req)
@@ -72,13 +72,15 @@ namespace WMS__Web_API.Controllers
         /// <response code="204">Order item deleted</response>
         /// <response code="400">Bad Request</response>
         /// <response code="401">Client could not authenticate a request</response>
+        /// <response code="403">Do not have permission to access</response>  
         /// <response code="404">Order item not found</response>
         /// <response code="500">Internal server error</response>
         [HttpDelete("delete/{id:int}")]
-        //    [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Administrator, Manager")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [Produces(MediaTypeNames.Application.Json)]
@@ -121,7 +123,8 @@ namespace WMS__Web_API.Controllers
         /// <returns>Status code</returns>
         /// <response code="204">Order item updated</response>
         /// <response code="400">Bad request</response>
-        /// <response code="401">Client could not authenticate a request</response>       
+        /// <response code="401">Client could not authenticate a request</response>   
+        /// <response code="403">Do not have permission to access</response> 
         /// <response code="404">Order item not found</response>
         /// <response code="500">Internal server error</response> 
         /// <remarks>
@@ -133,10 +136,11 @@ namespace WMS__Web_API.Controllers
         ///
         /// </remarks>
         [HttpPut("update/{id:int}")]
-        //      [Authorize(Roles = "Administrator,Manager")]
+        [Authorize(Roles = "Administrator,Manager")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [Produces(MediaTypeNames.Application.Json)]
@@ -189,7 +193,7 @@ namespace WMS__Web_API.Controllers
         ///
         /// </remarks>
         [HttpGet("Item/{id:int}", Name = "GetOrderItemById")]
-        //      [Authorize]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetOrderItemDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -245,7 +249,7 @@ namespace WMS__Web_API.Controllers
         ///
         /// </remarks>
         [HttpGet("{id:int}/Items", Name = "GetOrderItemsById")]
-        //      [Authorize]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<GetOrderItemDto>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]

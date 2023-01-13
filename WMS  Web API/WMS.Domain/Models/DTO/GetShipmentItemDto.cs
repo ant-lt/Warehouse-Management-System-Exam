@@ -10,13 +10,34 @@ namespace WMS.Domain.Models.DTO
 {
     public class GetShipmentItemDto
     {
+        /// <summary>
+        /// Shipment item internal Id
+        /// </summary>
         public int Id { get; set; }
 
+        /// <summary>
+        /// Shipment item product quantity
+        /// </summary>
         public decimal Quantity { get; set; }
 
+        /// <summary>
+        /// Shipment Id
+        /// </summary>
         public int ShipmentId { get; set; }
 
-        public int ProductId { get; set; }
+        /// <summary>
+        /// Shipment item product SKU
+        /// </summary>
+        public string ProductSKU { get; set; }
 
+        /// <summary>
+        /// Shipment item product name
+        /// </summary>
+        public string ProductName { get; set; }
+
+        /// <summary>
+        /// Shipment item product description
+        /// </summary>
+        public string ProductDescription { get; set; }
     }
 }

@@ -67,10 +67,10 @@ namespace WMS.Infastructure.Services
                 Date = shipment.Date,
                 ScheduledDate = shipment.ScheduledDate,
                 ExecutionDate = shipment.ExecutionDate,
-                ShipmentStatusId = shipment.ShipmentStatusId,
+                ShipmentStatus = shipment.ShipmentStatus.Name,
                 OrderId = shipment.OrderId,
-                CustomerId = shipment.CustomerId,
-                WMSuserId = shipment.WMSuserId
+                CustomerName = shipment.Customer.Name,
+                UserName = shipment.RWMSuser.Name
             };
         }
 
@@ -83,7 +83,7 @@ namespace WMS.Infastructure.Services
                 WarehouseName = inventory.Warehouse.Name,
                 ProductName = inventory.Product.Name,
                 ProductSKU = inventory.Product.SKU,
-                ProductDecription = inventory.Product.Description
+                ProductDescription = inventory.Product.Description
             };
         }
 
@@ -145,8 +145,7 @@ namespace WMS.Infastructure.Services
         {
             return new GetOrderItemDto
             {
-                Id= orderItem.Id,
-                
+                Id= orderItem.Id, 
                 Quantity= orderItem.Quantity,
                 ProductSKU = orderItem.Product.SKU,
                 ProductName = orderItem.Product.Name,
@@ -160,7 +159,9 @@ namespace WMS.Infastructure.Services
             {
                 Id = shipmentItem.Id,
                 Quantity = shipmentItem.Quantity,
-                ProductId = shipmentItem.ProductId
+                ProductSKU = shipmentItem.Product.SKU,
+                ProductName = shipmentItem.Product.Name,
+                ProductDescription = shipmentItem.Product.Description
             };
         }
 

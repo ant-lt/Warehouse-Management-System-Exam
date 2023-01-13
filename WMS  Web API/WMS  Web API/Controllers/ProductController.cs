@@ -32,7 +32,7 @@ namespace WMS__Web_API.Controllers
         /// <response code="401">Client could not authenticate a request</response>
         /// <response code="500">Internal server error</response>
         [HttpGet(Name = "GetProducts")]
- //       [Authorize]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<GetProductDto>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -77,7 +77,7 @@ namespace WMS__Web_API.Controllers
         ///
         /// </remarks>
         [HttpGet("{id:int}", Name = "GetProductById")]
-        //      [Authorize]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetProductDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
