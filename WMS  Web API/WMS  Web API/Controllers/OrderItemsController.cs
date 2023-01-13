@@ -31,7 +31,7 @@ namespace WMS__Web_API.Controllers
         /// <response code="201">Order created</response>
         /// <response code="500">Error</response>
         /// <response code="400">Bad request</response>
-        [HttpPost("Create", Name = "CreateNewOrderItem")]
+        [HttpPost("/CreateOrderItem", Name = "CreateNewOrderItem")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(CreateOrderItemDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -75,7 +75,7 @@ namespace WMS__Web_API.Controllers
         /// <response code="403">Do not have permission to access</response>  
         /// <response code="404">Order item not found</response>
         /// <response code="500">Internal server error</response>
-        [HttpDelete("delete/{id:int}")]
+        [HttpDelete("/Delete/OrderItem/{id:int}")]
         [Authorize(Roles = "Administrator, Manager")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -127,15 +127,7 @@ namespace WMS__Web_API.Controllers
         /// <response code="403">Do not have permission to access</response> 
         /// <response code="404">Order item not found</response>
         /// <response code="500">Internal server error</response> 
-        /// <remarks>
-        /// Sample request:
-        ///
-        ///         PUT OrderItem/1
-        ///         {
-        ///         }
-        ///
-        /// </remarks>
-        [HttpPut("update/{id:int}")]
+        [HttpPut("/Update/OrderItem/{id:int}")]
         [Authorize(Roles = "Administrator,Manager")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -175,7 +167,7 @@ namespace WMS__Web_API.Controllers
         }
 
         /// <summary>
-        /// Fetch registered order item by ID
+        /// Fetch registered order single item by ID
         /// </summary>
         /// <param name="id">Requested order item ID</param>
         /// <returns>Order item for specified order item ID</returns>
@@ -184,15 +176,7 @@ namespace WMS__Web_API.Controllers
         /// <response code="401">Client could not authenticate a request</response>
         /// <response code="404">Order item not found </response>
         /// <response code="500">Internal server error</response>
-        /// <remarks>
-        /// Sample request:
-        ///
-        ///     GET order/1
-        ///     {
-        ///     }
-        ///
-        /// </remarks>
-        [HttpGet("Item/{id:int}", Name = "GetOrderItemById")]
+        [HttpGet("/GetOrderItemBy/{id:int}", Name = "GetOrderItemById")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetOrderItemDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -240,15 +224,7 @@ namespace WMS__Web_API.Controllers
         /// <response code="401">Client could not authenticate a request</response>
         /// <response code="404">Order not found </response>
         /// <response code="500">Internal server error</response>
-        /// <remarks>
-        /// Sample request:
-        ///
-        ///     GET order/1
-        ///     {
-        ///     }
-        ///
-        /// </remarks>
-        [HttpGet("{id:int}/Items", Name = "GetOrderItemsById")]
+        [HttpGet("/GetOrderBy/{id:int}/Items", Name = "GetOrderItemsById")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<GetOrderItemDto>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -287,9 +263,6 @@ namespace WMS__Web_API.Controllers
                 _logger.LogError(e, $"{DateTime.Now} HttpGet GetOrderItems by id ={id} exception error.");
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-
         }
-
-
     }
 }

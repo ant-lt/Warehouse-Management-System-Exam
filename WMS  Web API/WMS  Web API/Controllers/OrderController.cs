@@ -31,7 +31,7 @@ namespace WMS__Web_API.Controllers
         /// <response code="401">Client could not authenticate a request</response>
         /// <response code="403">Do not have permission to access</response>  
         /// <response code="500">Internal server error</response>
-        [HttpGet(Name = "GetOrders")]
+        [HttpGet("/GetOrders",Name = "GetOrders")]
         [Authorize(Roles = "Administrator, Manager, Supervisor")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<GetOrderDto>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -67,7 +67,7 @@ namespace WMS__Web_API.Controllers
         /// <response code="201">Order created</response>
         /// <response code="500">Error</response>
         /// <response code="400">Bad request</response>
-        [HttpPost("Create", Name = "CreateNewOrder")]
+        [HttpPost("/CreateNewOrder", Name = "CreateNewOrder")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(CreateOrderDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -111,7 +111,7 @@ namespace WMS__Web_API.Controllers
         /// <response code="403">Do not have permission to access</response> 
         /// <response code="404">Order not found</response>
         /// <response code="500">Internal server error</response>
-        [HttpDelete("delete/{id:int}")]
+        [HttpDelete("/Delete/Order/{id:int}")]
         [Authorize(Roles = "Administrator, Manager")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -162,16 +162,8 @@ namespace WMS__Web_API.Controllers
         /// <response code="401">Client could not authenticate a request</response>   
         /// <response code="403">Do not have permission to access</response>  
         /// <response code="404">Order not found</response>
-        /// <response code="500">Internal server error</response> 
-        /// <remarks>
-        /// Sample request:
-        ///
-        ///         PUT Orders/1
-        ///         {
-        ///         }
-        ///
-        /// </remarks>
-        [HttpPut("update/{id:int}")]
+        /// <response code="500">Internal server error</response>
+        [HttpPut("/Update/Order/{id:int}")]
         [Authorize(Roles = "Administrator, Manager")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -220,15 +212,7 @@ namespace WMS__Web_API.Controllers
         /// <response code="401">Client could not authenticate a request</response>
         /// <response code="404">Order not found </response>
         /// <response code="500">Internal server error</response>
-        /// <remarks>
-        /// Sample request:
-        ///
-        ///     GET order/1
-        ///     {
-        ///     }
-        ///
-        /// </remarks>
-        [HttpGet("{id:int}", Name = "GetOrderById")]
+        [HttpGet("/GetOrderBy/{id:int}", Name = "GetOrderById")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetOrderDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

@@ -34,7 +34,7 @@ namespace WMS__Web_API.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [Produces(MediaTypeNames.Application.Json)]
-        [HttpPost("login")]
+        [HttpPost("/Login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest loginData)
         {
 
@@ -73,7 +73,7 @@ namespace WMS__Web_API.Controllers
         /// <response code="201">OK</response>
         /// <response code="400">Bad request</response>
         /// <response code="401">Unauthorized</response>
-        [HttpPost("register")]
+        [HttpPost("/Register")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
