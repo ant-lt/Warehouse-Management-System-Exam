@@ -29,11 +29,13 @@ namespace WMS__Web_API.Controllers
         /// <returns>All customers in DB</returns>
         /// <response code="200">OK</response>
         /// <response code="401">Client could not authenticate a request</response>
+        /// <response code="403">Do not have permission to access</response>        
         /// <response code="500">Internal server error</response>
         [HttpGet(Name = "GetCustomers")]
-   //     [Authorize]
+        [Authorize(Roles = "Administrator, Manager")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<GetCustomerDto>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [Produces(MediaTypeNames.Application.Json)]
         public async Task<ActionResult<IEnumerable<GetCustomerDto>>> GetCustomers()
@@ -66,11 +68,12 @@ namespace WMS__Web_API.Controllers
         /// <response code="201">Customer created</response>
         /// <response code="500">Error</response>
         /// <response code="400">Bad request</response>
-        
+        /// <response code="403">Do not have permission to access</response>      
         [HttpPost("Create", Name = "CreateNewCustomer")]
- //       [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Administrator, Manager")]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(CreateCustomerDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -109,12 +112,14 @@ namespace WMS__Web_API.Controllers
         /// <response code="204">Customer deleted</response>
         /// <response code="400">Bad Request</response>
         /// <response code="401">Client could not authenticate a request</response>
+        /// <response code="403">Do not have permission to access</response>      
         /// <response code="404">Customer not found</response>
         /// <response code="500">Internal server error</response>
         [HttpDelete("delete/{id:int}")]
-    //    [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Administrator, Manager")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -158,7 +163,8 @@ namespace WMS__Web_API.Controllers
         /// <returns>Status code</returns>
         /// <response code="204">Customer updated</response>
         /// <response code="400">Bad request</response>
-        /// <response code="401">Client could not authenticate a request</response>       
+        /// <response code="401">Client could not authenticate a request</response>
+        /// <response code="403">Do not have permission to access</response>
         /// <response code="404">Customer not found</response>
         /// <response code="500">Internal server error</response> 
         /// <remarks>
@@ -175,10 +181,11 @@ namespace WMS__Web_API.Controllers
         ///
         /// </remarks>
         [HttpPut("update/{id:int}")]
-  //      [Authorize(Roles = "Administrator,Manager")]
+        [Authorize(Roles = "Administrator, Manager")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [Produces(MediaTypeNames.Application.Json)]
@@ -221,6 +228,7 @@ namespace WMS__Web_API.Controllers
         /// <response code="200">OK</response>        
         /// <response code="400">Customer bad request description</response>
         /// <response code="401">Client could not authenticate a request</response>
+        /// <response code="403">Do not have permission to access</response>
         /// <response code="404">Customer not found </response>
         /// <response code="500">Internal server error</response>
         /// <remarks>
@@ -232,10 +240,11 @@ namespace WMS__Web_API.Controllers
         ///
         /// </remarks>
         [HttpGet("{id:int}", Name = "GeCustomerById")]
-  //      [Authorize]
+        [Authorize(Roles = "Administrator, Manager")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetCustomerDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [Produces(MediaTypeNames.Application.Json)]

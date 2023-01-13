@@ -71,17 +71,18 @@ namespace WMS__Web_API
             {
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                option.IncludeXmlComments(xmlPath);
+                option.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
 
                 // This is added to show JWT UI part in Swagger
                 option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
                 {
                     Description =
                         "JWT Authorization header is using Bearer scheme. \r\n\r\n" +
-                        "Enter 'Bearer' and token separated by a space. \r\n\r\n" +
-                        "Example: \"Bearer d5f41g85d1f52a\"",
+                        "Enter token. \r\n\r\n" +
+                        "Example: \"d5f41g85d1f52a\"",
                     Name = "Authorization", // Header key name
                     In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
                     Scheme = "Bearer",
                     BearerFormat = "JWT"
                 });
@@ -96,7 +97,6 @@ namespace WMS__Web_API
                                 Type = ReferenceType.SecurityScheme,
                                 Id = "Bearer"
                             },
-                            Scheme = "oauth2",
                             Name = "Bearer",
                             In = ParameterLocation.Header
                         },

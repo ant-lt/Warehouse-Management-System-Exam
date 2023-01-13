@@ -1,31 +1,47 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace WMS.Domain.Models.DTO
+﻿namespace WMS.Domain.Models.DTO
 {
     public class GetShipmentDto
     {
 
+        /// <summary>
+        /// Internal Shipment Id on Warehouse management system
+        /// </summary>
         public int Id { get; set; }
 
-        public DateTime Date { get; set; } 
+        /// <summary>
+        ///  Shipment submit date
+        /// </summary>
+        public DateTime Date { get; set; }
 
+        /// <summary>
+        /// Shipment processing scheduled date
+        /// </summary>
         public DateTime? ScheduledDate { get; set; }
 
+        /// <summary>
+        /// Shipment processing actual execution date
+        /// </summary>
         public DateTime? ExecutionDate { get; set; }
 
-        public int ShipmentStatusId { get; set; }
+        /// <summary>
+        /// Shipment status
+        /// </summary>
+        public string ShipmentStatus { get; set; }
 
+        /// <summary>
+        /// Order id related to shipment
+        /// </summary>
         public int OrderId { get; set; }
 
-        public int CustomerId { get; set; }
+        /// <summary>
+        /// Shipment customer name
+        /// </summary>
+        public string CustomerName { get; set; }
 
-        public int WMSuserId { get; set; }
+        /// <summary>
+        /// Shipment created by user name
+        /// </summary>
+        public string UserName { get; set; }
 
     }
 }

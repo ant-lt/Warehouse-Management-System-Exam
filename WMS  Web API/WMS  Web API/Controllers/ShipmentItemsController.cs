@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
 using WMS.Domain.Models.DTO;
@@ -40,7 +41,7 @@ namespace WMS__Web_API.Controllers
         ///
         /// </remarks>
         [HttpGet("{id:int}/Items", Name = "GetShipmentItemsById")]
-        //      [Authorize]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<GetShipmentItemDto>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]

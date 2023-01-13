@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
 using WMS.Domain.Models.DTO;
@@ -27,11 +28,13 @@ namespace WMS__Web_API.Controllers
         /// <returns>All inventories in DB</returns>
         /// <response code="200">OK</response>
         /// <response code="401">Client could not authenticate a request</response>
+        /// <response code="403">Do not have permission to access</response>
         /// <response code="500">Internal server error</response>
         [HttpGet(Name = "GetInventories")]
-        //     [Authorize]
+        [Authorize(Roles = "Administrator, Manager, Supervisor")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<GetInventoryDto>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [Produces(MediaTypeNames.Application.Json)]
         public async Task<ActionResult<IEnumerable<GetInventoryDto>>> GetInventories()
