@@ -31,7 +31,7 @@ namespace WMS__Web_API.Controllers
         /// <response code="401">Client could not authenticate a request</response>
         /// <response code="403">Do not have permission to access</response>        
         /// <response code="500">Internal server error</response>
-        [HttpGet(Name = "GetCustomers")]
+        [HttpGet("/GetCustomers", Name = "GetCustomers")]
         [Authorize(Roles = "Administrator, Manager")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<GetCustomerDto>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -68,8 +68,8 @@ namespace WMS__Web_API.Controllers
         /// <response code="201">Customer created</response>
         /// <response code="500">Error</response>
         /// <response code="400">Bad request</response>
-        /// <response code="403">Do not have permission to access</response>      
-        [HttpPost("Create", Name = "CreateNewCustomer")]
+        /// <response code="403">Do not have permission to access</response>
+        [HttpPost("/CreateNewCustomer", Name = "CreateNewCustomer")]
         [Authorize(Roles = "Administrator, Manager")]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(CreateCustomerDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -115,7 +115,7 @@ namespace WMS__Web_API.Controllers
         /// <response code="403">Do not have permission to access</response>      
         /// <response code="404">Customer not found</response>
         /// <response code="500">Internal server error</response>
-        [HttpDelete("delete/{id:int}")]
+        [HttpDelete("/Delete/Customer/{id:int}")]
         [Authorize(Roles = "Administrator, Manager")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -167,20 +167,7 @@ namespace WMS__Web_API.Controllers
         /// <response code="403">Do not have permission to access</response>
         /// <response code="404">Customer not found</response>
         /// <response code="500">Internal server error</response> 
-        /// <remarks>
-        /// Sample request:
-        ///
-        ///         PUT Customers/1
-        ///         {
-        ///             "id": 0,
-        ///             "isleista": "2022-12-04T11:36:24.011Z",
-        ///             "autorius": "string",
-        ///             "pavadinimas": "string",
-        ///             "knygosTipas": "string"  - allowed only from values list: Hardcover, Paperback, Electronic
-        ///         }
-        ///
-        /// </remarks>
-        [HttpPut("update/{id:int}")]
+        [HttpPut("/Update/Customer/{id:int}")]
         [Authorize(Roles = "Administrator, Manager")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -231,15 +218,7 @@ namespace WMS__Web_API.Controllers
         /// <response code="403">Do not have permission to access</response>
         /// <response code="404">Customer not found </response>
         /// <response code="500">Internal server error</response>
-        /// <remarks>
-        /// Sample request:
-        ///
-        ///     GET customer/1
-        ///     {
-        ///     }
-        ///
-        /// </remarks>
-        [HttpGet("{id:int}", Name = "GeCustomerById")]
+        [HttpGet("/GetCustomerBy/{id:int}", Name = "GetCustomerById")]
         [Authorize(Roles = "Administrator, Manager")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetCustomerDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -276,8 +255,5 @@ namespace WMS__Web_API.Controllers
             }
 
         }
-
-
-
     }
 }

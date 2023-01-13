@@ -30,7 +30,7 @@ namespace WMS__Web_API.Controllers
         /// <response code="200">OK</response>
         /// <response code="401">Client could not authenticate a request</response>
         /// <response code="500">Internal server error</response>
-        [HttpGet(Name = "GetShipments")]
+        [HttpGet("/GetShipments", Name = "GetShipments")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<GetShipmentDto>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]

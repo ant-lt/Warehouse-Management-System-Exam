@@ -31,7 +31,7 @@ namespace WMS__Web_API.Controllers
         /// <response code="200">OK</response>
         /// <response code="401">Client could not authenticate a request</response>
         /// <response code="500">Internal server error</response>
-        [HttpGet(Name = "GetProducts")]
+        [HttpGet("/GetProducts", Name = "GetProducts")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<GetProductDto>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -59,7 +59,7 @@ namespace WMS__Web_API.Controllers
 
 
         /// <summary>
-        /// Fetch registered product with a specified ID from DB
+        /// Fetch registered product details with a specified ID from DB
         /// </summary>
         /// <param name="id">Requested product ID</param>
         /// <returns>Product with specified ID</returns>
@@ -68,15 +68,7 @@ namespace WMS__Web_API.Controllers
         /// <response code="401">Client could not authenticate a request</response>
         /// <response code="404">Product not found </response>
         /// <response code="500">Internal server error</response>
-        /// <remarks>
-        /// Sample request:
-        ///
-        ///     GET product/1
-        ///     {
-        ///     }
-        ///
-        /// </remarks>
-        [HttpGet("{id:int}", Name = "GetProductById")]
+        [HttpGet("/GetProductBy/{id:int}", Name = "GetProductById")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetProductDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

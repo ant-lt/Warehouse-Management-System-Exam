@@ -32,15 +32,7 @@ namespace WMS__Web_API.Controllers
         /// <response code="401">Client could not authenticate a request</response>
         /// <response code="404">Shipment not found </response>
         /// <response code="500">Internal server error</response>
-        /// <remarks>
-        /// Sample request:
-        ///
-        ///     GET Shipment/1
-        ///     {
-        ///     }
-        ///
-        /// </remarks>
-        [HttpGet("{id:int}/Items", Name = "GetShipmentItemsById")]
+        [HttpGet("/ShipmentId/{id:int}/Items", Name = "GetShipmentItemsById")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<GetShipmentItemDto>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -88,9 +80,6 @@ namespace WMS__Web_API.Controllers
                 _logger.LogError(e, $"{DateTime.Now} HttpGet GetShipmentItems by id ={id} exception error.");
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-
         }
-
-
     }
 }

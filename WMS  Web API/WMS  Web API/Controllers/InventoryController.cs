@@ -30,7 +30,7 @@ namespace WMS__Web_API.Controllers
         /// <response code="401">Client could not authenticate a request</response>
         /// <response code="403">Do not have permission to access</response>
         /// <response code="500">Internal server error</response>
-        [HttpGet(Name = "GetInventories")]
+        [HttpGet("/GetInventories", Name = "GetInventories")]
         [Authorize(Roles = "Administrator, Manager, Supervisor")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<GetInventoryDto>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
