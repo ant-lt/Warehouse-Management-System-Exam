@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WMS  Web API", "WMS  Web AP
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WMS.Domain", "WMS.Domain\WMS.Domain.csproj", "{3E1D6B50-E5CB-45B1-8AC5-44F9F6A78EAD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WMS.Infastrukture", "WMS.Infastrukture\WMS.Infastrukture.csproj", "{B9432908-BCDB-42E4-B6AF-622B25AA2187}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WMS.Infastructure", "WMS.Infastructure\WMS.Infastructure.csproj", "{B9432908-BCDB-42E4-B6AF-622B25AA2187}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -11,6 +11,7 @@ namespace WMS.Domain.Models
     public class ShipmentItem
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         [Required]

@@ -12,6 +12,7 @@ namespace WMS.Domain.Models
     public class Customer
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         [Required]

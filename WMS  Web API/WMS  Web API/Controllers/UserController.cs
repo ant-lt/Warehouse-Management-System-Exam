@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
+using WMS.Domain.Models;
 using WMS.Domain.Models.DTO;
-using WMS.Infastrukture.Interfaces;
+using WMS.Infastructure.Interfaces;
 
 namespace WMS__Web_API.Controllers
 {
@@ -12,11 +13,15 @@ namespace WMS__Web_API.Controllers
     {
         private readonly IUserRepository _userRepo;
         private readonly ILogger<UserController> _logger;
+        private readonly IJwtService _jwtService;
+        private readonly IPasswordService _passwordService;
 
-        public UserController(IUserRepository userRepo, ILogger<UserController> logger)
+        public UserController(IUserRepository userRepo, ILogger<UserController> logger, IJwtService jwtService, IPasswordService passwordService)
         {
             _userRepo = userRepo;
             _logger = logger;
+            _jwtService = jwtService;
+            _passwordService = passwordService;
         }
 
         /// <summary>
@@ -26,9 +31,10 @@ namespace WMS__Web_API.Controllers
         /// <returns>Status code</returns>
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [Produces(MediaTypeNames.Application.Json)]
-        [HttpPost("login")]
+        [HttpPost("/Login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest loginData)
         {
 
@@ -36,23 +42,25 @@ namespace WMS__Web_API.Controllers
 
             try
             {
-                var loginResponse = await _userRepo.LoginAsync(loginData);
+                var loginUser = await _userRepo.LoginAsync(loginData.Username, loginData.Password);
 
-                if (loginResponse.UserName == null || string.IsNullOrEmpty(loginResponse.Token))
+                if (loginUser == null)
                 {
-                    return BadRequest(new { message = "Username or password is incorrect" });
+                    return Unauthorized(new { message = "Username or password is incorrect" });
                 }
 
-                if (!loginResponse.Active)
+                if (!loginUser.Active)
                 {
                     return BadRequest(new { message = "User is inactive. Contact WMS system administrator." });
                 }
 
-                return Ok(loginResponse);
+                var token = _jwtService.GetJwtToken(loginUser.Id, loginUser.Role.Name);
+
+                return Ok(new LoginResponse { UserName = loginData.Username, Active = loginUser.Active, Role = loginUser.Role.Name, Token = token });
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"{DateTime.Now} HttpPost Login nuluzo.");
+                _logger.LogError(ex, $"{DateTime.Now} HttpPost Login exception error.");
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
@@ -62,10 +70,11 @@ namespace WMS__Web_API.Controllers
         /// </summary>
         /// <param name="registrationData"></param>
         /// <returns>Status code</returns>
-        /// <response code="200">OK</response>
+        /// <response code="201">OK</response>
         /// <response code="400">Bad request</response>
-        [HttpPost("register")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        /// <response code="401">Unauthorized</response>
+        [HttpPost("/Register")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [Produces(MediaTypeNames.Application.Json)]
@@ -82,18 +91,37 @@ namespace WMS__Web_API.Controllers
                     return BadRequest(new { message = "Username already exists" });
                 }
 
-                var user = await _userRepo.RegisterAsync(registrationData);
+                _passwordService.CreatePasswordHash(registrationData.Password, out byte[] passwordHash, out byte[] passwordSalt);
+
+                var userRole = await _userRepo.GetRolebyNameAsync(registrationData.Role);
+
+                if (userRole == null) 
+                {
+                    return BadRequest(new { message = "Role not exists" });
+                }
+
+                WMSuser newUser = new()
+                {
+                    Username = registrationData.Username,
+                    PasswordHash = passwordHash,
+                    PasswordSalt = passwordSalt,
+                    Name = registrationData.Name,
+                    Role = userRole,
+                    Active = true,
+                };
+
+                var user = await _userRepo.RegisterAsync(newUser);
 
                 if (user == null)
                 {
-                    return BadRequest(new { message = "Error while registering" });
+                    return BadRequest(new { message = "Error while new user registering" });
                 }
 
-                return Ok();
+                return Created(nameof(Login), newUser.Id);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"{DateTime.Now} HttpPost Register nuluzo.");
+                _logger.LogError(ex, $"{DateTime.Now} HttpPost Register exception error.");
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }

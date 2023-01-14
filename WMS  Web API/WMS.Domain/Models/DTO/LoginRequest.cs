@@ -1,9 +1,13 @@
-﻿namespace WMS.Domain.Models.DTO
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace WMS.Domain.Models.DTO
 {
     public class LoginRequest
     {
-        
-        public string Username { get; set; }
-        public string Password { get; set; }
+        [Required]
+        public string? Username { get; set; }
+
+        [Required]
+        public string? Password { get; set; }
     }
 }

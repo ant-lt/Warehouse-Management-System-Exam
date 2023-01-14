@@ -17,7 +17,9 @@ namespace WMS.Domain.Models
             OrderItems = new HashSet<OrderItem>();
         }
 
+
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         [Required]

@@ -5,10 +5,10 @@ using Microsoft.OpenApi.Models;
 using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
-using WMS.Infastrukture.Database;
-using WMS.Infastrukture.Interfaces;
-using WMS.Infastrukture.Repositories;
-using WMS.Infastrukture.Services;
+using WMS.Infastructure.Database;
+using WMS.Infastructure.Interfaces;
+using WMS.Infastructure.Repositories;
+using WMS.Infastructure.Services;
 
 namespace WMS__Web_API
 {
@@ -26,17 +26,20 @@ namespace WMS__Web_API
                 option.UseSqlite(builder.Configuration.GetConnectionString("WMSDBConnection"));
             });
 
-            builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IPasswordService, PasswordService>();
             builder.Services.AddScoped<IJwtService, JwtService>();
             
             builder.Services.AddTransient<IWMSwrapper, WMSwrapper>();
 
-
+            // Add repositories
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
             builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+            builder.Services.AddScoped<IOrderItemRepository, OrderItemRepository>();
             builder.Services.AddScoped<IShipmentRepository, ShipmentRepository>();
+            builder.Services.AddScoped<IShipmentItemRepository, ShipmentItemRepository>();
+            builder.Services.AddScoped<IInventoryRepository, InventoryRepository>();
 
 
             var key = builder.Configuration.GetValue<string>("ApiSettings:Secret");
@@ -68,17 +71,18 @@ namespace WMS__Web_API
             {
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                option.IncludeXmlComments(xmlPath);
+                option.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
 
                 // This is added to show JWT UI part in Swagger
                 option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
                 {
                     Description =
                         "JWT Authorization header is using Bearer scheme. \r\n\r\n" +
-                        "Enter 'Bearer' and token separated by a space. \r\n\r\n" +
-                        "Example: \"Bearer d5f41g85d1f52a\"",
+                        "Enter token. \r\n\r\n" +
+                        "Example: \"d5f41g85d1f52a\"",
                     Name = "Authorization", // Header key name
                     In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
                     Scheme = "Bearer",
                     BearerFormat = "JWT"
                 });
@@ -93,7 +97,6 @@ namespace WMS__Web_API
                                 Type = ReferenceType.SecurityScheme,
                                 Id = "Bearer"
                             },
-                            Scheme = "oauth2",
                             Name = "Bearer",
                             In = ParameterLocation.Header
                         },

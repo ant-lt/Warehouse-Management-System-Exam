@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
 using WMS.Domain.Models;
 using WMS.Domain.Models.DTO;
-using WMS.Infastrukture.Interfaces;
+using WMS.Infastructure.Interfaces;
 
 namespace WMS__Web_API.Controllers
 {
@@ -13,10 +13,10 @@ namespace WMS__Web_API.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProductRepository _productRepo;
-        private readonly ILogger<UserController> _logger;
+        private readonly ILogger<CustomerController> _logger;
         private readonly IWMSwrapper _wrapper;
 
-        public ProductController(IProductRepository productRepo, ILogger<UserController> logger, IWMSwrapper wmsWrapper)
+        public ProductController(IProductRepository productRepo, ILogger<CustomerController> logger, IWMSwrapper wmsWrapper)
         {
             _productRepo = productRepo ;
             _logger = logger;
@@ -31,7 +31,7 @@ namespace WMS__Web_API.Controllers
         /// <response code="200">OK</response>
         /// <response code="401">Client could not authenticate a request</response>
         /// <response code="500">Internal server error</response>
-        [HttpGet(Name = "GetProducts")]
+        [HttpGet("/GetProducts", Name = "GetProducts")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<GetProductDto>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -52,9 +52,57 @@ namespace WMS__Web_API.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"{DateTime.Now} HttpGet GetProducts nuluzo.");
+                _logger.LogError(e, $"{DateTime.Now} HttpGet GetProducts exception error.");
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
+        }
+
+
+        /// <summary>
+        /// Fetch registered product details with a specified ID from DB
+        /// </summary>
+        /// <param name="id">Requested product ID</param>
+        /// <returns>Product with specified ID</returns>
+        /// <response code="200">OK</response>        
+        /// <response code="400">Product bad request description</response>
+        /// <response code="401">Client could not authenticate a request</response>
+        /// <response code="404">Product not found </response>
+        /// <response code="500">Internal server error</response>
+        [HttpGet("/GetProductBy/{id:int}", Name = "GetProductById")]
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetProductDto))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Produces(MediaTypeNames.Application.Json)]
+        public async Task<ActionResult<GetProductDto>> GetProductById(int id)
+        {
+            _logger.LogInformation($"{DateTime.Now} Executed GetProductById = {id}");
+
+            try
+            {
+                if (id == 0)
+                {
+                    return BadRequest();
+                }
+
+                var product = await _productRepo.GetAsync(d => d.Id == id);
+
+                if (product == null)
+                {
+                    _logger.LogInformation($"{DateTime.Now} product with id {id} not found", id);
+                    return NotFound();
+                }
+
+                return Ok(_wrapper.Bind(product));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"{DateTime.Now} HttpGet GetProduct by id ={id} exception error.");
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
         }
 
     }
