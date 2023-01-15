@@ -13,14 +13,16 @@ namespace WMS__Web_API.Controllers
     public class OrderController : ControllerBase
     {
         private readonly IOrderRepository _orderRepo;
+        private readonly IInventoryManagerService _inventoryManagerService;
         private readonly ILogger<OrderController> _logger;
         private readonly IWMSwrapper _wrapper;
 
-        public OrderController(IOrderRepository orderRepo, ILogger<OrderController> logger, IWMSwrapper wrapper)
+        public OrderController(IOrderRepository orderRepo, ILogger<OrderController> logger, IWMSwrapper wrapper, IInventoryManagerService inventoryManagerService)
         {
             _orderRepo = orderRepo;
             _logger = logger;
             _wrapper = wrapper;
+            _inventoryManagerService = inventoryManagerService;
         }
 
         /// <summary>
@@ -249,6 +251,59 @@ namespace WMS__Web_API.Controllers
             }
 
         }
+
+
+        /// <summary>
+        /// Submit the new order for processing
+        /// </summary>
+        /// <param name="id">Order Id</param>
+        /// <returns>OK</returns>
+        /// <response code="200">Order submitted</response>
+        /// <response code="500">Error</response>
+        /// <response code="400">Bad request</response>
+        [HttpPost("/SubmitOrder/{id:int}", Name = "SubmitOrder")]
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SubmitOrderResponse))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Produces(MediaTypeNames.Application.Json)]
+        public async Task<ActionResult<SubmitOrderResponse>> SubmitOrder(int id)
+        {
+            _logger.LogInformation($"{DateTime.Now} Executed Submit Order id={id}.");
+
+            try
+            {
+                if (id == null)
+                {
+                    return BadRequest();
+                }
+
+                var IsOrderTranfered = await _inventoryManagerService.ProcessOrderAsync(id);
+
+                if (!IsOrderTranfered)
+                {
+                    return BadRequest();
+                }
+
+                var response = new SubmitOrderResponse() 
+                { 
+                    OrderDate= DateTime.Now,
+                    OrderId= id,
+                    OrderStatus = "Complete"
+                };
+
+                return Ok(response);
+            }
+
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"{DateTime.Now} HttpPost Submit Order id={id} exception error.");
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+
 
     }
 }

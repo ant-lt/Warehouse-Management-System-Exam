@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
@@ -119,6 +120,57 @@ namespace WMS.Infastructure.Repositories
         public async Task<List<Warehouse>?> GetWarehouseListAsync()
         {
             return await _db.Warehouses.Select(s => s).ToListAsync();
+        }
+
+        public async Task<double> GetOrderTotalVolumeAsync(int orderId)
+        {
+            var totalOrderVolume = await _db.OrderItems
+            .Include(x => x.Product)
+            .Where(x => x.OrderId == orderId)
+            .Select(x => new
+            {
+                VolumeOccupied = (double)x.Quantity * (double)x.Product.Volume
+            }
+             )
+            .SumAsync(x => x.VolumeOccupied);
+
+
+            return totalOrderVolume;
+
+        }
+
+        public async Task<string> GetOrderCurrentStatusAsync(int orderId)
+        {
+            var order = await _db.Orders
+                .Include(x => x.OrderStatus)
+                .Where(x => x.Id == orderId)
+                .FirstOrDefaultAsync();
+
+            return order.OrderStatus.Name;
+        }
+
+        public async Task<bool> TransferOrderItemsToWarehouseAsync(int orderId, int warehouseId)
+        {
+            var orderItemsToTransfer = await _db.OrderItems
+           //     .Include(x => x.Product)
+                .Where(e => e.OrderId == orderId)
+                .ToListAsync();
+
+            foreach (var item in orderItemsToTransfer)
+            {
+                var inventoryItem = new Inventory()
+                {
+                    Quantity = item.Quantity,
+                    WarehouseId = warehouseId,
+                    ProductId = item.ProductId
+                };
+
+                await _db.Inventories.AddAsync(inventoryItem);
+
+            };
+            await _db.SaveChangesAsync();
+
+            return true;
         }
     }
 }

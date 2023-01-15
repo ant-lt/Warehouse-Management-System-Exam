@@ -13,5 +13,8 @@ namespace WMS.Infastructure.Interfaces
         Task<int?> WarehouseIdFitToFillAsync(double totalOrderVolume);
         Task<double> GetWarehouseRatioOfOccupiedbyIdAsync(int WarehouseId);
         Task<List<Warehouse>?> GetWarehouseListAsync();
+        Task<double> GetOrderTotalVolumeAsync(int orderId);
+        Task<string> GetOrderCurrentStatusAsync(int orderId);
+        Task<bool> TransferOrderItemsToWarehouseAsync(int orderId, int warehouseId);
     }
 }
