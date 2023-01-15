@@ -29,5 +29,7 @@ namespace WMS.Domain.Models
 
         [Required]
         public decimal TotalWeigth { get; set; }
+
+        public virtual ICollection<Inventory> InventoryItems { get; set; }
     }
 }

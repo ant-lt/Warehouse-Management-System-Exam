@@ -181,5 +181,19 @@ namespace WMS.Infastructure.Services
             orderItem.ProductId = updateOrderItemDto.ProductId;
             return orderItem;
         }
+
+        public GetWarehousesRatioOfOccupiedDto Bind(Warehouse warehouse, double warehouseRatioOfOccupied)
+        {
+            return new GetWarehousesRatioOfOccupiedDto
+            {
+                Id = warehouse.Id,
+                WarehouseName = warehouse.Name,
+                WarehouseDescription = warehouse.Description,
+                WarehouseLocation = warehouse.Location,
+                WarehouseTotalVolumeCapacity = (double)warehouse.TotalVolume,
+                WarehouseActualTotalOccupiedVolume = warehouseRatioOfOccupied,
+                WarehouseAvailableTotalVolume = (double)warehouse.TotalVolume - (double)warehouseRatioOfOccupied
+            };
+        }
     }
 }

@@ -11,6 +11,7 @@ namespace WMS.Domain.Models
     [Table("Products")]
     public class Product
     {
+
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
@@ -29,5 +30,7 @@ namespace WMS.Domain.Models
 
         [Required]
         public decimal Weigth { get; set; }
+
+        public virtual ICollection<Inventory> InventoryItems { get; set; }
     }
 }
