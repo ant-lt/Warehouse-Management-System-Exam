@@ -10,5 +10,6 @@ namespace WMS.Infastructure.Interfaces
 {
     public interface IOrderRepository : IRepository<Order>
     {
+     
     }
 }

@@ -26,10 +26,12 @@ namespace WMS__Web_API
                 option.UseSqlite(builder.Configuration.GetConnectionString("WMSDBConnection"));
             });
 
+            // Add services
             builder.Services.AddScoped<IPasswordService, PasswordService>();
             builder.Services.AddScoped<IJwtService, JwtService>();
             
             builder.Services.AddTransient<IWMSwrapper, WMSwrapper>();
+            builder.Services.AddTransient<IInventoryManagerService, InventoryManagerService>();
 
             // Add repositories
             builder.Services.AddScoped<IUserRepository, UserRepository>();

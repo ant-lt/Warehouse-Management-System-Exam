@@ -8,6 +8,7 @@ namespace WMS.Infastructure.Interfaces
 {
     public interface IInventoryManagerService
     {
-        Task<bool> IsVolumeAvailable();
+        Task<bool> ProcessOrderAsync(int orderId);
+   
     }
 }
