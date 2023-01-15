@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+
 using System.Net.Mime;
+using WMS.Domain.Models;
 using WMS.Domain.Models.DTO;
 using WMS.Infastructure.Interfaces;
 
@@ -56,5 +58,52 @@ namespace WMS__Web_API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
+
+        /// <summary>
+        /// Get all warehouses ratio of occupied
+        /// </summary>
+        /// <returns>Warehouse list with ratio of occupied</returns>
+        /// <response code="200">OK</response>
+        /// <response code="401">Client could not authenticate a request</response>
+        /// <response code="403">Do not have permission to access</response>
+        /// <response code="500">Internal server error</response>
+        [HttpGet("/GetWarehousesRatioOfOccupied", Name = "GetWarehousesRatioOfOccupied")]
+        [Authorize(Roles = "Administrator, Manager, Supervisor")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<GetWarehousesRatioOfOccupiedDto>))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Produces(MediaTypeNames.Application.Json)]
+        public async Task<ActionResult<IEnumerable<GetWarehousesRatioOfOccupiedDto>>> GetWarehousesRatioOfOccupied()
+        {
+            _logger.LogInformation($"{DateTime.Now} Executed GetWarehousesRatioOfOccupied.");
+
+            try
+            {
+                var warehouses = await _inventoryRepo.GetWarehouseListAsync();
+
+                List<GetWarehousesRatioOfOccupiedDto> getWarehousesRatioOfOccupiedDto = new List<GetWarehousesRatioOfOccupiedDto>();
+                
+                if (warehouses != null)
+                { 
+                    foreach (Warehouse warehouse in warehouses)
+                    {
+                        var warehouseRatioOfOccupied = await _inventoryRepo.GetWarehouseRatioOfOccupiedbyIdAsync(warehouse.Id);
+                        var newGetWarehousesRatioOfOccupiedDto= new GetWarehousesRatioOfOccupiedDto();
+                        newGetWarehousesRatioOfOccupiedDto = _wrapper.Bind(warehouse, warehouseRatioOfOccupied);
+                        getWarehousesRatioOfOccupiedDto.Add(newGetWarehousesRatioOfOccupiedDto);
+                    }
+                }
+                
+                return Ok(getWarehousesRatioOfOccupiedDto.ToList());
+
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"{DateTime.Now} HttpGet GetWarehousesRatioOfOccupied exception error.");
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
     }
 }

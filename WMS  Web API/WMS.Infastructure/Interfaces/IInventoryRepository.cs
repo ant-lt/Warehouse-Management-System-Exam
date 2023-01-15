@@ -9,6 +9,9 @@ namespace WMS.Infastructure.Interfaces
 {
     public interface IInventoryRepository : IRepository<Inventory>
     {
-
+        Task<double> TotalVolumeAvailableAsync();
+        Task<int?> WarehouseIdFitToFillAsync(double totalOrderVolume);
+        Task<double> GetWarehouseRatioOfOccupiedbyIdAsync(int WarehouseId);
+        Task<List<Warehouse>?> GetWarehouseListAsync();
     }
 }
