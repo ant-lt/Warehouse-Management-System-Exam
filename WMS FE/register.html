@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/style.css" />
+    <title>Registruotis</title>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <a href="index.html">Pagrindinis</a>
+        <a class="register" href="register.html">Registruotis</a>
+        <a class="login" href="login.html">Prisijungti</a>
+        <a class="customers" href="customers.html">Klientai</a>
+        <a class="inventory" href="inventory.html">Inventorius</a>
+        <a class="orders" href="orders.html">Užsakymai</a>
+        <a class="products" href="products.html">Prekės</a>
+        <a class="logout" href="#">Atsijungti</a>
+      </nav>
+    </header>
+    <main class="register-main">
+      <div class="register-container">
+        <h1 class="text-center">Registruotis</h1>
+        <form id="registration-form">
+          <div class="input-group">
+            <input type="text" name="username" placeholder="Username" class="input" />
+          </div>
+          <div class="input-group">
+            <input type="text" name="name" placeholder="Name" class="input" />
+          </div>
+          <div class="input-group">
+            <input type="password" name="password" placeholder="Password" class="input" />
+            <span class="error-message"></span>
+          </div>
+          <button class="button" id="registration-form-submit" value="register" type="submit">
+            Registruotis
+          </button>
+        </form>
+      </div>
+      <h2 class="auth-message">Esate prisijungę</h2>
+    </main>
+    <script src="scripts/config.js"></script>
+    <script src="/scripts/services/auth.js"></script>
+    <script src="scripts/services/register.js"></script>
+  </body>
+</html>

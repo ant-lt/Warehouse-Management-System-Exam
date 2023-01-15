@@ -128,7 +128,7 @@ namespace WMS.Infastructure.Services
                 ExecutionDate = req.ExecutionDate,
                 OrderStatusId = req.OrderStatusId,
                 OrderTypeId = req.OrderTypeId,
-                CustomerId = req.OrderTypeId,
+                CustomerId = req.CustomerId,
                 WMSuserId = req.WMSuserId
             };
         }
