@@ -1,0 +1,109 @@
+@import "reset.css";
+@import "form.css";
+
+* {
+  margin: 0px;
+  padding: 0px;
+}
+
+html {
+  font-size: 16px;
+}
+
+header {
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+nav a:not(:last-of-type) {
+  margin-right: 20px;
+}
+
+body {
+  font-family: sans-serif;
+}
+
+h1 {
+  font-size: 2.6rem;
+}
+
+h2 {
+  font-size: 2rem;
+}
+
+main {
+  min-height: calc(100vh - 92px);
+}
+
+.index-main,
+.login-main,
+.register-main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.register-container h1,
+.login-container h1 {
+  padding-left: 20px;
+}
+
+.auth-message,
+.logout,
+.customers,
+.inventory,
+.orders,
+.products {
+  display: none;
+}
+
+.customers-main,
+.products-main {
+  display: flex;
+  justify-content: center;
+  overflow-x: scroll;
+  max-width: 100%;
+}
+
+table {
+  margin: 50px 10px;
+  max-width: 1420px;
+  display: block;
+}
+
+th,
+td {
+  padding: 10px;
+}
+
+th {
+  font-weight: 700;
+}
+
+tr {
+  margin-bottom: 10px;
+}
+
+td .update-btn {
+  color: #fff;
+  background: blue;
+  padding: 10px;
+}
+
+td .delete-btn {
+  color: #fff;
+  background: red;
+  padding: 10px;
+}
+
+footer {
+  text-align: center;
+  padding: 10px 0;
+}
+
+@media (max-width: 1200px) {
+  table {
+    margin: 25px auto;
+  }
+}
