@@ -56,7 +56,7 @@ namespace WMS__Web_API.Controllers
 
                 var token = _jwtService.GetJwtToken(loginUser.Id, loginUser.Role.Name);
 
-                return Ok(new LoginResponse { UserName = loginData.Username, Active = loginUser.Active, Role = loginUser.Role.Name, Token = token });
+                return Ok(new LoginResponse { UserName = loginData.Username, Active = loginUser.Active, Role = loginUser.Role.Name, Token = token, UserId = loginUser.Id });
             }
             catch (Exception ex)
             {

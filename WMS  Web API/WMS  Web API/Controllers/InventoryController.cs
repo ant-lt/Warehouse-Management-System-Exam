@@ -9,6 +9,10 @@ using WMS.Infastructure.Interfaces;
 
 namespace WMS__Web_API.Controllers
 {
+
+    /// <summary>
+    /// Inventories reporting
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class InventoryController : ControllerBase
