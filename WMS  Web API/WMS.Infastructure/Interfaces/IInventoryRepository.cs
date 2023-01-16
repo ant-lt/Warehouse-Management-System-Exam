@@ -16,5 +16,8 @@ namespace WMS.Infastructure.Interfaces
         Task<double> GetOrderTotalVolumeAsync(int orderId);
         Task<string> GetOrderCurrentStatusAsync(int orderId);
         Task<bool> TransferOrderItemsToWarehouseAsync(int orderId, int warehouseId);
+        Task<bool> TransferOrderItemsFromWarehouseAsync(int orderId);
+        Task<string> GetOrderTypeNameAsync(int orderId);
+        Task<bool> ChangeOrderStatusAsync(int orderId, string statusName);
     }
 }
