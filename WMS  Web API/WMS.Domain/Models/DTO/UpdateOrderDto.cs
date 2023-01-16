@@ -25,5 +25,11 @@ namespace WMS.Domain.Models.DTO
         [Required]
         public int OrderStatusId { get; set; }
 
+        /// <summary>
+        /// Order type Id
+        /// </summary>
+        [Required]
+        public int OrderTypeId { get; set; }
+
     }
 }

@@ -138,6 +138,7 @@ namespace WMS.Infastructure.Services
             order.ScheduledDate = updateOrderDto.ScheduledDate;
             order.ExecutionDate = updateOrderDto.ExecutionDate;
             order.OrderStatusId = updateOrderDto.OrderStatusId;
+            order.OrderTypeId = updateOrderDto.OrderTypeId;
             return order;
         }
 

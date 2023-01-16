@@ -152,7 +152,6 @@ namespace WMS.Infastructure.Repositories
         public async Task<bool> TransferOrderItemsToWarehouseAsync(int orderId, int warehouseId)
         {
             var orderItemsToTransfer = await _db.OrderItems
-           //     .Include(x => x.Product)
                 .Where(e => e.OrderId == orderId)
                 .ToListAsync();
 
@@ -162,15 +161,69 @@ namespace WMS.Infastructure.Repositories
                 {
                     Quantity = item.Quantity,
                     WarehouseId = warehouseId,
-                    ProductId = item.ProductId
+                    ProductId = item.ProductId,
+                    OrderId = orderId
                 };
 
                 await _db.Inventories.AddAsync(inventoryItem);
 
             };
             await _db.SaveChangesAsync();
+    
+            return true;
+        }
+
+        public async Task<bool> TransferOrderItemsFromWarehouseAsync(int orderId)
+        {
+
+            var inventoryItemsToTransfer = await _db.Inventories                
+                .Where(e => e.OrderId == orderId)
+                .ToListAsync();
+
+            foreach (var item in inventoryItemsToTransfer)
+            {
+                _db.Inventories.Remove(item);
+            };
+            await _db.SaveChangesAsync();
 
             return true;
+        }
+
+
+
+        public async Task<string> GetOrderTypeNameAsync(int orderId)
+        {
+            var order = await _db.Orders
+                .Include(x => x.OrderType)
+                .Where(x => x.Id == orderId)
+                .FirstOrDefaultAsync();
+
+            return order.OrderType.Name;
+
+        }
+
+        public async Task<bool> ChangeOrderStatusAsync(int orderId, string statusName)
+        {
+
+            var order = await _db.Orders
+                .Include(x => x.OrderStatus)
+                .Where(x => x.Id == orderId)
+                .FirstOrDefaultAsync();
+
+            var orderStatus = await _db.OrderStatuses
+                .Where(x => x.Name == statusName)
+                .FirstOrDefaultAsync();
+
+
+            order.OrderStatus = orderStatus;
+
+             _db.Update(order);
+
+            var result = await _db.SaveChangesAsync();
+
+            if (result > 0) 
+                return true;
+            return false;
         }
     }
 }

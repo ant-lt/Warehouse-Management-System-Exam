@@ -15,6 +15,7 @@ namespace WMS.Domain.Models
         public Order()
         {
             OrderItems = new HashSet<OrderItem>();
+            InventoryItems = new HashSet<Inventory>();
         }
 
 
@@ -54,5 +55,6 @@ namespace WMS.Domain.Models
         public virtual WMSuser RWMSuser { get; set; } = null!;
 
         public virtual ICollection<OrderItem> OrderItems { get; set; }
+        public virtual ICollection<Inventory> InventoryItems { get; set; }
     }
 }

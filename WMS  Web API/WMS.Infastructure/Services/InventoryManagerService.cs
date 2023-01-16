@@ -19,32 +19,64 @@ namespace WMS.Infastructure.Services
         }
 
 
+        /// <summary>
+        ///  Initiate the order processing
+        /// </summary>
+        /// <param name="orderId"></param>
+        /// <returns></returns>
         public async Task<bool> ProcessOrderAsync(int orderId)
         {
-            
-            var orderTotalVolume = await _repository.GetOrderTotalVolumeAsync(orderId);
 
-            var availableVolume = await _repository.TotalVolumeAvailableAsync();
+            string orderStatus = await _repository.GetOrderCurrentStatusAsync(orderId);
 
 
-            if (orderTotalVolume <= availableVolume)
+            if ( orderStatus != "New")
             {
-
-                string orderStatus = await _repository.GetOrderCurrentStatusAsync(orderId);
-
-                var wareHouseAssigned = await _repository.WarehouseIdFitToFillAsync(orderTotalVolume);
-
-                if (wareHouseAssigned == null || orderStatus != "New") { 
-                    return false;
-                }
-
-                var ordersItems = await _repository.TransferOrderItemsToWarehouseAsync(orderId, (int)wareHouseAssigned);
-
-
-                return true;
+                return false;
             }
 
+            string orderType = await _repository.GetOrderTypeNameAsync(orderId);
 
+            if ( orderType == "Inbound")
+            {
+
+                var orderTotalVolume = await _repository.GetOrderTotalVolumeAsync(orderId);
+
+                var availableVolume = await _repository.TotalVolumeAvailableAsync();
+
+
+                // Check if orders items total volume are fit to warehouses
+                if (orderTotalVolume <= availableVolume)
+                {
+                    // Here is the main point of program - select the warehouse with are fit the order total volume
+                    var wareHouseAssigned = await _repository.WarehouseIdFitToFillAsync(orderTotalVolume);
+
+
+                    if (wareHouseAssigned == null)
+                    {
+                        // No space available on any warehouses
+
+                        await _repository.ChangeOrderStatusAsync(orderId, "Canceled");
+
+                        return false;
+                    }
+    
+                    var ordersItems = await _repository.TransferOrderItemsToWarehouseAsync(orderId, (int)wareHouseAssigned);
+
+                    var changeOrderStatus = await _repository.ChangeOrderStatusAsync(orderId, "Completed");
+
+                    return changeOrderStatus;
+                }
+
+
+            }
+            else if (orderType == "Outbound")
+            {
+                var ordersItems = await _repository.TransferOrderItemsFromWarehouseAsync(orderId);
+                var changeOrderStatus = await _repository.ChangeOrderStatusAsync(orderId, "Completed");
+
+                return changeOrderStatus;
+            }
             return false;
         }
     }
