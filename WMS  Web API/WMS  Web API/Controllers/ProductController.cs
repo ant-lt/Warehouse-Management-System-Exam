@@ -8,6 +8,9 @@ using WMS.Infastructure.Interfaces;
 
 namespace WMS__Web_API.Controllers
 {
+    /// <summary>
+    /// Products management
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class ProductController : ControllerBase

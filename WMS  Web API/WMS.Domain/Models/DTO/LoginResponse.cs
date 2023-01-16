@@ -23,5 +23,10 @@
         /// User role name in Warehouse management system
         /// </summary>
         public string Role { get; set; }
+
+        /// <summary>
+        /// User internal Id on Warehouse management system
+        /// </summary>
+        public int UserId { get; set; }
     }
 }

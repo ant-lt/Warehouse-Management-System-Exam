@@ -8,6 +8,9 @@ using WMS.Infastructure.Interfaces;
 
 namespace WMS__Web_API.Controllers
 {
+    /// <summary>
+    /// Shipments orders data reporting
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class ShipmentController : ControllerBase
