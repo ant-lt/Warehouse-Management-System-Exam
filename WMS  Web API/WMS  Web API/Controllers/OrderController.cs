@@ -237,7 +237,7 @@ namespace WMS__Web_API.Controllers
                 }
 
                 
-                var order = await _orderRepo.GetAsync(x => x.Id == id, new List<string> { "OrderStatus", "OrderType" });
+                var order = await _orderRepo.GetAsync(x => x.Id == id, new List<string> { "OrderStatus", "OrderType", "Customer", "RWMSuser" });
 
                 if (order == null)
                 {
