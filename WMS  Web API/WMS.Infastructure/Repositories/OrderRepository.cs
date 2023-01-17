@@ -21,5 +21,14 @@ namespace WMS.Infastructure.Repositories
             _db = db;
         }
 
+        public async Task<List<OrderStatus>> GetOrderStatusListAsync()
+        {
+            return await _db.OrderStatuses.ToListAsync(); 
+        }
+
+        public async Task<List<OrderType>> GetOrderTypesListAsync()
+        {
+            return await _db.OrderTypes.ToListAsync();
+        }
     }
 }

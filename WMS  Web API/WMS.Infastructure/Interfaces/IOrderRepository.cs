@@ -10,6 +10,7 @@ namespace WMS.Infastructure.Interfaces
 {
     public interface IOrderRepository : IRepository<Order>
     {
-     
+        Task<List<OrderStatus>> GetOrderStatusListAsync();
+        Task<List<OrderType>> GetOrderTypesListAsync();
     }
 }
