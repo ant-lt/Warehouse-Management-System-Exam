@@ -14,15 +14,16 @@ async function sendData() {
 
   obj.role = "Manager";
 
-  // Neleidžiam įvesti password turinti mažiau nei 8 simbolius
-  if (obj.password.length >= 8) {
-    // mainUrl imam iš config.js failo
+  // Ne leidžia įvesti password turinti mažiau nei 8 simbolius
+  // if (obj.password.length >= 8) {
+    // mainUrl Iš config.js failo
     const response = await fetch(mainUrl + "Register", {
       method: "post",
       headers: {
         Accept: "application/json, text/plain, */*",
         "Content-Type": "application/json",
       },
+      // Naudojame JSON.stringify, nes objekte neturim .json() metodo
       body: JSON.stringify(obj),
     });
 
@@ -31,9 +32,9 @@ async function sendData() {
     } else {
       document.querySelector(".error-message").innerText = "Something went wrong";
     }
-  } else {
-    alert("Password should contain at least 8 characters");
-  }
+  // } else {
+  //   alert("Password should contain at least 8 characters");
+  // }
 }
 registrationFormSbmBtn.addEventListener("click", (e) => {
   e.preventDefault(); // Breaks manual refresh after submit

@@ -54,7 +54,10 @@ main {
 .customers,
 .inventory,
 .orders,
-.products {
+.products,
+.reports,
+.add-new-item,
+.post-form {
   display: none;
 }
 
@@ -94,6 +97,12 @@ td .update-btn {
 td .delete-btn {
   color: #fff;
   background: red;
+  padding: 10px;
+}
+
+.submit-order {
+  color: #fff;
+  background: green;
   padding: 10px;
 }
 
