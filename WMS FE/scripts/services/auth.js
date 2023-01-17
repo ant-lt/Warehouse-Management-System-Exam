@@ -1,5 +1,5 @@
 if (localStorage.getItem("user-token") && localStorage.getItem("role")) {
-  // jeigu prisijungęs nauduotojas, tada paslepia formą ir rodo, kad esate prisijungę
+  // jeigu prisijunges nauduotojas tada paslepia formą ir rodo, kad esate prisijunge
   if (window.location.pathname.includes("login") || window.location.pathname.includes("register")) {
     if (document.querySelector(".login-container")) {
       document.querySelector(".login-container").style.display = "none";
@@ -10,19 +10,20 @@ if (localStorage.getItem("user-token") && localStorage.getItem("role")) {
     document.querySelector(".auth-message").style.display = "block";
   }
 
-  // parodo logout linką
+  // parodo logout linka
   if (document.querySelector(".logout")) {
     document.querySelector(".logout").style.display = "inline";
 
-    // logout funkciją
+    // logout funkcija
     document.querySelector(".logout").addEventListener("click", () => {
       localStorage.removeItem("role");
       localStorage.removeItem("user-token");
+      localStorage.removeItem("user-id");
       document.location.reload(true);
     });
   }
 
-  // Jeigu prisijungęs, nemato logino ir registracijos linkų
+  // Jeigu prisijunges, nemato logino ir registracijos linkų
   if (document.querySelector(".login")) {
     document.querySelector(".login").style.display = "none";
   }
@@ -31,7 +32,8 @@ if (localStorage.getItem("user-token") && localStorage.getItem("role")) {
     document.querySelector(".register").style.display = "none";
   }
 
-  // Parodyti puslapius pagal tam tikras roles
+  // Rodyti puslapius pagal tam tikras role
+
   const role = localStorage.getItem("role");
 
   if (role === "Manager" || role === "Administrator") {
@@ -42,15 +44,22 @@ if (localStorage.getItem("user-token") && localStorage.getItem("role")) {
     document.querySelector(".inventory").style.display = "inline";
     document.querySelector(".orders").style.display = "inline";
     document.querySelector(".products").style.display = "inline";
+    document.querySelector(".reports").style.display = "inline";
+
+    // parodo mygtuka prideti
+    if (window.location.pathname.includes("customers")) {
+      document.querySelector(".add-new-item").style.display = "block";
+    }
   }
 } else {
-  // jeigu neprisijungęs vartotojas nori pasiekti tam tikrus puslapius
+  // jeigu neprisijunges vartotojas nori pasiekti tam tikrus puslapius
   if (
     window.location.pathname.includes("customers") ||
     window.location.pathname.includes("inventory") ||
     window.location.pathname.includes("orders") ||
     window.location.pathname.includes("products") ||
-    window.location.pathname.includes("cart")
+    window.location.pathname.includes("cart") ||
+    window.location.pathname.includes("reports")
   ) {
     document.querySelector("main").style.display = "none";
   }
