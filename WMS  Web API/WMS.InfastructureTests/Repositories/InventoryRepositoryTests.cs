@@ -90,6 +90,29 @@ namespace WMS.Infastructure.Repositories.Tests
                 },
             });
 
+
+            _dbcontext.OrderStatuses.AddRange(new OrderStatus[]
+            {
+                new OrderStatus
+                {
+                    Id= 1,
+                    Name = "New",
+                    Description = "New Order Ready"
+                },
+                new OrderStatus
+                {
+                    Id= 2,
+                    Name = "Completed",
+                    Description = "Order Completed"
+                },
+                new OrderStatus
+                {
+                    Id= 3,
+                    Name = "Canceled",
+                    Description = "Order Canceled"
+                }
+             });
+
             _dbcontext.Customers.AddRange(new Customer[]
              {
                 new Customer
@@ -121,6 +144,8 @@ namespace WMS.Infastructure.Repositories.Tests
                     WMSuserId = 1,
                 }
             });
+
+
 
             _dbcontext.Inventories.Add(new Inventory { Id = 1, OrderId = 1, ProductId = 1, Quantity = 1 });
 
@@ -154,20 +179,6 @@ namespace WMS.Infastructure.Repositories.Tests
 
         }
 
-        [TestMethod()]
-        public void GetWarehouseRatioOfOccupiedbyIdAsyncTest1()
-        {
-
-            IInventoryRepository inventoryRepository = new InventoryRepository(_dbcontext);
-
-
-            var warehouseOcupaiedRation = inventoryRepository.GetWarehouseRatioOfOccupiedbyIdAsync(1).Result;
-
-            int excpectedwarehouseOcupaiedRation = 0;
-
-            Assert.AreEqual(excpectedwarehouseOcupaiedRation, warehouseOcupaiedRation);
-
-        }
 
         [TestMethod()]
         public void GetOrderTotalVolumeAsyncTest()
@@ -184,5 +195,6 @@ namespace WMS.Infastructure.Repositories.Tests
 
 
         }
+
     }
 }
