@@ -196,5 +196,23 @@ namespace WMS.Infastructure.Services
                 WarehouseAvailableTotalVolume = (double)warehouse.TotalVolume - (double)warehouseRatioOfOccupied
             };
         }
+
+        public GetOrderStatusDto Bind(OrderStatus orderStatus)
+        {
+            return new GetOrderStatusDto
+            {
+                Id = orderStatus.Id,
+                OrderStatusName = orderStatus.Name
+            };
+        }
+
+        public GetOrderTypesDto Bind(OrderType orderType)
+        {
+            return new GetOrderTypesDto
+            {
+                Id = orderType.Id,
+                OrderTypeName = orderType.Name,
+            };
+        }
     }
 }

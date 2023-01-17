@@ -19,5 +19,7 @@ namespace WMS.Infastructure.Interfaces
         public OrderItem Bind(CreateOrderItemDto orderItem);
         public OrderItem Bind(UpdateOrderItemDto updateOrderItemDto, OrderItem orderItem);
         public GetWarehousesRatioOfOccupiedDto Bind(Warehouse warehouse, double warehouseRatioOfOccupied);
+        public GetOrderStatusDto Bind(OrderStatus orderStatus);
+        public GetOrderTypesDto Bind(OrderType orderType);
     }
 }

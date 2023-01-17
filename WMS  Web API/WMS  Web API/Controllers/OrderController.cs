@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
+using System.Xml.Serialization;
 using WMS.Domain.Models;
 using WMS.Domain.Models.DTO;
 using WMS.Infastructure.Interfaces;
@@ -237,7 +238,7 @@ namespace WMS__Web_API.Controllers
                 }
 
                 
-                var order = await _orderRepo.GetAsync(x => x.Id == id, new List<string> { "OrderStatus", "OrderType" });
+                var order = await _orderRepo.GetAsync(x => x.Id == id, new List<string> { "OrderStatus", "OrderType", "Customer", "RWMSuser" });
 
                 if (order == null)
                 {
@@ -307,6 +308,73 @@ namespace WMS__Web_API.Controllers
         }
 
 
+        /// <summary>
+        /// Fetch order statuses list
+        /// </summary>
+        /// <returns>Orders statuses list</returns>
+        /// <response code="200">OK</response>        
+        /// <response code="400">Order bad request description</response>
+        /// <response code="401">Client could not authenticate a request</response>
+        /// <response code="404">Statuses not found </response>
+        /// <response code="500">Internal server error</response>
+        [HttpGet("/GetOrderStatuses", Name = "GetOrderStatuses")]
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<GetOrderStatusDto>))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Produces(MediaTypeNames.Application.Json)]
+        public async Task<ActionResult<IEnumerable<GetOrderStatusDto>>> GetOrderStatuses()
+        {
+            _logger.LogInformation($"{DateTime.Now} Executed GetOrderStatuses ");
 
+            try
+            {
+                var orderStatuses = await _orderRepo.GetOrderStatusListAsync();
+
+                IEnumerable<GetOrderStatusDto> getOrderStatusDto = orderStatuses.Select(d => _wrapper.Bind(d)).ToList();
+                return Ok(getOrderStatusDto);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"{DateTime.Now} HttpGet GetOrderStatuse exception error.");
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+        }
+
+        /// <summary>
+        /// Fetch order types list
+        /// </summary>
+        /// <returns>Orders types list</returns>
+        /// <response code="200">OK</response>        
+        /// <response code="400">Order bad request description</response>
+        /// <response code="401">Client could not authenticate a request</response>
+        /// <response code="404">Statuses not found </response>
+        /// <response code="500">Internal server error</response>
+        [HttpGet("/GetOrderTypes", Name = "GetOrderTypes")]
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<GetOrderTypesDto>))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Produces(MediaTypeNames.Application.Json)]
+        public async Task<ActionResult<IEnumerable<GetOrderTypesDto>>> GetOrderTypes()
+        {
+            _logger.LogInformation($"{DateTime.Now} Executed GetOrderTypes");
+
+            try
+            {
+                var orderTypes = await _orderRepo.GetOrderTypesListAsync();
+
+                IEnumerable<GetOrderTypesDto> getOrderTypesDto = orderTypes.Select(d => _wrapper.Bind(d)).ToList();
+                return Ok(getOrderTypesDto);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"{DateTime.Now} HttpGet GetOrderTypes exception error.");
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
     }
 }
