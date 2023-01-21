@@ -17,13 +17,55 @@
         <a class="inventory" href="inventory.html">Inventorius</a>
         <a class="orders" href="orders.html">Užsakymai</a>
         <a class="products" href="products.html">Prekės</a>
+        <a class="reports" href="reports.html">Ataskaitos</a>
         <a class="logout" href="#">Atsijungti</a>
       </nav>
     </header>
-    <main></main>
+
+    <main>
+      <div class="content">
+        <form class="post-form">
+          <input type="date" name="scheduledDate" />
+          <input type="date" name="executionDate" />
+          <!-- <input type="text" name="orderStatusId" placeholder="Order status id" /> -->
+
+          <label>
+            <span>Order status:</span>
+            <select name="orderStatusId" id="">
+            <option value="1">New</option>
+            <option value="2">Completed</option>
+            <option value="3">Canceled</option>
+          </select>
+        </label>
+
+        <label>
+          <span>Order type:</span>
+          <select name="orderTypeId" id="">
+          <option value="1">Inbound</option>
+          <option value="2">Outbound</option>
+        </select>
+      </label>
+          <input type="text" name="customerId" placeholder="Customer id" />
+          <input type="text" name="wmSuserId" placeholder="WmS user id" />
+          <button class="submit-post">Prideti</button>
+        </form>
+        <button class="add-new-item">Pridėti nauja užsakymą</button>
+        <form class="update-form"></form>
+        <table>
+          <thead></thead>
+          <tbody></tbody>
+        </table>
+
+        <table class="registered-orders">
+          <thead></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </main>
     <script src="/scripts/config.js"></script>
     <script src="/scripts/services/auth.js"></script>
     <script src="/scripts/services/httpReq.js"></script>
     <script src="/scripts/services/table.js"></script>
+    <script src="/scripts/page-scripts/orders.js"></script>
   </body>
 </html>

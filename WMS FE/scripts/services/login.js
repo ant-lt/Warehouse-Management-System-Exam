@@ -26,6 +26,7 @@ async function sendData() {
     console.log("res: ", data);
     localStorage.setItem("role", data.role);
     localStorage.setItem("user-token", data.token);
+    localStorage.setItem("user-id", data.userId);
     document.location.reload(true);
   } else {
     document.querySelector(".error-message").innerText = "Wrong username or password";
