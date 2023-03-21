@@ -1,7 +1,7 @@
 # WMS Exam
 
 Warehouse management system Web API meets the following requirements:
-1. MOQ tests;
+1. InMemory tests;
 2. SOLID Principle: Dependency Inversion;
 3. Domain-Driven Design(DDD);
 4. Errors logging;
