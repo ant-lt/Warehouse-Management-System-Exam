@@ -149,7 +149,7 @@ namespace WMS.Infastructure.Repositories.Tests
 
             _dbcontext.Inventories.Add(new Inventory { Id = 1, OrderId = 1, ProductId = 1, Quantity = 1 });
 
-            _dbcontext.SaveChanges();
+            _dbcontext.SaveChangesAsync();
         }
 
         [TestMethod()]
@@ -164,6 +164,8 @@ namespace WMS.Infastructure.Repositories.Tests
             Assert.AreEqual(excpected, totalVolumeAvailable);
 
         }
+
+
 
         [TestMethod()]
         public void WarehouseIdFitToFillAsyncTest()
@@ -196,5 +198,15 @@ namespace WMS.Infastructure.Repositories.Tests
 
         }
 
+        [TestMethod()]
+        public void GetWarehouseRatioOfOccupiedbyIdAsyncTest()
+        {
+            IInventoryRepository inventoryRepository = new InventoryRepository(_dbcontext);
+            var warehouseRatioOfOccupied = inventoryRepository.GetWarehouseRatioOfOccupiedbyIdAsync(1).Result;
+            double excpectedRatio = 0;
+            Assert.AreEqual(excpectedRatio, warehouseRatioOfOccupied);
+        }
+    
+            
     }
 }
