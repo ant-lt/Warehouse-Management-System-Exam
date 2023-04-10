@@ -1,0 +1,66 @@
+﻿@*
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Antiforgery
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@inject IAntiforgery AntiForgery
+
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+*@
+@model LoginViewModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+@section Scripts {
+  <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+  <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}
+
+
+<h1>@ViewData["Title"]</h1>
+<p>Use this page to login to WMS</p>
+
+@*
+@if (SignInManager.IsSignedIn(User))
+{
+    <p>You are already signed in.</p>
+}
+else
+{
+*@
+      <form>          
+        @*
+            <input type="hidden" name="__RequestVerificationToken" value="@Html.Raw(await AntiForgery.GetAndStoreTokensAsync(Context))" />
+        *@
+        <input type="hidden" name="ReturnUrl" value="@ViewData["ReturnUrl"]" />
+        <div asp-validation-summary="All"></div>
+        <div class="form-group">
+            <label asp-for="Email"></label>
+            <input asp-for="Email" class="form-control" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Password"></label>
+            <input asp-for="Password" class="form-control" />
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+        <!--
+        <div class="form-group">
+            <div class="checkbox">
+                <label asp-for="RememberMe"></label>
+            </div>
+        </div>
+        -->
+        <div class="form-group">
+            <input type="submit" value="Login" class="btn btn-default" />
+        </div>
+    </form>
+    <div>
+        <p>
+            <a asp-action="ForgotPassword">Forgot your password?</a>
+        </p>
+    </div>
+@*
+}
+*@
