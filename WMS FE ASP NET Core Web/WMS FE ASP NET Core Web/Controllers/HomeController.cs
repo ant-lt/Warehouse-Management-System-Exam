@@ -1,16 +1,19 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using WMS_FE_ASP_NET_Core_Web.Models;
+using WMS_FE_ASP_NET_Core_Web.Services;
 
 namespace WMS_FE_ASP_NET_Core_Web.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly WMSApiService _wmsApiService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, WMSApiService wMSApiService)
         {
             _logger = logger;
+            _wmsApiService = wMSApiService;
         }
 
         public IActionResult Index()
@@ -30,6 +33,7 @@ namespace WMS_FE_ASP_NET_Core_Web.Controllers
 
         public IActionResult Customers()
         {
+            var customers = _wmsApiService.GetCustomersAsync().Result;
             return View();
         }
 
