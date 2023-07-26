@@ -1,6 +1,6 @@
 ﻿namespace WMS_FE_ASP_NET_Core_Web.DTO
 {
-    public class GetCustomerModel
+    public class CustomerModel
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;

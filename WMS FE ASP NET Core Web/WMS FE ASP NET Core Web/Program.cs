@@ -42,8 +42,8 @@ namespace WMS_FE_ASP_NET_Core_Web
             app.UseStaticFiles();
 
             app.UseRouting();
-
             app.UseAuthorization();
+            app.UseAuthentication();
 
             app.MapControllerRoute(
                 name: "default",

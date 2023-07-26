@@ -26,11 +26,11 @@ namespace WMS_FE_ASP_NET_Core_Web.Controllers
         [HttpPost("Login")]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public IActionResult Login(LoginViewModel loginModel)
+        public async Task<IActionResult> Login(LoginViewModel loginModel)
         {
             if (ModelState.IsValid)
             {
-                var result = _wmsApiService.LoginAsync(loginModel.UserName, loginModel.Password).Result;
+                var result = await _wmsApiService.LoginAsync(loginModel.UserName, loginModel.Password);
                 if (result)
                 {
                     return RedirectToAction("Index", "Home");

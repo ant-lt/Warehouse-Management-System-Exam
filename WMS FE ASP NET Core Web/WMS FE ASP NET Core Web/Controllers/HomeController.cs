@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using WMS_FE_ASP_NET_Core_Web.Models;
 using WMS_FE_ASP_NET_Core_Web.Services;
@@ -31,32 +32,44 @@ namespace WMS_FE_ASP_NET_Core_Web.Controllers
             return View();
         }
 
-        public IActionResult Customers()
+       
+        public async Task<IActionResult> Customers()
         {
-            var customers = _wmsApiService.GetCustomersAsync().Result;
-            return View();
+            var customers = await _wmsApiService.GetCustomersAsync();
+            return View(customers);
         }
 
-        public IActionResult Inventory()
+       
+        public async Task<IActionResult> Inventory()
         {
-            return View();
+            var inventory = await _wmsApiService.GetInventoryItemsAsync();
+            return View(inventory);
         }
 
-        public IActionResult Orders()
+        
+        public async Task<IActionResult> Orders()
         {
-            return View();
+            var orders = await _wmsApiService.GetOrdersAsync();
+            return View(orders);
         }
 
-        public IActionResult Products()
+       
+        public async Task<IActionResult> Products()
         {
-            return View();
+            var products = await _wmsApiService.GetProductsAsync();
+            return View(products);
         }
 
+      
         public IActionResult Reports()
         {
             return View();
         }
 
+        /// <summary>
+        /// Logout action
+        /// </summary>
+        /// <returns></returns>
         public IActionResult Logout()
         {
             return View();
