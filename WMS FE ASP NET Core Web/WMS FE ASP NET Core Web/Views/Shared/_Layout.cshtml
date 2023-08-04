@@ -10,6 +10,7 @@
 </head>
 <body>
     <header>
+
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">WMS_FE_ASP_NET_Core_Web</a>
@@ -19,35 +20,35 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
+                        @if (User?.Identity?.IsAuthenticated ?? true)
+                        {
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Pagrindinis</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Register">Registruotis</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="Login">Prisijungti</a>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Customers">Klientai</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Customers">Customers</a>
                         </li>
                         <li class="nav-item">                            
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Inventory">Inventorius</a>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Orders">Užsakymai</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Inventory">Inventory</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Products">Prekės</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Orders">Orders</a>
+                        </li>
+                        <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Products">Products</a>
                         </li>
                          <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Reports">Ataskaitos</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Reports">Reports</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Logout">Atsijungti</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Logout">Logout</a>
                         </li>   
+                        }
                     </ul>
                 </div>
             </div>
-        </nav>
+            </nav>
+
     </header>
     <div class="container">
         <main role="main" class="pb-3">

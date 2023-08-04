@@ -1,0 +1,15 @@
+﻿@{
+    ViewBag.Title = "Access Denied";
+    Layout = "~/Views/Shared/_Layout.cshtml"; // Your layout file path
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Access Denied</h2>
+            <p>Sorry, you do not have permission to access this resource.</p>
+            <p>Please contact the administrator if you believe this is an error.</p>
+            <p><a href="@Url.Action("Index", "Home")">Go back to the homepage</a></p>
+        </div>
+    </div>
+</div>

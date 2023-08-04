@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using WMS_FE_ASP_NET_Core_Web.Models;
 using WMS_FE_ASP_NET_Core_Web.Services;
 
@@ -33,9 +36,36 @@ namespace WMS_FE_ASP_NET_Core_Web.Controllers
                 var result = await _wmsApiService.LoginAsync(loginModel.UserName, loginModel.Password);
                 if (result)
                 {
+                    var claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.Name, _wmsApiService.userName),
+                        new Claim(ClaimTypes.Role, _wmsApiService.role)
+                    };
+
+                    var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                    var principal = new ClaimsPrincipal(identity);
+
+                    var authProperties = new AuthenticationProperties
+                    {
+                        IsPersistent = true,
+                        ExpiresUtc = DateTime.UtcNow.AddMinutes(30)
+                    };
+
+                    await HttpContext.SignInAsync(principal, authProperties);
                     return RedirectToAction("Index", "Home");
                 }
+                else
+                {
+                    ModelState.AddModelError("", "Invalid UserName or Password");
+                }
             }
+            return View();
+        }
+
+        [AllowAnonymous]
+        public IActionResult AccessDenied()
+        {
             return View();
         }
     }

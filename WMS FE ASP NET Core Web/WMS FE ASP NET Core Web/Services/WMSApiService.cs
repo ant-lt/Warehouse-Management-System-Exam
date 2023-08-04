@@ -13,6 +13,9 @@ namespace WMS_FE_ASP_NET_Core_Web.Services
     {
         readonly ApiClient _apiClient;
         readonly ILogger<WMSApiService> _logger;
+        public string userName { get; set; } = string.Empty;
+        public string role { get; set; } = string.Empty;
+
         public WMSApiService(ApiClient apiClient, ILogger<WMSApiService> logger)
         {
             _apiClient = apiClient;
@@ -30,6 +33,8 @@ namespace WMS_FE_ASP_NET_Core_Web.Services
                     //var loginResponse = JsonConvert.DeserializeObject<LoginResponseModel>(await response.Content.ReadAsStringAsync());
                     var loginResponse = await _apiClient.GetDeserializeContent<LoginResponseModel>(response.Content);
                     _apiClient.SetBearerToken(loginResponse.Token);
+                    userName = loginResponse.UserName;
+                    role = loginResponse.Role;
                     _logger.LogInformation($"Login {username} succeeded.");
                     return true;
                 }
@@ -517,6 +522,7 @@ namespace WMS_FE_ASP_NET_Core_Web.Services
                 return false;
             }
         }
+
         
     }
 }

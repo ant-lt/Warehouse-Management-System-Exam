@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Net.Http.Headers;
@@ -31,7 +32,15 @@ namespace WMS_FE_ASP_NET_Core_Web
 
 
             builder.Services.AddScoped<WMSApiService>();
-
+            
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+        .AddCookie(options =>
+        {
+            options.LoginPath = "/Home/Login";
+            options.LogoutPath = "/Home/Logout";
+            options.AccessDeniedPath = "/Home/AccessDenied";
+        });
+            
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
