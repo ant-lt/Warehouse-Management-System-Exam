@@ -523,6 +523,30 @@ namespace WMS_FE_ASP_NET_Core_Web.Services
             }
         }
 
+        public async Task<List<WarehousesRatioOfOccupiedModel>?> GetWareusesRatioOfOccupiedReportsAsync()
+        {
+            var response = await _apiClient.GetAsync("/GetWarehousesRatioOfOccupied");
+            if (response.IsSuccessStatusCode)
+            {
+                try
+                {
+                    var warehousesRatioOfOccupied = await _apiClient.GetDeserializeContent<List<WarehousesRatioOfOccupiedModel>>(response.Content);
+                    _logger.LogInformation($"GetWareusesRatioOfOccupiedReportsAsync succeeded.");
+                    return warehousesRatioOfOccupied;
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError($"GetWareusesRatioOfOccupiedReportsAsync failed. Exception Error: {e.Message}");
+                    return null;
+                }
+            }
+            else
+            {
+                _logger.LogError($"GetWareusesRatioOfOccupiedReportsAsync failed.");
+                return null;
+            }
+        }
+
         
     }
 }

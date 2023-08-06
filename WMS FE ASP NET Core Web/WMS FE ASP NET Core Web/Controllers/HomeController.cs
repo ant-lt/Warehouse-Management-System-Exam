@@ -74,9 +74,10 @@ namespace WMS_FE_ASP_NET_Core_Web.Controllers
         }
 
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
-        public IActionResult Reports()
+        public async Task<IActionResult> Reports()
         {
-            return View();
+            var reports = await _wmsApiService.GetWareusesRatioOfOccupiedReportsAsync();
+            return View(reports);
         }
 
         /// <summary>

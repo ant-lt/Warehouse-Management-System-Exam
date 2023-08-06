@@ -1,8 +1,55 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model IEnumerable<WMS_FE_ASP_NET_Core_Web.DTO.WarehousesRatioOfOccupiedModel>
 @{
     ViewData["Title"] = "Reports";
 }
 
 <h1>@ViewData["Title"]</h1>
+
+<table class="table">
+<thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.WarehouseName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.WarehouseDescription)
+            <th>
+                @Html.DisplayNameFor(model => model.WarehouseActualTotalOccupiedVolume)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.WarehouseLocation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.WarehouseAvailableTotalVolume)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.WarehouseTotalVolumeCapacity)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.WarehouseName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.WarehouseDescription)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.WarehouseLocation)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.WarehouseActualTotalOccupiedVolume)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.WarehouseAvailableTotalVolume)
+                </td>                
+                <td>
+                    @Html.DisplayFor(modelItem => item.WarehouseTotalVolumeCapacity)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
