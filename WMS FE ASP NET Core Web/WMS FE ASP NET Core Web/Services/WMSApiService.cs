@@ -371,7 +371,7 @@ namespace WMS_FE_ASP_NET_Core_Web.Services
         }
         public async Task<OrderModel?> GetOrderAsync(int id)
         {
-            var response = await _apiClient.GetAsync($"/GetOrder/{id}");
+            var response = await _apiClient.GetAsync($"/GetOrderBy/{id}");
             if (response.IsSuccessStatusCode)
             {
                 try
@@ -434,9 +434,9 @@ namespace WMS_FE_ASP_NET_Core_Web.Services
                 return false;
             }
         }
-        public async Task<List<OrderItemModel>?> GetOrderItemsAsync()
+        public async Task<List<OrderItemModel>?> GetOrderItemsAsync(int orderId)
         {
-            var response = await _apiClient.GetAsync("/GetOrderItems");
+            var response = await _apiClient.GetAsync($"/GetOrderBy/{orderId}/Items");
             if (response.IsSuccessStatusCode)
             {
                 try
@@ -453,7 +453,7 @@ namespace WMS_FE_ASP_NET_Core_Web.Services
             }
             else
             {
-                _logger.LogError($"GetOrderItemsAsync failed.");
+                _logger.LogError($"GetOrderItemsAsync failed. Response status code: {response.StatusCode}");
                 return null;
             }
         }

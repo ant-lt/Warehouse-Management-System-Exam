@@ -1,0 +1,78 @@
+﻿@model OrderViewModel
+@{
+    ViewData["Title"] = "Edit Order";
+}
+
+
+<h1>@ViewData["Title"] Nr. @Model.Order?.Id</h1>
+<div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Order.Date)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Order.OrderStatus)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Order.OrderType)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Order.CustomerName)
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+                <tr>
+                    <td>
+                        @Model.Order?.Date
+                    </td>
+                    <td>
+                        @Model.Order?.OrderStatus
+                    </td>
+                    <td>
+                        @Model.Order?.OrderType
+                    </td>
+                    <td>
+                        @Model.Order?.CustomerName
+                    </td>
+                </tr>           
+        </tbody>
+    </table>
+</div>
+
+
+<div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Id
+                </th>
+                <th>
+                    ProductId
+                </th>
+                <th>
+                    Quantity
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.OrderItems!)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Id)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ProductId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Quantity)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
