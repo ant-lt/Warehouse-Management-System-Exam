@@ -93,7 +93,7 @@ namespace WMS_FE_ASP_NET_Core_Web.Services
 
         public async Task<CustomerModel> GetCustomerAsync(int id)
         {
-            var response = await _apiClient.GetAsync($"/GetCustomer/{id}");
+            var response = await _apiClient.GetAsync($"/GetCustomerBy/{id}");
             if (response.IsSuccessStatusCode)
             {
                 try
@@ -115,9 +115,9 @@ namespace WMS_FE_ASP_NET_Core_Web.Services
             }
         }
 
-        public async Task<bool> UpdateCustomerAsync(CustomerModel customer)
+        public async Task<bool> UpdateCustomerAsync(int id, UpdateCustomerModel customer)
         {
-            var response = await _apiClient.PutAsync($"/UpdateCustomer/{customer.Id}", new StringContent(JsonConvert.SerializeObject(customer), Encoding.UTF8, "application/json"));
+            var response = await _apiClient.PutAsync($"/Update/Customer/{id}", new StringContent(JsonConvert.SerializeObject(customer), Encoding.UTF8, "application/json"));
             if (response.IsSuccessStatusCode)
             {
                 _logger.LogInformation($"UpdateCustomerAsync succeeded.");
@@ -132,7 +132,7 @@ namespace WMS_FE_ASP_NET_Core_Web.Services
 
         public async Task<bool> DeleteCustomerAsync(int id)
         {
-            var response = await _apiClient.DeleteAsync($"/DeleteCustomer/{id}");
+            var response = await _apiClient.DeleteAsync($"/Delete/Customer/{id}");
             if (response.IsSuccessStatusCode)
             {
                 _logger.LogInformation($"DeleteCustomerAsync succeeded.");
@@ -145,9 +145,9 @@ namespace WMS_FE_ASP_NET_Core_Web.Services
             }
         }
 
-        public async Task<bool> CreateCustomerAsync(CustomerModel customer)
+        public async Task<bool> CreateCustomerAsync(CreateCustomerModel customer)
         {
-            var response = await _apiClient.PostAsync($"/CreateCustomer", new StringContent(JsonConvert.SerializeObject(customer), Encoding.UTF8, "application/json"));
+            var response = await _apiClient.PostAsync($"/CreateNewCustomer", new StringContent(JsonConvert.SerializeObject(customer), Encoding.UTF8, "application/json"));
             if (response.IsSuccessStatusCode)
             {
                 _logger.LogInformation($"CreateCustomerAsync succeeded.");

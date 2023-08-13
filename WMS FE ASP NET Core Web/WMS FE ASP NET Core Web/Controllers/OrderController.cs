@@ -58,11 +58,18 @@ namespace WMS_FE_ASP_NET_Core_Web.Controllers
             var order = await _wmsApiService.GetOrderAsync(id);
             var orderItems = await _wmsApiService.GetOrderItemsAsync(id);
 
+            double totalVolume = 0;
+            foreach (var item in orderItems!)
+            {
+                totalVolume += item.Volume;
+            }
+
             var orderViewModel = new OrderViewModel
             {
 
                 Order = order ?? new OrderModel(),
-                OrderItems = orderItems ?? new List<OrderItemModel>()
+                OrderItems = orderItems ?? new List<OrderItemModel>(),
+                TotalVolume = totalVolume
             };
 
             return View(orderViewModel);

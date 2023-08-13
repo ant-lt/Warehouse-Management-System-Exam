@@ -150,7 +150,8 @@ namespace WMS_Web_API.API
                 Quantity= orderItem.Quantity,
                 ProductSKU = orderItem.Product.SKU,
                 ProductName = orderItem.Product.Name,
-                ProductDescription = orderItem.Product.Description
+                ProductDescription = orderItem.Product.Description,
+                Volume = orderItem.Quantity * orderItem.Product.Volume
             };
         }
 

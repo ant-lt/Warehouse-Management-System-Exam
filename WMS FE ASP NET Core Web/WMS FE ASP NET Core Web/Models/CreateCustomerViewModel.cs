@@ -1,10 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WMS_FE_ASP_NET_Core_Web.DTO
+namespace WMS_FE_ASP_NET_Core_Web.Models
 {
-    public class CustomerModel
+    public class CreateCustomerViewModel
     {
-        public int Id { get; set; }
         /// <summary>
         /// Customer name
         /// </summary>
@@ -45,7 +44,7 @@ namespace WMS_FE_ASP_NET_Core_Web.DTO
         /// </summary>
         [Required]
         [MaxLength(20, ErrorMessage = "Country name cannot be longer than 20 characters")]
-        public string Country { get; set; } = string.Empty;
+        public string Country { get; set; } = "Lithuania";
 
         /// <summary>
         /// Customer contact person name
@@ -65,7 +64,5 @@ namespace WMS_FE_ASP_NET_Core_Web.DTO
         [MaxLength(100, ErrorMessage = "E-mail cannot be longer than 100 characters")]
         public string? Email { get; set; }
 
-        public bool Status { get; set; }
-        public DateTime? Created { get; set; }
     }
 }

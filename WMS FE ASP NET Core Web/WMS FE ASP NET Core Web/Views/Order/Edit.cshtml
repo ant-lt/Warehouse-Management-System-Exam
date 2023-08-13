@@ -21,6 +21,9 @@
                 <th>
                     @Html.DisplayNameFor(model => model.Order.CustomerName)
                 </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.TotalVolume), m3
+                </th>
             </tr>
         </thead>
         <tbody>
@@ -37,6 +40,9 @@
                     <td>
                         @Model.Order?.CustomerName
                     </td>
+                    <td>
+                        @Model.TotalVolume
+                    </td>
                 </tr>           
         </tbody>
     </table>
@@ -51,10 +57,19 @@
                     Id
                 </th>
                 <th>
-                    ProductId
+                    ProductSKU
+                </th>
+                <th>
+                    ProductDescription
+                </th>
+                <th>
+                    ProductName
                 </th>
                 <th>
                     Quantity
+                </th>
+                <th>
+                    Volume ocupied, m3
                 </th>
             </tr>
         </thead>
@@ -66,10 +81,19 @@
                         @Html.DisplayFor(modelItem => item.Id)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.ProductId)
+                        @Html.DisplayFor(modelItem => item.ProductSKU)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ProductDescription)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ProductName)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Quantity)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Volume)
                     </td>
                 </tr>
             }

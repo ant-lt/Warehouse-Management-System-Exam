@@ -15,16 +15,21 @@
         /// <summary>
         /// Order item product SKU
         /// </summary>
-        public string ProductSKU { get; set; }
+        public string ProductSKU { get; set; } = string.Empty;
 
         /// <summary>
         /// Order item product name
         /// </summary>
-        public string ProductName { get; set; }
+        public string ProductName { get; set; } = string.Empty;
 
         /// <summary>
         /// Order item product description
         /// </summary>
-        public string ProductDescription { get; set; }
+        public string ProductDescription { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Order item product volume
+        /// </summary>
+        public decimal Volume { get; set; }
     }
 }
