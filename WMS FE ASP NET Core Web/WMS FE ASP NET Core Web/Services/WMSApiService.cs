@@ -15,6 +15,7 @@ namespace WMS_FE_ASP_NET_Core_Web.Services
         readonly ILogger<WMSApiService> _logger;
         public string userName { get; set; } = string.Empty;
         public string role { get; set; } = string.Empty;
+        public string errorMessage { get; private set; } = string.Empty;
 
         public WMSApiService(ApiClient apiClient, ILogger<WMSApiService> logger)
         {
@@ -24,13 +25,13 @@ namespace WMS_FE_ASP_NET_Core_Web.Services
 
         public async Task<bool> LoginAsync(string username, string password)
         {
-            var login = new LoginRequestModel { Username = username, Password = password };
-            var response = await _apiClient.PostAsync("login", new StringContent(JsonConvert.SerializeObject(login), Encoding.UTF8, "application/json"));
-            if (response.IsSuccessStatusCode)
-            {
-                try
-                {
-                    //var loginResponse = JsonConvert.DeserializeObject<LoginResponseModel>(await response.Content.ReadAsStringAsync());
+            try
+            { 
+                errorMessage = string.Empty;
+                var login = new LoginRequestModel { Username = username, Password = password };
+                var response = await _apiClient.PostAsync("login", new StringContent(JsonConvert.SerializeObject(login), Encoding.UTF8, "application/json"));
+                if (response.IsSuccessStatusCode)
+                {                    
                     var loginResponse = await _apiClient.GetDeserializeContent<LoginResponseModel>(response.Content);
                     _apiClient.SetBearerToken(loginResponse.Token);
                     userName = loginResponse.UserName;
@@ -38,31 +39,18 @@ namespace WMS_FE_ASP_NET_Core_Web.Services
                     _logger.LogInformation($"Login {username} succeeded.");
                     return true;
                 }
-                catch (Exception e)
+                else
                 {
-                    _logger.LogError($"Login {username} failed. Exception Error: {e.Message}");
-                    return false;                    
+                    var errorResponse = await _apiClient.GetDeserializeContent<ErrorResponse>(response.Content);
+                    errorMessage = errorResponse.Message;
+                    _logger.LogError($"Login {username} failed. Response status code: {response.StatusCode}. Message: {errorMessage}");
+                    return false;
                 }
-
             }
-            else
+            catch (Exception e)
             {
-                _logger.LogError($"Login {username} failed.");
-                return false;
-            }
-        }
-
-        public async Task<bool> LogoutAsync()
-        {
-            var response = await _apiClient.PostAsync("logout", null);
-            if (response.IsSuccessStatusCode)
-            {
-                _logger.LogInformation($"Logout succeeded.");
-                return true;
-            }
-            else
-            {
-                _logger.LogError($"Logout failed.");
+                errorMessage = e.Message;
+                _logger.LogError($"Login {username} failed. Exception Error: {e.Message}");
                 return false;
             }
         }
@@ -525,28 +513,58 @@ namespace WMS_FE_ASP_NET_Core_Web.Services
 
         public async Task<List<WarehousesRatioOfOccupiedModel>?> GetWareusesRatioOfOccupiedReportsAsync()
         {
-            var response = await _apiClient.GetAsync("/GetWarehousesRatioOfOccupied");
-            if (response.IsSuccessStatusCode)
+            try
             {
-                try
+                errorMessage = string.Empty;
+                var response = await _apiClient.GetAsync("/GetWarehousesRatioOfOccupied");
+                if (response.IsSuccessStatusCode)
                 {
+
                     var warehousesRatioOfOccupied = await _apiClient.GetDeserializeContent<List<WarehousesRatioOfOccupiedModel>>(response.Content);
                     _logger.LogInformation($"GetWareusesRatioOfOccupiedReportsAsync succeeded.");
                     return warehousesRatioOfOccupied;
                 }
-                catch (Exception e)
+                else
                 {
-                    _logger.LogError($"GetWareusesRatioOfOccupiedReportsAsync failed. Exception Error: {e.Message}");
+                    var errorResponse = await _apiClient.GetDeserializeContent<ErrorResponse>(response.Content);
+                    errorMessage = errorResponse.Message;
+                    _logger.LogError($"GetWareusesRatioOfOccupiedReportsAsync failed. Response status code: {response.StatusCode}. Message: {errorMessage}");
                     return null;
                 }
             }
-            else
+            catch (Exception e)
             {
-                _logger.LogError($"GetWareusesRatioOfOccupiedReportsAsync failed.");
+                errorMessage = e.Message;
+                _logger.LogError($"GetWareusesRatioOfOccupiedReportsAsync failed. Exception Error: {e.Message}");
                 return null;
             }
         }
 
-        
+        public async Task<bool> RegisterNewUser (RegistrationRequestModel newUser)
+        {
+            try
+            {
+                errorMessage = string.Empty;
+                var response = await _apiClient.PostAsync($"/Register", new StringContent(JsonConvert.SerializeObject(newUser), Encoding.UTF8, "application/json"));
+                if (response.IsSuccessStatusCode)
+                {
+                    _logger.LogInformation($"RegisterNewUser {newUser.Username} succeeded.");
+                    return true;
+                }
+                else
+                {
+                    var errorResponse = await _apiClient.GetDeserializeContent<ErrorResponse>(response.Content);
+                    errorMessage = errorResponse.Message;
+                    _logger.LogError($"RegisterNewUser failed. Response status code: {response.StatusCode}. Message: {errorMessage}");
+                    return false;
+                }
+            }
+            catch (Exception e)
+            {
+                errorMessage = e.Message;
+                _logger.LogError($"RegisterNewUser failed. Exception Error: {e.Message}");
+                return false;
+            }
+        }
     }
 }

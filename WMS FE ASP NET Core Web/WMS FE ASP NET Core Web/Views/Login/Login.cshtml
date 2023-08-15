@@ -22,14 +22,10 @@
     <div class="row justify-content-center">
         <div class="col-md-4">
             <form asp-action="Login" asp-controller="Login" method="post" class="form-control ">
-                @*
-                <input type="hidden" name="__RequestVerificationToken" value="@Html.Raw(await AntiForgery.GetAndStoreTokensAsync(Context))" />
-                *@
                 @Html.AntiForgeryToken()
                 <h1>@ViewData["Title"]</h1>
                 <p>Use this page to login to WMS</p>
-                <input type="hidden" name="ReturnUrl" value="@ViewData["ReturnUrl"]" />
-                <div asp-validation-summary="All"></div>
+                <div asp-validation-summary="All" class="text-danger"></div>
                 <div class="form-group">
                     <label asp-for="UserName">User name</label>
                     <input asp-for="UserName" class="form-control" />
@@ -40,23 +36,11 @@
                     <input asp-for="Password" class="form-control" />
                     <span asp-validation-for="Password" class="text-danger"></span>
                 </div>
-                <!--
-                <div class="form-group">
-                    <div class="checkbox">
-                    <label asp-for="RememberMe"></label>
-                </div>
-                </div>
-                -->
                 <div class="form-group">
                     <input type="submit" value="Login" class="btn btn-default" />
-                    <button type="button" class="buttonLogin" onclick="location.href='@Url.Action("Register", "Home")'">Register</button>
+                    <button type="button" class="buttonLogin" onclick="location.href='@Url.Action("Register", "Register")'">Register</button>
                 </div>
             </form>
-            <div>
-                <p>
-                <a asp-action="ForgotPassword">Forgot your password?</a>
-                </p>
-            </div>
         </div>
     </div>
     }

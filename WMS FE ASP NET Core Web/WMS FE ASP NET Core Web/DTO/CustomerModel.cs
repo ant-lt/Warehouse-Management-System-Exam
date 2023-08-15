@@ -63,6 +63,7 @@ namespace WMS_FE_ASP_NET_Core_Web.DTO
         /// Customer contact person e-mail address
         /// </summary>
         [MaxLength(100, ErrorMessage = "E-mail cannot be longer than 100 characters")]
+        [EmailAddress(ErrorMessage = "Invalid e-mail address")]
         public string? Email { get; set; }
 
         public bool Status { get; set; }

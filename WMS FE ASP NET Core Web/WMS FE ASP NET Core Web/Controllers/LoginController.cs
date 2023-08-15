@@ -57,7 +57,7 @@ namespace WMS_FE_ASP_NET_Core_Web.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError("", "Invalid UserName or Password");
+                    ModelState.AddModelError("", "Error: " + _wmsApiService.errorMessage + " Please try again.");
                 }
             }
             return View();

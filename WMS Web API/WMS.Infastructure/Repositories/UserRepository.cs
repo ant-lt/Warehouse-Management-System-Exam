@@ -31,7 +31,7 @@ namespace WMS.Infastructure.Repositories
         /// <returns>A flag indicating if username already exists</returns>
         public async Task<bool> IsUniqueUserAsync(string username)
         {
-            var user = await _db.WMSusers.FirstOrDefaultAsync(x => x.Username == username);
+            var user = await _db.WMSusers.FirstOrDefaultAsync(x => x.Username.ToLower() == username.ToLower());
             if (user == null)
             {
                 return true;
