@@ -7,6 +7,7 @@ using WMS_FE_ASP_NET_Core_Web.Models;
 using WMS_FE_ASP_NET_Core_Web.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
+using WMS_FE_ASP_NET_Core_Web.DTO;
 
 namespace WMS_FE_ASP_NET_Core_Web.Controllers
 {
@@ -48,35 +49,35 @@ namespace WMS_FE_ASP_NET_Core_Web.Controllers
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Customers()
         {
-            var customers = await _wmsApiService.GetCustomersAsync();
+            var customers = await _wmsApiService.GetWMSDataListAsync<CustomerModel>("/GetCustomers");
             return View(customers);
         }
 
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Inventory()
         {
-            var inventory = await _wmsApiService.GetInventoryItemsAsync();
+            var inventory = await _wmsApiService.GetWMSDataListAsync<InventoryItemModel>("/GetInventories");
             return View(inventory);
         }
 
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Orders()
-        {
-            var orders = await _wmsApiService.GetOrdersAsync();
+        {            
+            var orders = await _wmsApiService.GetWMSDataListAsync<OrderModel>("/GetOrders");
             return View(orders);
         }
 
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Products()
         {
-            var products = await _wmsApiService.GetProductsAsync();
+            var products = await _wmsApiService.GetWMSDataListAsync<ProductModel>("/GetProducts");
             return View(products);
         }
 
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Reports()
-        {
-            var reports = await _wmsApiService.GetWareusesRatioOfOccupiedReportsAsync();
+        {            
+            var reports = await _wmsApiService.GetWMSDataListAsync<WarehousesRatioOfOccupiedModel>("/GetWarehousesRatioOfOccupied");
             return View(reports);
         }
 

@@ -55,8 +55,8 @@ namespace WMS_FE_ASP_NET_Core_Web.Controllers
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Edit(int id)
         {
-            var order = await _wmsApiService.GetOrderAsync(id);
-            var orderItems = await _wmsApiService.GetOrderItemsAsync(id);
+            var order = await _wmsApiService.GetWMSDataAsync<OrderModel>($"/GetOrderBy/{id}");
+            var orderItems = await _wmsApiService.GetWMSDataListAsync<OrderItemModel>($"/GetOrderBy/{id}/Items");
 
             double totalVolume = 0;
             foreach (var item in orderItems!)

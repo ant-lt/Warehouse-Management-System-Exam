@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using WMS_FE_ASP_NET_Core_Web.DTO;
 using WMS_FE_ASP_NET_Core_Web.Services;
 
 namespace WMS_FE_ASP_NET_Core_Web.Controllers
@@ -37,7 +38,8 @@ namespace WMS_FE_ASP_NET_Core_Web.Controllers
             {
                 
                 var user = _wrapper.BindToRegistrationRequest(collection);               
-                var newCustomer = await _wmsApiService.RegisterNewUser(user);
+               // var newCustomer = await _wmsApiService.RegisterNewUser(user);
+                var newCustomer = await _wmsApiService.PostWMSDataAsync<RegistrationRequestModel>(user, "/Register");
                 if (newCustomer)
                 {
                     return RedirectToAction("Login", "Login");

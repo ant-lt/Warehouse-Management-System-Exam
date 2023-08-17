@@ -22,11 +22,17 @@ namespace WMS_FE_ASP_NET_Core_Web.Controllers
         // GET: Customer/Details/{id}
         public async Task<IActionResult> Details(int id)
         {
-            var customer = await _wmsApiService.GetCustomerAsync(id);
+            var customer = await _wmsApiService.GetWMSDataAsync<CustomerModel>($"/GetCustomerBy/{id}");
             return View(customer);
         }
 
         // GET: Customer/Create
+        public ActionResult Create()
+        {
+            return View();
+        }
+
+        // POST: Customer/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(IFormCollection collection)
@@ -34,7 +40,7 @@ namespace WMS_FE_ASP_NET_Core_Web.Controllers
             try
             {
                 var customer = _wrapper.Bind(collection);
-                var newCustomer = await _wmsApiService.CreateCustomerAsync(customer);
+                var newCustomer = await _wmsApiService.PostWMSDataAsync<CreateCustomerModel>(customer, $"/CreateNewCustomer");
 
                 if (newCustomer)
                 {
@@ -56,7 +62,7 @@ namespace WMS_FE_ASP_NET_Core_Web.Controllers
         // GET: Customer/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
-            var customer = await _wmsApiService.GetCustomerAsync(id);
+            var customer = await _wmsApiService.GetWMSDataAsync<CustomerModel>($"/GetCustomerBy/{id}");
 
             return View(customer);
         }
@@ -69,7 +75,7 @@ namespace WMS_FE_ASP_NET_Core_Web.Controllers
             try
             {
                 var updatedCustomer = _wrapper.BindToUpdateCustomer(collection);
-                var updated = await _wmsApiService.UpdateCustomerAsync(id, updatedCustomer);
+                var updated = await _wmsApiService.UpdateWMSDataAsync<UpdateCustomerModel>(updatedCustomer, $"/Update/Customer/{id}");
                 if (updated)
                 {
                     return RedirectToAction("Customers", "Home");
@@ -86,10 +92,10 @@ namespace WMS_FE_ASP_NET_Core_Web.Controllers
             }
         }
 
-        // GET: Customer/Delete/5
+        // Delete: Customer/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
-            var deleted = await _wmsApiService.DeleteCustomerAsync(id);
+            var deleted = await _wmsApiService.DeleteWMSDataAsync($"/Delete/Customer/{id}");
             if (deleted)
             {
                 return RedirectToAction("Customers", "Home");

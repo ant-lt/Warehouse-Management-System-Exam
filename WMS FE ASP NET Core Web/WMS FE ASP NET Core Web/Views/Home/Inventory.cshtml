@@ -1,12 +1,10 @@
 ﻿@model IEnumerable<WMS_FE_ASP_NET_Core_Web.DTO.InventoryItemModel>
 @{
-    ViewData["Title"] = "Inventory";
+    ViewData["Title"] = "Inventory on Warehouses";
 }
 
 <h1>@ViewData["Title"]</h1>
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+
 <table class="table">
     <thead>
         <tr>
@@ -28,7 +26,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.WarehouseName)
             </th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -52,11 +49,6 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.WarehouseName)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                 </td>
             </tr>
         }

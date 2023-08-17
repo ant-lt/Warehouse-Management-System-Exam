@@ -1,13 +1,10 @@
 ﻿@model IEnumerable<WMS_FE_ASP_NET_Core_Web.DTO.ProductModel>
+
 @{
 ViewData["Title"] = "Products";
 }
 
 <h1>@ViewData["Title"]</h1>
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-
 <table class="table">
     <thead>
         <tr>
@@ -29,11 +26,10 @@ ViewData["Title"] = "Products";
             <th>
                 @Html.DisplayNameFor(model => model.Volume)
             </th>
-            </tr>
-</thead>
-<tbody>
-    @foreach (var item in Model)
-    {
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Id)
@@ -52,11 +48,6 @@ ViewData["Title"] = "Products";
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Volume)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
     }
