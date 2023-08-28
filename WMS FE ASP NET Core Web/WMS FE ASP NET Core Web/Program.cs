@@ -16,31 +16,30 @@ namespace WMS_FE_ASP_NET_Core_Web
             builder.Services.AddControllersWithViews();
 
 
-            /*
             builder.Services.AddHttpClient<ApiClient>(client =>
             {
                 client.BaseAddress = new Uri("https://localhost:7272/");
                 client.DefaultRequestHeaders.Add("Accept", "application/json");
+                client.DefaultRequestHeaders.Add("Accept", "*/*");
             });
-            */
+            
             var loggerFactory = LoggerFactory.Create(builder =>
             {
                 builder.AddConsole();
             });
 
-            builder.Services.AddSingleton<ApiClient>(new ApiClient("https://localhost:7272/", loggerFactory.CreateLogger<ApiClient>()) );
-
-
+            // +builder.Services.AddSingleton<ApiClient>(new ApiClient("https://localhost:7272/", loggerFactory.CreateLogger<ApiClient>()) );
+             
             builder.Services.AddScoped<WMSApiService>();
             builder.Services.AddTransient<Iwrapper, Wrapper>();
 
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-        .AddCookie(options =>
-        {
-            options.LoginPath = "/Home/Login";
-            options.LogoutPath = "/Home/Logout";
-            options.AccessDeniedPath = "/Home/AccessDenied";
-        });
+            .AddCookie(options =>
+            {
+                options.LoginPath = "/Home/Login";
+                options.LogoutPath = "/Home/Logout";
+                options.AccessDeniedPath = "/Home/AccessDenied";
+            });
             
             var app = builder.Build();
 

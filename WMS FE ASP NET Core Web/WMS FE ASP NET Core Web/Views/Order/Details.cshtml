@@ -1,0 +1,106 @@
+﻿@model WMS_FE_ASP_NET_Core_Web.Models.OrderViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Order Nr. @Model.Order?.Id @ViewData["Title"] </h1>
+<div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Order.Date)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Order.OrderStatus)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Order.OrderType)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Order.CustomerName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.TotalVolume), m3
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    @Model.Order?.Date
+                </td>
+                <td>
+                    @Model.Order?.OrderStatus
+                </td>
+                <td>
+                    @Model.Order?.OrderType
+                </td>
+                <td>
+                    @Model.Order?.CustomerName
+                </td>
+                <td>
+                    @Model.TotalVolume
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
+<div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Id
+                </th>
+                <th>
+                    ProductSKU
+                </th>
+                <th>
+                    ProductDescription
+                </th>
+                <th>
+                    ProductName
+                </th>
+                <th>
+                    Quantity
+                </th>
+                <th>
+                    Volume ocupied, m3
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.OrderItems!)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Id)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ProductSKU)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ProductDescription)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ProductName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Quantity)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Volume)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<div>
+    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
+    <a asp-controller="Home" asp-action="Orders">Back to List</a>
+</div>

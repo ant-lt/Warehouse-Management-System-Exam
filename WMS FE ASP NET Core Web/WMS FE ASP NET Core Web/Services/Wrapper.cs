@@ -48,5 +48,19 @@ namespace WMS_FE_ASP_NET_Core_Web.Services
                 Role = user["Role"],
             };
         }
+
+        public CreateOrderModel BindToCreateOrder(IFormCollection order, int userId)
+        {           
+
+            return new CreateOrderModel
+            {
+                ScheduledDate = DateTime.Parse(order["ScheduledDate"]),
+                ExecutionDate = DateTime.Now,
+                OrderStatusId = 1,
+                OrderTypeId = int.Parse(order["OrderTypeId"]),
+                CustomerId = int.Parse(order["CustomerId"]),
+                WMSuserId = userId,
+            };
+        }
     }
 }

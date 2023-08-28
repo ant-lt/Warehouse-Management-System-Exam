@@ -39,9 +39,11 @@ namespace WMS_FE_ASP_NET_Core_Web.Controllers
                     var claims = new List<Claim>
                     {
                         new Claim(ClaimTypes.Name, _wmsApiService.userName),
-                        new Claim(ClaimTypes.Role, _wmsApiService.role)
+                        new Claim(ClaimTypes.Role, _wmsApiService.role),
+                        new Claim("WMSUserId", _wmsApiService.userId.ToString()),
+                        new Claim("APIToken", _wmsApiService.token),
                     };
-
+                    
                     var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
                     var principal = new ClaimsPrincipal(identity);

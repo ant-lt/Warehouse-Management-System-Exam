@@ -49,36 +49,90 @@ namespace WMS_FE_ASP_NET_Core_Web.Controllers
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Customers()
         {
-            var customers = await _wmsApiService.GetWMSDataListAsync<CustomerModel>("/GetCustomers");
-            return View(customers);
+            try
+            {
+                _wmsApiService.SetAPIParams(User.Claims);
+                if (_wmsApiService.IsTokenExpired()) return RedirectToAction("Logout", "Home");
+            
+                var customers = await _wmsApiService.GetWMSDataListAsync<CustomerModel>("/GetCustomers");
+                return View(customers);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                return RedirectToAction("Login", "Login");
+            }
         }
 
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Inventory()
         {
-            var inventory = await _wmsApiService.GetWMSDataListAsync<InventoryItemModel>("/GetInventories");
-            return View(inventory);
+            try
+            {
+                _wmsApiService.SetAPIParams(User.Claims);
+                if (_wmsApiService.IsTokenExpired()) return RedirectToAction("Logout", "Home");
+                var inventory = await _wmsApiService.GetWMSDataListAsync<InventoryItemModel>("/GetInventories");
+                return View(inventory);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                return RedirectToAction("Login", "Login");
+            }
         }
 
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Orders()
-        {            
-            var orders = await _wmsApiService.GetWMSDataListAsync<OrderModel>("/GetOrders");
-            return View(orders);
+        {  
+            try
+            {
+                _wmsApiService.SetAPIParams(User.Claims);
+                if (_wmsApiService.IsTokenExpired()) return RedirectToAction("Logout", "Home");
+
+                var orders = await _wmsApiService.GetWMSDataListAsync<OrderModel>("/GetOrders");
+                return View(orders);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                return RedirectToAction("Login", "Login");
+            }
         }
 
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Products()
         {
-            var products = await _wmsApiService.GetWMSDataListAsync<ProductModel>("/GetProducts");
-            return View(products);
+            try
+            {
+                _wmsApiService.SetAPIParams(User.Claims);
+                if (_wmsApiService.IsTokenExpired()) return RedirectToAction("Logout", "Home");
+
+                var products = await _wmsApiService.GetWMSDataListAsync<ProductModel>("/GetProducts");
+                return View(products);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                return RedirectToAction("Login", "Login");
+            }
         }
 
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Reports()
-        {            
-            var reports = await _wmsApiService.GetWMSDataListAsync<WarehousesRatioOfOccupiedModel>("/GetWarehousesRatioOfOccupied");
-            return View(reports);
+        {
+            try
+            {
+                _wmsApiService.SetAPIParams(User.Claims);
+                if (_wmsApiService.IsTokenExpired()) return RedirectToAction("Logout", "Home");
+
+                var reports = await _wmsApiService.GetWMSDataListAsync<WarehousesRatioOfOccupiedModel>("/GetWarehousesRatioOfOccupied");
+                return View(reports);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                return RedirectToAction("Login", "Login");
+            }
         }
 
         /// <summary>
