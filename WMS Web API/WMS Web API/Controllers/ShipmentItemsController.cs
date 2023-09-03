@@ -19,6 +19,12 @@ namespace WMS_Web_API.Controllers
         private readonly ILogger<ShipmentItemsController> _logger;
         private readonly IWMSwrapper _wrapper;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ShipmentItemsController" /> class.
+        /// </summary>
+        /// <param name="shipmentItemRepo">The shipment item repository interface responsible for data access.</param>
+        /// <param name="logger">The logger iterface for logging controller actions and events.</param>
+        /// <param name="wrapper">The warehouse management system (WMS) wrapper interface for integration.</param>
         public ShipmentItemsController(IShipmentItemRepository shipmentItemRepo, ILogger<ShipmentItemsController> logger, IWMSwrapper wrapper)
         {
             _shipmentItemRepo = shipmentItemRepo ;
@@ -27,15 +33,15 @@ namespace WMS_Web_API.Controllers
         }
 
         /// <summary>
-        /// Fetch registered shipment items with a specified shipment ID
+        /// Retrieves registered shipment items associated with a specified shipment ID.
         /// </summary>
-        /// <param name="id">Requested shipment ID</param>
-        /// <returns>Shipment items with specified ID</returns>
-        /// <response code="200">OK</response>        
-        /// <response code="400">Shipments bad request description</response>
-        /// <response code="401">Client could not authenticate a request</response>
-        /// <response code="404">Shipment not found </response>
-        /// <response code="500">Internal server error</response>
+        /// <param name="id">The unique identifier of the requested shipment.</param>
+        /// <returns>The shipment items associated with the specified shipment ID.</returns>
+        /// <response code="200">OK: The shipment items were successfully retrieved.</response>        
+        /// <response code="400">Bad Request: The request is invalid or missing required data.</response>
+        /// <response code="401">Unauthorized: The client does not have the necessary authentication credentials.</response>
+        /// <response code="404">Not Found: The specified shipment was not found.</response>
+        /// <response code="500">Internal Server Error: An internal server error occurred while processing the request.</response>
         [HttpGet("/ShipmentId/{id:int}/Items", Name = "GetShipmentItemsById")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<GetShipmentItemDto>))]
@@ -50,11 +56,6 @@ namespace WMS_Web_API.Controllers
 
             try
             {
-                if (id == 0)
-                {
-                    return BadRequest();
-                }
-
                 var shipment = await _shipmentItemRepo.GetAsync(d => d.ShipmentId == id);
 
                 if (shipment == null)

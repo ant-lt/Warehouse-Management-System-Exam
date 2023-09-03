@@ -1,6 +1,9 @@
 ﻿
 namespace WMS_Web_API.API.DTO
 {
+    /// <summary>
+    /// Get customer data transfer object
+    /// </summary>
     public class GetCustomerDto
     {
         /// <summary>
@@ -8,41 +11,35 @@ namespace WMS_Web_API.API.DTO
         /// </summary>
         public int Id { get; set; }
 
-
         /// <summary>
         /// Customer name
         /// </summary>
-        public string Name { get; set; }
-
+        public string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// Customer company legal code
         /// </summary>
-        public string LegalCode { get; set; }
-
+        public string LegalCode { get; set; } = string.Empty;
 
         /// <summary>
         /// Customer address
         /// </summary>
-        public string Address { get; set; }
-
+        public string Address { get; set; } = string.Empty;
 
         /// <summary>
         /// Customer address city
         /// </summary>
-        public string City { get; set; }
-
+        public string City { get; set; } = string.Empty;
 
         /// <summary>
         /// Customer post code
         /// </summary>
-        public string PostCode { get; set; }
-
+        public string PostCode { get; set; } = string.Empty;
 
         /// <summary>
         /// Customer country name
         /// </summary>
-        public string Country { get; set; }
+        public string Country { get; set; } = string.Empty;
 
         /// <summary>
         /// Customer contact person name
@@ -54,12 +51,10 @@ namespace WMS_Web_API.API.DTO
         /// </summary>
         public string? PhoneNumber { get; set; }
 
-
         /// <summary>
         /// Customer e-mail address
         /// </summary>
         public string? Email { get; set; }
-
 
         /// <summary>
         /// Customer status
@@ -70,6 +65,5 @@ namespace WMS_Web_API.API.DTO
         /// Customer creation date
         /// </summary>
         public DateTime? Created { get; set; } 
-
     }
 }

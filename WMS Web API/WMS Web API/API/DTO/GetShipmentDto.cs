@@ -1,5 +1,8 @@
 ﻿namespace WMS_Web_API.API.DTO
 {
+    /// <summary>
+    /// GetShipmentDto is a data transfer object used to get shipment data from WMS
+    /// </summary>
     public class GetShipmentDto
     {
 
@@ -26,7 +29,7 @@
         /// <summary>
         /// Shipment status
         /// </summary>
-        public string ShipmentStatus { get; set; }
+        public string ShipmentStatus { get; set; } = string.Empty;
 
         /// <summary>
         /// Order id related to shipment
@@ -36,12 +39,11 @@
         /// <summary>
         /// Shipment customer name
         /// </summary>
-        public string CustomerName { get; set; }
+        public string CustomerName { get; set; } = string.Empty;
 
         /// <summary>
         /// Shipment created by user name
         /// </summary>
-        public string UserName { get; set; }
-
+        public string UserName { get; set; } = string.Empty;
     }
 }

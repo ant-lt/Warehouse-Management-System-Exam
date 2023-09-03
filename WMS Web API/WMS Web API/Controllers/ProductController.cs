@@ -19,6 +19,12 @@ namespace WMS_Web_API.Controllers
         private readonly ILogger<CustomerController> _logger;
         private readonly IWMSwrapper _wrapper;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ProductController"/> class.
+        /// </summary>
+        /// <param name="productRepo">An instance of the product repository interface responsible for data access.</param>
+        /// <param name="logger">An instance of the logger interface for logging controller actions and events.</param>
+        /// <param name="wmsWrapper">An instance of the Warehouse Management System (WMS) wrapper interface for integration.</param>
         public ProductController(IProductRepository productRepo, ILogger<CustomerController> logger, IWMSwrapper wmsWrapper)
         {
             _productRepo = productRepo ;
@@ -26,14 +32,13 @@ namespace WMS_Web_API.Controllers
             _wrapper = wmsWrapper;
         }
 
-
         /// <summary>
-        /// Fetches all products
+        /// Retrieves a list of all products from the database.
         /// </summary>
-        /// <returns>All product in DB</returns>
-        /// <response code="200">OK</response>
-        /// <response code="401">Client could not authenticate a request</response>
-        /// <response code="500">Internal server error</response>
+        /// <returns>A collection containing all products in the database.</returns>
+        /// <response code="200">OK: Returns a list of all products.</response>
+        /// <response code="401">Unauthorized: The client does not have the necessary authentication credentials.</response>
+        /// <response code="500">Internal Server Error: An internal server error occurred while processing the request.</response>
         [HttpGet("/GetProducts", Name = "GetProducts")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<GetProductDto>))]
@@ -62,15 +67,15 @@ namespace WMS_Web_API.Controllers
 
 
         /// <summary>
-        /// Fetch registered product details with a specified ID from DB
+        /// Retrieves detailed information of a registered product with a specified ID from the database.
         /// </summary>
-        /// <param name="id">Requested product ID</param>
-        /// <returns>Product with specified ID</returns>
-        /// <response code="200">OK</response>        
-        /// <response code="400">Product bad request description</response>
-        /// <response code="401">Client could not authenticate a request</response>
-        /// <response code="404">Product not found </response>
-        /// <response code="500">Internal server error</response>
+        /// <param name="id">The unique identifier of the requested product.</param>
+        /// <returns>The product data with the specified ID.</returns>
+        /// <response code="200">OK: The product information was successfully retrieved.</response>        
+        /// <response code="400">Bad Request: The requested product is invalid.</response>
+        /// <response code="401">Unauthorized Access: You do not have the necessary permission to access the requested product.</response>
+        /// <response code="404">Not Found: The requested product could not be found.</response>
+        /// <response code="500">Internal Server Error: The server encountered an unexpected condition that prevented it from fulfilling the request.</response>
         [HttpGet("/GetProductBy/{id:int}", Name = "GetProductById")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetProductDto))]
@@ -85,11 +90,6 @@ namespace WMS_Web_API.Controllers
 
             try
             {
-                if (id == 0)
-                {
-                    return BadRequest();
-                }
-
                 var product = await _productRepo.GetAsync(d => d.Id == id);
 
                 if (product == null)

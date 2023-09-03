@@ -19,6 +19,12 @@ namespace WMS_Web_API.Controllers
         private readonly ILogger<ShipmentController> _logger;
         private readonly IWMSwrapper _wrapper;
 
+        /// <summary> 
+        /// Initializes a new instance of the <see cref="ShipmentController" /> class.
+        /// </summary>
+        /// <param name="shipmentRepo">An instance of the shipment repository interface responsible for data access.</param>
+        /// <param name="logger">An instance of the logger interface for logging controller actions and events.</param>
+        /// <param name="wrapper">An instance of the Warehouse Management System (WMS) wrapper interface for integration.</param>
         public ShipmentController(IShipmentRepository shipmentRepo, ILogger<ShipmentController> logger, IWMSwrapper wrapper)
         {
             _shipmentRepo = shipmentRepo;
@@ -27,12 +33,12 @@ namespace WMS_Web_API.Controllers
         }
 
         /// <summary>
-        /// Fetches all shipments
+        /// Retrieves a list of all shipments from the database.
         /// </summary>
-        /// <returns>All shipments in DB</returns>
-        /// <response code="200">OK</response>
-        /// <response code="401">Client could not authenticate a request</response>
-        /// <response code="500">Internal server error</response>
+        /// <returns>A collection containing all shipments in the database.</returns>
+        /// <response code="200">OK: The request was successful, and all shipments are returned.</response>
+        /// <response code="401">Unauthorized: The client could not authenticate the request.</response>
+        /// <response code="500">Internal Server Error: An internal server error occurred while processing the request.</response>
         [HttpGet("/GetShipments", Name = "GetShipments")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<GetShipmentDto>))]
@@ -58,6 +64,5 @@ namespace WMS_Web_API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
-
     }
 }

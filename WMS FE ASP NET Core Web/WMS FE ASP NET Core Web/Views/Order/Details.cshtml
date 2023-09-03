@@ -101,6 +101,6 @@
     </table>
 </div>
 <div>
-    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
+    @Html.ActionLink("Edit", "Edit", new {  id = Model.Order?.Id}) |
     <a asp-controller="Home" asp-action="Orders">Back to List</a>
 </div>

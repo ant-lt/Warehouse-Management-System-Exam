@@ -2,6 +2,9 @@
 
 namespace WMS_Web_API.API.DTO
 {
+    /// <summary>
+    /// Registration request model
+    /// </summary>
     public class RegistrationRequest
     {
         /// <summary>

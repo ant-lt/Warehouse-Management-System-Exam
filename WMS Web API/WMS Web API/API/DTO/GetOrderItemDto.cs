@@ -1,5 +1,8 @@
 ﻿namespace WMS_Web_API.API.DTO
 {
+    /// <summary>
+    /// Get order item data transfer object
+    /// </summary>
     public class GetOrderItemDto
     {
         /// <summary>

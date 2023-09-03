@@ -3,6 +3,9 @@ using WMS_Web_API.API.DTO;
 
 namespace WMS_Web_API.API
 {
+    /// <summary>
+    /// Maps the domain models to the DTOs
+    /// </summary>
     public interface IWMSwrapper
     {
         public GetProductDto Bind(Product product);

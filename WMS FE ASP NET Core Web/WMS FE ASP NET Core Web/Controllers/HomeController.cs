@@ -8,9 +8,11 @@ using WMS_FE_ASP_NET_Core_Web.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using WMS_FE_ASP_NET_Core_Web.DTO;
+using Microsoft.AspNetCore.Cors;
 
 namespace WMS_FE_ASP_NET_Core_Web.Controllers
 {
+    [EnableCors("WMSCorsPolicy")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -49,90 +51,55 @@ namespace WMS_FE_ASP_NET_Core_Web.Controllers
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Customers()
         {
-            try
-            {
-                _wmsApiService.SetAPIParams(User.Claims);
-                if (_wmsApiService.IsTokenExpired()) return RedirectToAction("Logout", "Home");
+            _wmsApiService.SetAPIParams(User.Claims);
+            if (_wmsApiService.IsTokenExpired()) 
+                return RedirectToAction("Logout", "Home");
             
-                var customers = await _wmsApiService.GetWMSDataListAsync<CustomerModel>("/GetCustomers");
-                return View(customers);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e.Message);
-                return RedirectToAction("Login", "Login");
-            }
-        }
+            var customers = await _wmsApiService.GetWMSDataListAsync<CustomerModel>("/GetCustomers");
+            return View(customers);
+        }        
 
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Inventory()
         {
-            try
-            {
-                _wmsApiService.SetAPIParams(User.Claims);
-                if (_wmsApiService.IsTokenExpired()) return RedirectToAction("Logout", "Home");
-                var inventory = await _wmsApiService.GetWMSDataListAsync<InventoryItemModel>("/GetInventories");
-                return View(inventory);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e.Message);
-                return RedirectToAction("Login", "Login");
-            }
+            _wmsApiService.SetAPIParams(User.Claims);
+            if (_wmsApiService.IsTokenExpired())
+                return RedirectToAction("Logout", "Home");
+            var inventory = await _wmsApiService.GetWMSDataListAsync<InventoryItemModel>("/GetInventories");
+            return View(inventory);
         }
 
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Orders()
         {  
-            try
-            {
-                _wmsApiService.SetAPIParams(User.Claims);
-                if (_wmsApiService.IsTokenExpired()) return RedirectToAction("Logout", "Home");
+            _wmsApiService.SetAPIParams(User.Claims);
+            if (_wmsApiService.IsTokenExpired())
+                return RedirectToAction("Logout", "Home");
 
-                var orders = await _wmsApiService.GetWMSDataListAsync<OrderModel>("/GetOrders");
-                return View(orders);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e.Message);
-                return RedirectToAction("Login", "Login");
-            }
+            var orders = await _wmsApiService.GetWMSDataListAsync<OrderModel>("/GetOrders");
+            return View(orders);
         }
 
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Products()
         {
-            try
-            {
-                _wmsApiService.SetAPIParams(User.Claims);
-                if (_wmsApiService.IsTokenExpired()) return RedirectToAction("Logout", "Home");
+            _wmsApiService.SetAPIParams(User.Claims);
+            if (_wmsApiService.IsTokenExpired())
+                return RedirectToAction("Logout", "Home");
 
-                var products = await _wmsApiService.GetWMSDataListAsync<ProductModel>("/GetProducts");
-                return View(products);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e.Message);
-                return RedirectToAction("Login", "Login");
-            }
+            var products = await _wmsApiService.GetWMSDataListAsync<ProductModel>("/GetProducts");
+            return View(products);
         }
 
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Reports()
         {
-            try
-            {
-                _wmsApiService.SetAPIParams(User.Claims);
-                if (_wmsApiService.IsTokenExpired()) return RedirectToAction("Logout", "Home");
+            _wmsApiService.SetAPIParams(User.Claims);
+            if (_wmsApiService.IsTokenExpired())
+                return RedirectToAction("Logout", "Home");
 
-                var reports = await _wmsApiService.GetWMSDataListAsync<WarehousesRatioOfOccupiedModel>("/GetWarehousesRatioOfOccupied");
-                return View(reports);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e.Message);
-                return RedirectToAction("Login", "Login");
-            }
+            var reports = await _wmsApiService.GetWMSDataListAsync<WarehousesRatioOfOccupiedModel>("/GetWarehousesRatioOfOccupied");
+            return View(reports);
         }
 
         /// <summary>

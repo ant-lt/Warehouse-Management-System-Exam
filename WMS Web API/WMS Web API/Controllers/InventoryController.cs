@@ -10,9 +10,8 @@ using WMS_Web_API.API;
 
 namespace WMS_Web_API.Controllers
 {
-
     /// <summary>
-    /// Inventories reporting
+    /// Controller for handling inventory related requests
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
@@ -22,6 +21,12 @@ namespace WMS_Web_API.Controllers
         private readonly ILogger<InventoryController> _logger;
         private readonly IWMSwrapper _wrapper;
 
+        /// <summary>
+        /// Constructor for InventoryController
+        /// </summary>
+        /// <param name="inventoryRepo">An instance of the inventory repository interface responsible for data access.</param>
+        /// <param name="logger">An instance of the logger interface for logging controller actions and events.</param>
+        /// <param name="wrapper">An instance of the Warehouse Management System (WMS) wrapper interface for integration.</param>
         public InventoryController(IInventoryRepository inventoryRepo, ILogger<InventoryController> logger, IWMSwrapper wrapper)
         {
             _inventoryRepo = inventoryRepo;
@@ -30,13 +35,13 @@ namespace WMS_Web_API.Controllers
         }
 
         /// <summary>
-        /// Fetches all inventories
+        /// Retrieves a list of all inventories from the database.
         /// </summary>
-        /// <returns>All inventories in DB</returns>
-        /// <response code="200">OK</response>
-        /// <response code="401">Client could not authenticate a request</response>
-        /// <response code="403">Do not have permission to access</response>
-        /// <response code="500">Internal server error</response>
+        /// <returns>A list containing all inventories in the database.</returns>
+        /// <response code="200">OK: Returns the list of all inventories.</response>
+        /// <response code="401">Unauthorized: The client was not authenticated.</response>
+        /// <response code="403">Forbidden: The client does not have permission to access.</response>
+        /// <response code="500">Internal Server Error: An internal server error occurred while processing the request.</response>
         [HttpGet("/GetInventories", Name = "GetInventories")]
         [Authorize(Roles = "Administrator, Manager, Supervisor")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<GetInventoryDto>))]
@@ -49,7 +54,7 @@ namespace WMS_Web_API.Controllers
             _logger.LogInformation($"{DateTime.Now} Executed GetInventories.");
 
             try
-            {                
+            {
                 var inventories = await _inventoryRepo.GetAllAsync(null, new List<string> { "Warehouse", "Product" });
 
                 IEnumerable<GetInventoryDto> getInventoryDto = inventories.Select(d => _wrapper.Bind(d)).ToList();
@@ -65,13 +70,13 @@ namespace WMS_Web_API.Controllers
         }
 
         /// <summary>
-        /// Get all warehouses ratio of occupied
+        /// Retrieves a list of all warehouses along with their occupancy ratios.
         /// </summary>
-        /// <returns>Warehouse list with ratio of occupied</returns>
-        /// <response code="200">OK</response>
-        /// <response code="401">Client could not authenticate a request</response>
-        /// <response code="403">Do not have permission to access</response>
-        /// <response code="500">Internal server error</response>
+        /// <returns>A list of warehouses with their respective occupancy ratios.</returns>
+        /// <response code="200">OK: Returns the list of all warehouses and their calculated occupancy ratios.</response>
+        /// <response code="401">Unauthorized: The client was not authenticated.</response>
+        /// <response code="403">Forbidden: The client does not have permission to access.</response>
+        /// <response code="500">Internal Server Error: An internal server error occurred while processing the request.</response>
         [HttpGet("/GetWarehousesRatioOfOccupied", Name = "GetWarehousesRatioOfOccupied")]
         [Authorize(Roles = "Administrator, Manager, Supervisor")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<GetWarehousesRatioOfOccupiedDto>))]
@@ -88,18 +93,18 @@ namespace WMS_Web_API.Controllers
                 var warehouses = await _inventoryRepo.GetWarehouseListAsync();
 
                 List<GetWarehousesRatioOfOccupiedDto> getWarehousesRatioOfOccupiedDto = new List<GetWarehousesRatioOfOccupiedDto>();
-                
+
                 if (warehouses != null)
-                { 
+                {
                     foreach (Warehouse warehouse in warehouses)
                     {
                         var warehouseRatioOfOccupied = await _inventoryRepo.GetWarehouseRatioOfOccupiedbyIdAsync(warehouse.Id);
-                        var newGetWarehousesRatioOfOccupiedDto= new GetWarehousesRatioOfOccupiedDto();
+                        var newGetWarehousesRatioOfOccupiedDto = new GetWarehousesRatioOfOccupiedDto();
                         newGetWarehousesRatioOfOccupiedDto = _wrapper.Bind(warehouse, warehouseRatioOfOccupied);
                         getWarehousesRatioOfOccupiedDto.Add(newGetWarehousesRatioOfOccupiedDto);
                     }
                 }
-                
+
                 return Ok(getWarehousesRatioOfOccupiedDto.ToList());
 
             }

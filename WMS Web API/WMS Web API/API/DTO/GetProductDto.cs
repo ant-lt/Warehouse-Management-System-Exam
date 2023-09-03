@@ -1,8 +1,10 @@
 ﻿namespace WMS_Web_API.API.DTO
 {
+    /// <summary>
+    /// Get product data transfer object
+    /// </summary>
     public class GetProductDto
     {
-
         /// <summary>
         /// Internal product Id on Warehouse management system
         /// </summary>
@@ -11,17 +13,17 @@
         /// <summary>
         /// Product SKU
         /// </summary>
-        public string SKU { get; set; }
+        public string SKU { get; set; } = string.Empty;
 
         /// <summary>
         /// Product name
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// Product description
         /// </summary>
-        public string Description { get; set; }
+        public string Description { get; set; } = string.Empty;
 
         /// <summary>
         /// Product volume of 1 pcs.

@@ -1,8 +1,10 @@
-﻿
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace WMS_Web_API.API.DTO
 {
+    /// <summary>
+    /// Update Order Item data transfer object
+    /// </summary>
     public class UpdateOrderItemDto
     {
         /// <summary>

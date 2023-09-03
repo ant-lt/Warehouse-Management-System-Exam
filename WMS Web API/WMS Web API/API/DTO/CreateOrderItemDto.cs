@@ -8,9 +8,11 @@ using System.Threading.Tasks;
 
 namespace WMS_Web_API.API.DTO
 {
+    /// <summary>
+    /// Create order item data transfer object
+    /// </summary>
     public class CreateOrderItemDto
     {
-
         /// <summary>
         /// Product quantity
         /// </summary>
@@ -29,6 +31,5 @@ namespace WMS_Web_API.API.DTO
         /// </summary>
         [Required]
         public int ProductId { get; set; }
-
     }
 }

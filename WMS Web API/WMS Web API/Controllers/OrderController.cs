@@ -22,6 +22,13 @@ namespace WMS_Web_API.Controllers
         private readonly ILogger<OrderController> _logger;
         private readonly IWMSwrapper _wrapper;
 
+        /// <summary>
+        /// Constructor for OrderController
+        /// </summary>
+        /// <param name="orderRepo">IOrderRepository object</param>
+        /// <param name="logger">ILogger object</param>
+        /// <param name="wrapper">IWMSwrapper object</param>
+        /// <param name="inventoryManagerService">IInventoryManagerService object</param>
         public OrderController(IOrderRepository orderRepo, ILogger<OrderController> logger, IWMSwrapper wrapper, IInventoryManagerService inventoryManagerService)
         {
             _orderRepo = orderRepo;
@@ -31,13 +38,13 @@ namespace WMS_Web_API.Controllers
         }
 
         /// <summary>
-        /// Fetches all orders
+        /// Retrieves a list of all orders from the database and logs the operation.
         /// </summary>
-        /// <returns>All orders in DB</returns>
-        /// <response code="200">OK</response>
-        /// <response code="401">Client could not authenticate a request</response>
-        /// <response code="403">Do not have permission to access</response>  
-        /// <response code="500">Internal server error</response>
+        /// <returns>A collection containing all orders from the database.</returns>
+        /// <response code="200">OK: Returns the list of all orders.</response>
+        /// <response code="401">Unauthorized: The caller is not authenticated.</response>
+        /// <response code="403">Forbidden: The caller is authenticated but not authorized to access orders.</response>  
+        /// <response code="500">Internal Server Error: An internal server error occurred while processing the request.</response>
         [HttpGet("/GetOrders",Name = "GetOrders")]
         [Authorize(Roles = "Administrator, Manager, Supervisor")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<GetOrderDto>))]
@@ -67,13 +74,13 @@ namespace WMS_Web_API.Controllers
         }
 
         /// <summary>
-        /// Create new Order
+        /// Creates a new order using the provided order data.
         /// </summary>
-        /// <param name="req"> New Order data</param>
-        /// <returns>Created new Order</returns>
-        /// <response code="201">Order created</response>
-        /// <response code="500">Error</response>
-        /// <response code="400">Bad request</response>
+        /// <param name="req">The data for the new order.</param>
+        /// <returns>The created order.</returns>
+        /// <response code="201">Created: Returns the newly created order.</response>
+        /// <response code="400">Bad Request: Indicates an invalid request or missing required data.</response>
+        /// <response code="500">Internal Server Error: An internal server error occurred while processing the request.</response>
         [HttpPost("/CreateNewOrder", Name = "CreateNewOrder")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(CreateOrderDto))]
@@ -96,8 +103,6 @@ namespace WMS_Web_API.Controllers
                 await _orderRepo.CreateAsync(Order);
 
                 return CreatedAtRoute("CreateNewOrder", new { id = Order.Id }, req);
-        
-
             }
 
             catch (Exception e)
@@ -108,16 +113,16 @@ namespace WMS_Web_API.Controllers
         }
 
         /// <summary>
-        /// Delete Order by Id
+        /// Deletes the specified order by its unique identifier.
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns>Status code</returns>
-        /// <response code="204">Order deleted</response>
-        /// <response code="400">Bad Request</response>
-        /// <response code="401">Client could not authenticate a request</response>
-        /// <response code="403">Do not have permission to access</response> 
-        /// <response code="404">Order not found</response>
-        /// <response code="500">Internal server error</response>
+        /// <param name="id">The unique identifier of the order to be deleted.</param>
+        /// <returns>No Content upon successful deletion.</returns>
+        /// <response code="204">No Content: The order was successfully deleted.</response>
+        /// <response code="400">Bad Request: Indicates an invalid request or missing required data.</response>
+        /// <response code="401">Unauthorized: The caller is not authenticated.</response>
+        /// <response code="403">Forbidden: The caller is authenticated but not authorized to delete orders.</response> 
+        /// <response code="404">Not Found: The specified order to be deleted was not found.</response>
+        /// <response code="500">Internal Server Error: An internal server error occurred while processing the request.</response>
         [HttpDelete("/Delete/Order/{id:int}")]
         [Authorize(Roles = "Administrator, Manager")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -133,11 +138,6 @@ namespace WMS_Web_API.Controllers
 
             try
             {
-                if (id == 0)
-                {
-                    return BadRequest();
-                }
-
                 var Order = await _orderRepo.GetAsync(d => d.Id == id);
 
                 if (Order == null)
@@ -159,17 +159,17 @@ namespace WMS_Web_API.Controllers
 
 
         /// <summary>
-        /// Update Order by id
+        /// Updates the specified order by its unique identifier.
         /// </summary>
-        /// <param name="id"> Order Id</param>
-        /// <param name="updateOrderDto"></param>
-        /// <returns>Status code</returns>
-        /// <response code="204">Order updated</response>
-        /// <response code="400">Bad request</response>
-        /// <response code="401">Client could not authenticate a request</response>   
-        /// <response code="403">Do not have permission to access</response>  
-        /// <response code="404">Order not found</response>
-        /// <response code="500">Internal server error</response>
+        /// <param name="id">The unique identifier of the order to be updated.</param>
+        /// <param name="updateOrderDto">The data used for updating the order.</param>
+        /// <returns>The HTTP status code indicating the result of the update operation.</returns>
+        /// <response code="204">No Content: The order was successfully updated.</response>
+        /// <response code="400">Bad Request: Indicates an invalid request or missing required data.</response>
+        /// <response code="401">Unauthorized: The caller is not authenticated.</response>   
+        /// <response code="403">Forbidden: The caller is authenticated but not authorized to update orders.</response>  
+        /// <response code="404">Not Found: The specified order to be updated was not found.</response>
+        /// <response code="500">Internal Server Error: An internal server error occurred while processing the request.</response>
         [HttpPut("/Update/Order/{id:int}")]
         [Authorize(Roles = "Administrator, Manager")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -185,7 +185,7 @@ namespace WMS_Web_API.Controllers
 
             try
             {
-                if (id == 0 || updateOrderDto == null)
+                if (updateOrderDto == null)
                 {
                     return BadRequest();
                 }
@@ -210,15 +210,15 @@ namespace WMS_Web_API.Controllers
         }
 
         /// <summary>
-        /// Fetch registered order with a specified ID from DB
+        /// Retrieves a specific order by its unique identifier.
         /// </summary>
-        /// <param name="id">Requested order ID</param>
-        /// <returns>Order with specified ID</returns>
-        /// <response code="200">OK</response>        
-        /// <response code="400">Order bad request description</response>
-        /// <response code="401">Client could not authenticate a request</response>
-        /// <response code="404">Order not found </response>
-        /// <response code="500">Internal server error</response>
+        /// <param name="id">The unique identifier of the order to retrieve.</param>
+        /// <returns>The retrieved order.</returns>
+        /// <response code="200">OK: Returns the order.</response>
+        /// <response code="400">Bad Request: The order ID is not valid or the request is invalid.</response>
+        /// <response code="401">Unauthorized: The client is not authorized to access the resource.</response>
+        /// <response code="404">Not Found: The order with the specified ID was not found.</response>
+        /// <response code="500">Internal Server Error: An internal server error occurred while processing the request.</response>
         [HttpGet("/GetOrderBy/{id:int}", Name = "GetOrderById")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetOrderDto))]
@@ -233,12 +233,6 @@ namespace WMS_Web_API.Controllers
 
             try
             {
-                if (id == 0)
-                {
-                    return BadRequest();
-                }
-
-                
                 var order = await _orderRepo.GetAsync(x => x.Id == id, new List<string> { "OrderStatus", "OrderType", "Customer", "RWMSuser" });
 
                 if (order == null)
@@ -254,18 +248,17 @@ namespace WMS_Web_API.Controllers
                 _logger.LogError(e, $"{DateTime.Now} HttpGet GetOrder by id ={id} exception error.");
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-
         }
 
 
         /// <summary>
-        /// Submit the new order for processing
+        /// Submits a new order for processing with the specified Order Id.
         /// </summary>
-        /// <param name="id">Order Id</param>
+        /// <param name="id">The unique identifier of the order to be submitted.</param>
         /// <returns>OK</returns>
-        /// <response code="200">Order submitted</response>
-        /// <response code="500">Error</response>
-        /// <response code="400">Bad request</response>
+        /// <response code="200">OK: The order was successfully submitted for processing.</response>
+        /// <response code="400">Bad Request: The request is invalid or missing required data.</response>
+        /// <response code="500">Internal Server Error: An error occurred while processing the order.</response>
         [HttpPost("/SubmitOrder/{id:int}", Name = "SubmitOrder")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SubmitOrderResponse))]
@@ -279,11 +272,6 @@ namespace WMS_Web_API.Controllers
 
             try
             {
-                if (id == null)
-                {
-                    return BadRequest();
-                }
-
                 var IsOrderTranfered = await _inventoryManagerService.ProcessOrderAsync(id);
 
                 if (!IsOrderTranfered)
@@ -310,14 +298,14 @@ namespace WMS_Web_API.Controllers
 
 
         /// <summary>
-        /// Fetch order statuses list
+        /// Retrieves a list of all order statuses.
         /// </summary>
-        /// <returns>Orders statuses list</returns>
-        /// <response code="200">OK</response>        
-        /// <response code="400">Order bad request description</response>
-        /// <response code="401">Client could not authenticate a request</response>
-        /// <response code="404">Statuses not found </response>
-        /// <response code="500">Internal server error</response>
+        /// <returns>A list of order statuses.</returns>
+        /// <response code="200">OK: Returns a list of all order statuses.</response>        
+        /// <response code="400">Bad Request: The request is invalid or missing required data.</response>
+        /// <response code="401">Unauthorized: The client could not authenticate the request.</response>
+        /// <response code="404">Not Found: No order statuses were found.</response>
+        /// <response code="500">Internal Server Error: An internal server error occurred while processing the request.</response>
         [HttpGet("/GetOrderStatuses", Name = "GetOrderStatuses")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<GetOrderStatusDto>))]
@@ -345,17 +333,18 @@ namespace WMS_Web_API.Controllers
         }
 
         /// <summary>
-        /// Fetch order types list
+        /// Retrieves a list of all order types.
         /// </summary>
-        /// <returns>Orders types list</returns>
-        /// <response code="200">OK</response>        
-        /// <response code="400">Order bad request description</response>
-        /// <response code="401">Client could not authenticate a request</response>
-        /// <response code="404">Statuses not found </response>
-        /// <response code="500">Internal server error</response>
+        /// <returns>A list of order types.</returns>
+        /// <response code="200">OK: Returns a list of all order types.</response>        
+        /// <response code="400">Bad Request: The request is invalid or missing required data.</response>
+        /// <response code="401">Unauthorized: The client could not authenticate the request.</response>
+        /// <response code="404">Not Found: No order types were found.</response>
+        /// <response code="500">Internal Server Error: An internal server error occurred while processing the request.</response>
         [HttpGet("/GetOrderTypes", Name = "GetOrderTypes")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<GetOrderTypesDto>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]

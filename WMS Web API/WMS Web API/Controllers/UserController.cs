@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
 using WMS.Domain.Models;
 using WMS.Infastructure.Interfaces;
@@ -7,15 +6,26 @@ using WMS_Web_API.API.DTO;
 
 namespace WMS_Web_API.Controllers
 {
+    /// <summary>
+    /// Login to WMS system
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
+
     {
         private readonly IUserRepository _userRepo;
         private readonly ILogger<UserController> _logger;
         private readonly IJwtService _jwtService;
         private readonly IPasswordService _passwordService;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UserController" /> class.
+        /// </summary>
+        /// <param name="userRepo">An instance of the user repository interface responsible for data access.</param>
+        /// <param name="logger">An instance of the logger interface for logging controller actions and events.</param>
+        /// <param name="jwtService">An instance of the Jwt token service interface.</param>
+        /// <param name="passwordService">An instance of the password service interface.</param>
         public UserController(IUserRepository userRepo, ILogger<UserController> logger, IJwtService jwtService, IPasswordService passwordService)
         {
             _userRepo = userRepo;
@@ -25,11 +35,15 @@ namespace WMS_Web_API.Controllers
         }
 
         /// <summary>
-        /// Login to WMS system
+        /// Attempts to log in to the Warehouse Management System (WMS) with the provided login data.
         /// </summary>
-        /// <param name="loginData"></param>
-        /// <returns>Status code</returns>
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        /// <param name="loginData">Login data including the username and password.</param>
+        /// <returns>A login response indicating whether the login attempt was successful.</returns>
+        /// <response code="200">OK: The login attempt was successful, and the login response is returned.</response>
+        /// <response code="400">Bad Request: The request was malformed or contained invalid data.</response>
+        /// <response code="401">Unauthorized: The client was not authenticated, or the login credentials are invalid.</response>
+        /// <response code="500">Internal Server Error: An internal server error occurred while processing the request.</response>
+        [ProducesResponseType(StatusCodes.Status200OK,Type = typeof(LoginResponse))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -66,13 +80,13 @@ namespace WMS_Web_API.Controllers
         }
 
         /// <summary>
-        /// New user registration to WMS system
+        /// Registers a new user in the Warehouse Management System (WMS) system.
         /// </summary>
-        /// <param name="registrationData"></param>
-        /// <returns>Status code</returns>
-        /// <response code="201">OK</response>
-        /// <response code="400">Bad request</response>
-        /// <response code="401">Unauthorized</response>
+        /// <param name="registrationData">Registration data containing user information.</param>
+        /// <returns>The HTTP status code indicating the result of the registration attempt.</returns>
+        /// <response code="201">Created: The user registration was successful.</response>
+        /// <response code="400">Bad Request: The request was malformed or contained invalid data.</response>
+        /// <response code="500">Internal Server Error: An internal server error occurred while processing the request.</response>
         [HttpPost("/Register")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -105,14 +119,14 @@ namespace WMS_Web_API.Controllers
                     Username = registrationData.Username,
                     PasswordHash = passwordHash,
                     PasswordSalt = passwordSalt,
-                    Name = registrationData.Name,
+                    Name = registrationData.Name ?? string.Empty,
                     Role = userRole,
                     Active = true,
                 };
 
                 var user = await _userRepo.RegisterAsync(newUser);
 
-                if (user == null)
+                if (user == false)
                 {
                     return BadRequest(new { message = "Error while new user registering" });
                 }
@@ -125,6 +139,5 @@ namespace WMS_Web_API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
-
     }
 }

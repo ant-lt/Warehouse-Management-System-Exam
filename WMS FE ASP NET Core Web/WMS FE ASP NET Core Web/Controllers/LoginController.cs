@@ -5,9 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using WMS_FE_ASP_NET_Core_Web.Models;
 using WMS_FE_ASP_NET_Core_Web.Services;
+using Microsoft.AspNetCore.Cors;
 
 namespace WMS_FE_ASP_NET_Core_Web.Controllers
 {
+    [EnableCors("WMSCorsPolicy")]
     public class LoginController : Controller
     {
         private readonly ILogger<LoginController> _logger;

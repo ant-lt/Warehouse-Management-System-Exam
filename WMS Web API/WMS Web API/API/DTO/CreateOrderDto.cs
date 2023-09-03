@@ -2,9 +2,11 @@
 
 namespace WMS_Web_API.API.DTO
 {
+    /// <summary>
+    /// Create order data transfer object
+    /// </summary>
     public class CreateOrderDto
     {
-
         /// <summary>
         /// Order processing scheduled date
         /// </summary>
@@ -38,6 +40,5 @@ namespace WMS_Web_API.API.DTO
         /// </summary>
         [Required]
         public int WMSuserId { get; set; }
-
     }
 }

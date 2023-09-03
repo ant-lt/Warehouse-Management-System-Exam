@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace WMS_Web_API.API.DTO
 {
+    /// <summary>
+    /// Get order status data transfer object
+    /// </summary>
     public class GetOrderStatusDto
     {
         /// <summary>
@@ -19,6 +22,6 @@ namespace WMS_Web_API.API.DTO
         /// Order status name
         /// </summary>
         [Required]
-        public string OrderStatusName { get; set; }
+        public string OrderStatusName { get; set; } = string.Empty;
     }
 }

@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace WMS_Web_API.API.DTO
 {
+    /// <summary>
+    /// Update order data transfer object
+    /// </summary>
     public class UpdateOrderDto
     {
         /// <summary>
@@ -30,6 +33,5 @@ namespace WMS_Web_API.API.DTO
         /// </summary>
         [Required]
         public int OrderTypeId { get; set; }
-
     }
 }

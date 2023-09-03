@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace WMS_Web_API.API.DTO
 {
+    /// <summary>
+    /// Get shipment item data transfer object
+    /// </summary>
     public class GetShipmentItemDto
     {
         /// <summary>
@@ -28,16 +31,16 @@ namespace WMS_Web_API.API.DTO
         /// <summary>
         /// Shipment item product SKU
         /// </summary>
-        public string ProductSKU { get; set; }
+        public string ProductSKU { get; set; } = string.Empty;
 
         /// <summary>
         /// Shipment item product name
         /// </summary>
-        public string ProductName { get; set; }
+        public string ProductName { get; set; } = string.Empty;
 
         /// <summary>
         /// Shipment item product description
         /// </summary>
-        public string ProductDescription { get; set; }
+        public string ProductDescription { get; set; } = string.Empty;
     }
 }

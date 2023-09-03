@@ -20,21 +20,28 @@ namespace WMS_Web_API.Controllers
         private readonly ILogger<CustomerController> _logger;
         private readonly IWMSwrapper _wrapper;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CustomerController" /> class.
+        /// </summary>
+        /// <param name="customerRepo">An instance of the customer repository interface responsible for data access.</param>
+        /// <param name="logger">An instance of the logger interface for logging controller actions and events.</param>
+        /// <param name="wmsWrapper">An instance of the Warehouse Management System (WMS) wrapper interface for integration.</param>
         public CustomerController(ICustomerRepository customerRepo, ILogger<CustomerController> logger, IWMSwrapper wmsWrapper)
         {
-            _customerRepo = customerRepo ;
+            _customerRepo = customerRepo;
             _logger = logger;
             _wrapper = wmsWrapper;
         }
 
+
         /// <summary>
-        /// Fetches all customers
+        /// Retrieves a list of all customers from the database.
         /// </summary>
-        /// <returns>All customers in DB</returns>
-        /// <response code="200">OK</response>
-        /// <response code="401">Client could not authenticate a request</response>
-        /// <response code="403">Do not have permission to access</response>        
-        /// <response code="500">Internal server error</response>
+        /// <returns>An array containing all customers in the database.</returns>
+        /// <response code="200">The request was successful, and the list of customers is returned.</response>
+        /// <response code="401">Unauthorized: The client does not have the necessary authentication credentials.</response>
+        /// <response code="403">Forbidden: The client is not allowed to access this resource.</response>        
+        /// <response code="500">Internal Server Error: An error occurred while processing the request on the server.</response>
         [HttpGet("/GetCustomers", Name = "GetCustomers")]
         [Authorize(Roles = "Administrator, Manager")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<GetCustomerDto>))]
@@ -65,14 +72,15 @@ namespace WMS_Web_API.Controllers
 
 
         /// <summary>
-        /// Create new customer
+        /// Creates a new customer with the provided customer details.
         /// </summary>
-        /// <param name="req"> New customer data</param>
-        /// <returns>Created new Customer</returns>
-        /// <response code="201">Customer created</response>
-        /// <response code="500">Error</response>
-        /// <response code="400">Bad request</response>
-        /// <response code="403">Do not have permission to access</response>
+        /// <param name="req">The customer details to be used for creation.</param>
+        /// <returns>The newly created customer's response.</returns>
+        /// <response code="201">Created: The customer was successfully created.</response>
+        /// <response code="400">Bad Request: The request is invalid or missing required data.</response>
+        /// <response code="401">Unauthorized: The client does not have the necessary authentication credentials.</response>
+        /// <response code="403">Forbidden: The client is not allowed to access this resource.</response> 
+        /// <response code="500">Internal Server Error: An error occurred while processing the request on the server.</response>
         [HttpPost("/CreateNewCustomer", Name = "CreateNewCustomer")]
         [Authorize(Roles = "Administrator, Manager")]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(CreateCustomerDto))]
@@ -95,7 +103,7 @@ namespace WMS_Web_API.Controllers
 
                 Customer customer = _wrapper.Bind(req);
                 await _customerRepo.CreateAsync(customer);
-               
+
                 return CreatedAtRoute("CreateNewCustomer", new { id = customer.Id }, req);
 
             }
@@ -109,16 +117,14 @@ namespace WMS_Web_API.Controllers
 
 
         /// <summary>
-        /// Delete Customer by Id
+        /// Deletes a customer with the specified customer Id from the database.
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns>Status code</returns>
-        /// <response code="204">Customer deleted</response>
-        /// <response code="400">Bad Request</response>
-        /// <response code="401">Client could not authenticate a request</response>
-        /// <response code="403">Do not have permission to access</response>      
-        /// <response code="404">Customer not found</response>
-        /// <response code="500">Internal server error</response>
+        /// <param name="id">The Id of the customer to be deleted.</param>
+        /// <response code="204">No Content: The customer was successfully deleted.</response>
+        /// <response code="401">Unauthorized: The client does not have the necessary authentication credentials.</response>
+        /// <response code="403">Forbidden: The client is not allowed to access this resource.</response>        
+        /// <response code="404">Not Found: The specified customer was not found in the database.</response>
+        /// <response code="500">Internal Server Error: An error occurred while processing the request on the server.</response>
         [HttpDelete("/Delete/Customer/{id:int}")]
         [Authorize(Roles = "Administrator, Manager")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -134,11 +140,6 @@ namespace WMS_Web_API.Controllers
 
             try
             {
-                if (id == 0)
-                {
-                    return BadRequest();
-                }
-
                 var Customer = await _customerRepo.GetAsync(d => d.Id == id);
 
                 if (Customer == null)
@@ -160,17 +161,17 @@ namespace WMS_Web_API.Controllers
 
 
         /// <summary>
-        /// Update Customer by id
+        /// Updates a customer with the provided Id using the supplied customer details.
         /// </summary>
-        /// <param name="id"> Customer Id</param>
-        /// <param name="updateCustomerDto"></param>
-        /// <returns>Status code</returns>
-        /// <response code="204">Customer updated</response>
-        /// <response code="400">Bad request</response>
-        /// <response code="401">Client could not authenticate a request</response>
-        /// <response code="403">Do not have permission to access</response>
-        /// <response code="404">Customer not found</response>
-        /// <response code="500">Internal server error</response> 
+        /// <param name="id">The Id of the customer to be updated.</param>
+        /// <param name="updateCustomerDto">The customer details used for updating.</param>
+        /// <returns>204 No Content: The customer was successfully updated.</returns>
+        /// <response code="204">No Content: The customer was successfully updated.</response>
+        /// <response code="400">Bad Request: The request is invalid or missing required data.</response>
+        /// <response code="401">Unauthorized: The client does not have the necessary authentication credentials.</response>
+        /// <response code="403">Forbidden: The client is not allowed to access this resource.</response> 
+        /// <response code="404">Not Found: The specified customer was not found in the database.</response>
+        /// <response code="500">Internal Server Error: An error occurred while processing the request on the server.</response>
         [HttpPut("/Update/Customer/{id:int}")]
         [Authorize(Roles = "Administrator, Manager")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -186,42 +187,38 @@ namespace WMS_Web_API.Controllers
 
             try
             {
-                if (id == 0 || updateCustomerDto == null)
-                {
-                    return BadRequest();
-                }
+                var customer = await _customerRepo.GetAsync(d => d.Id == id);
 
-                var foundCustomer = await _customerRepo.GetAsync(d => d.Id == id);
-
-                if (foundCustomer == null)
+                if (customer == null)
                 {
                     return NotFound();
                 }
-               
-                await _customerRepo.UpdateAsync(_wrapper.Bind(updateCustomerDto, foundCustomer) );
+
+                _wrapper.Bind(updateCustomerDto, customer);
+                await _customerRepo.UpdateAsync(customer);
 
                 return NoContent();
             }
 
             catch (Exception e)
             {
-                _logger.LogError(e, $"{DateTime.Now} HttpPut UpdateCustomerById(id = {id}) exception error.");
+                _logger.LogError(e, $"{DateTime.Now} HttpPut UpdateCustomer exception error.");
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
 
         /// <summary>
-        /// Fetch registered customer with a specified ID from DB
+        /// Retrieves a customer with the specified customer Id.
         /// </summary>
-        /// <param name="id">Requested customer ID</param>
-        /// <returns>Customer with specified ID</returns>
-        /// <response code="200">OK</response>        
-        /// <response code="400">Customer bad request description</response>
-        /// <response code="401">Client could not authenticate a request</response>
-        /// <response code="403">Do not have permission to access</response>
-        /// <response code="404">Customer not found </response>
-        /// <response code="500">Internal server error</response>
+        /// <param name="id">The Id of the customer to retrieve.</param>
+        /// <returns>The customer with the given Id.</returns>
+        /// <response code="200">OK: The customer was found and retrieved successfully.</response>
+        /// <response code="400">Bad Request: The request is invalid or missing required data.</response>
+        /// <response code="401">Unauthorized: The client does not have the necessary authentication credentials.</response>
+        /// <response code="403">Forbidden: The client is not allowed to access this resource.</response> 
+        /// <response code="404">Not Found: The specified customer was not found in the database.</response>
+        /// <response code="500">Internal Server Error: An error occurred while processing the request on the server.</response>
         [HttpGet("/GetCustomerBy/{id:int}", Name = "GetCustomerById")]
         [Authorize(Roles = "Administrator, Manager")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetCustomerDto))]
@@ -233,7 +230,7 @@ namespace WMS_Web_API.Controllers
         [Produces(MediaTypeNames.Application.Json)]
         public async Task<ActionResult<GetCustomerDto>> GetCustomerById(int id)
         {
-            _logger.LogInformation($"{DateTime.Now} Executed GetCustomerById = {id}");
+            _logger.LogInformation($"{DateTime.Now} Executed GetCustomerById id = {id}.");
 
             try
             {
@@ -246,18 +243,17 @@ namespace WMS_Web_API.Controllers
 
                 if (customer == null)
                 {
-                    _logger.LogInformation($"{DateTime.Now} Customer with id {id} not found", id);
                     return NotFound();
                 }
 
-                return Ok(_wrapper.Bind(customer));
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, $"{DateTime.Now} HttpGet GetCustomer by id ={id} exception error.");
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return Ok(_wrapper.Bind(customer) as GetCustomerDto);
             }
 
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"{DateTime.Now} HttpGet GetCustomerById exception error.");
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
     }
 }

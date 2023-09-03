@@ -1,16 +1,18 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.Metrics;
-using System.Net;
-using System.Xml.Linq;
-using WMS.Domain.Models;
-using WMS.Infastructure.Interfaces;
+﻿using WMS.Domain.Models;
 using WMS_Web_API.API.DTO;
 
 namespace WMS_Web_API.API
 {
+    /// <summary>
+    /// Maps the domain models to the DTOs
+    /// </summary>
     public class WMSwrapper : IWMSwrapper
     {
+        /// <summary>
+        /// Bind a <see cref="Product"/> object to a <see cref="GetProductDto"/> object.
+        /// </summary>
+        /// <param name="product">The <see cref="Product"/> object to bind.</param>
+        /// <returns>The bound <see cref="GetProductDto"/> object.</returns>
         public GetProductDto Bind(Product product)
         {
             return new GetProductDto
@@ -21,10 +23,14 @@ namespace WMS_Web_API.API
                 Description = product.Description,
                 Volume = product.Volume,
                 Weigth = product.Weigth
-
             };
         }
 
+        /// <summary>
+        /// Bind a <see cref="Customer"/> object to a <see cref="GetCustomerDto"/> object.
+        /// </summary>
+        /// <param name="customer">The <see cref="Customer"/> object to bind.</param>
+        /// <returns>The bound <see cref="GetCustomerDto"/> object.</returns>
         public GetCustomerDto Bind(Customer customer)
         {
             return new GetCustomerDto
@@ -44,6 +50,11 @@ namespace WMS_Web_API.API
             };
         }
 
+        /// <summary>
+        /// Bind a <see cref="Order"/> object to a <see cref="GetOrderDto"/> object.
+        /// </summary>
+        /// <param name="order">The <see cref="Order"/> object to bind.</param>
+        /// <returns>The bound <see cref="GetOrderDto"/> object.</returns>
         public GetOrderDto Bind(Order order)
         {
             return new GetOrderDto
@@ -59,6 +70,11 @@ namespace WMS_Web_API.API
             };
         }
 
+        /// <summary>
+        /// Bind a <see cref="Shipment"/> object to a <see cref="GetShipmentDto"/> object.
+        /// </summary>
+        /// <param name="shipment">The <see cref="Shipment"/> object to bind.</param>
+        /// <returns>The bound <see cref="GetShipmentDto"/> object.</returns>
         public GetShipmentDto Bind(Shipment shipment)
         {
             return new GetShipmentDto
@@ -74,6 +90,11 @@ namespace WMS_Web_API.API
             };
         }
 
+        /// <summary>
+        /// Bind a <see cref="Inventory"/> object to a <see cref="GetInventoryDto"/> object.
+        /// </summary>
+        /// <param name="inventory">The <see cref="Inventory"/> object to bind.</param>
+        /// <returns>The bound <see cref="GetInventoryDto"/> object.</returns>
         public GetInventoryDto Bind(Inventory inventory)
         {
             return new GetInventoryDto
@@ -87,6 +108,11 @@ namespace WMS_Web_API.API
             };
         }
 
+        /// <summary>
+        /// Bind a <see cref="CreateCustomerDto"/> object to a <see cref="Customer"/> object.
+        /// </summary>
+        /// <param name="customerDto">The <see cref="CreateCustomerDto"/> object to bind.</param>
+        /// <returns></returns>
         public Customer Bind(CreateCustomerDto customerDto)
         {
             return new Customer
@@ -103,9 +129,14 @@ namespace WMS_Web_API.API
             };
         }
 
+        /// <summary>
+        /// Bind an <see cref="UpdateCustomerDto"/> object to a <see cref="Customer"/> object.
+        /// </summary>
+        /// <param name="updateCustomerDto">The <see cref="UpdateCustomerDto"/> object to bind.</param>
+        /// <param name="customer">The <see cref="Customer"/> object to bind.</param>
+        /// <returns>The bound <see cref="Customer"/> object.</returns>
         public Customer Bind(UpdateCustomerDto updateCustomerDto, Customer customer)
         {
-
             customer.Name = updateCustomerDto.Name;
             customer.LegalCode = updateCustomerDto.LegalCode;
             customer.Address = updateCustomerDto.Address;
@@ -116,10 +147,14 @@ namespace WMS_Web_API.API
             customer.PhoneNumber = updateCustomerDto.PhoneNumber;
             customer.Email = updateCustomerDto.Email;
             customer.Status = updateCustomerDto.Status;
-
             return customer;
         }
 
+        /// <summary>
+        /// Bind a <see cref="CreateOrderDto"/> object to a <see cref="Order"/> object.
+        /// </summary>
+        /// <param name="req">The <see cref="CreateOrderDto"/> object to bind.</param>
+        /// <returns>The bound <see cref="Order"/> object.</returns>
         public Order Bind(CreateOrderDto req)
         {
             return new Order
@@ -133,6 +168,12 @@ namespace WMS_Web_API.API
             };
         }
 
+        /// <summary>
+        /// Bind an <see cref="UpdateOrderDto"/> object to a <see cref="Order"/> object.
+        /// </summary>
+        /// <param name="updateOrderDto">The <see cref="UpdateOrderDto"/> object to bind.</param>
+        /// <param name="order">The <see cref="Order"/> object to bind.</param>
+        /// <returns>The bound <see cref="Order"/> object.</returns>
         public Order Bind(UpdateOrderDto updateOrderDto, Order order)
         {
             order.ScheduledDate = updateOrderDto.ScheduledDate;
@@ -142,6 +183,11 @@ namespace WMS_Web_API.API
             return order;
         }
 
+        /// <summary>
+        /// Bind a <see cref="OrderItem"/> object to a <see cref="GetOrderItemDto"/> object.
+        /// </summary>
+        /// <param name="orderItem">The <see cref="OrderItem"/> object to bind.</param>
+        /// <returns>The bound <see cref="GetOrderItemDto"/> object.</returns>
         public GetOrderItemDto Bind(OrderItem orderItem)
         {
             return new GetOrderItemDto
@@ -155,6 +201,11 @@ namespace WMS_Web_API.API
             };
         }
 
+        /// <summary>
+        /// Bind a <see cref="ShipmentItem"/> object to a <see cref="GetShipmentItemDto"/> object.
+        /// </summary>
+        /// <param name="shipmentItem">The <see cref="ShipmentItem"/> object to bind.</param>
+        /// <returns>The bound <see cref="GetShipmentItemDto"/> object.</returns>
         public GetShipmentItemDto Bind(ShipmentItem shipmentItem)
         {
             return new GetShipmentItemDto
@@ -167,6 +218,11 @@ namespace WMS_Web_API.API
             };
         }
 
+        /// <summary>
+        /// Bind a <see cref="CreateOrderItemDto"/> object to a <see cref="OrderItem"/> object.
+        /// </summary>
+        /// <param name="orderItem">The <see cref="CreateOrderItemDto"/> object to bind.</param>
+        /// <returns>The bound <see cref="OrderItem"/> object.</returns>
         public OrderItem Bind(CreateOrderItemDto orderItem)
         {
             return new OrderItem
@@ -177,6 +233,12 @@ namespace WMS_Web_API.API
             };
         }
 
+        /// <summary>
+        /// Bind a <see cref="UpdateOrderItemDto"/> object to a <see cref="OrderItem"/> object.
+        /// </summary>
+        /// <param name="updateOrderItemDto">The <see cref="UpdateOrderItemDto"/> object to bind.</param>
+        /// <param name="orderItem">The <see cref="OrderItem"/> object to bind.</param>
+        /// <returns>The bound <see cref="OrderItem"/> object.</returns>
         public OrderItem Bind(UpdateOrderItemDto updateOrderItemDto, OrderItem orderItem)
         {
             orderItem.Quantity = updateOrderItemDto.Quantity;
@@ -184,6 +246,12 @@ namespace WMS_Web_API.API
             return orderItem;
         }
 
+        /// <summary>
+        /// Bind a <see cref="Warehouse"/> object to a <see cref="GetWarehousesRatioOfOccupiedDto"/> object.
+        /// </summary>
+        /// <param name="warehouse">The <see cref="Warehouse"/> object to bind.</param>
+        /// <param name="warehouseRatioOfOccupied">The <see cref="double"/> object to bind.</param>
+        /// <returns>The bound <see cref="GetWarehousesRatioOfOccupiedDto"/> object.</returns>
         public GetWarehousesRatioOfOccupiedDto Bind(Warehouse warehouse, double warehouseRatioOfOccupied)
         {
             return new GetWarehousesRatioOfOccupiedDto
@@ -198,6 +266,11 @@ namespace WMS_Web_API.API
             };
         }
 
+        /// <summary>
+        /// Bind a <see cref="OrderStatus"/> object to a <see cref="GetOrderStatusDto"/> object.
+        /// </summary>
+        /// <param name="orderStatus">The <see cref="OrderStatus"/> object to bind.</param>
+        /// <returns>The bound <see cref="GetOrderStatusDto"/> object.</returns>
         public GetOrderStatusDto Bind(OrderStatus orderStatus)
         {
             return new GetOrderStatusDto
@@ -207,6 +280,11 @@ namespace WMS_Web_API.API
             };
         }
 
+        /// <summary>
+        /// Bind a <see cref="OrderType"/> object to a <see cref="GetOrderTypesDto"/> object.
+        /// </summary>
+        /// <param name="orderType">The <see cref="OrderType"/> object to bind.</param>
+        /// <returns>The bound <see cref="GetOrderTypesDto"/> object.</returns>
         public GetOrderTypesDto Bind(OrderType orderType)
         {
             return new GetOrderTypesDto

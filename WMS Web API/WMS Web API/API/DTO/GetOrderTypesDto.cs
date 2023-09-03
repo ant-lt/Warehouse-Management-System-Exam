@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace WMS_Web_API.API.DTO
 {
+    /// <summary>
+    /// Get order types data transfer object
+    /// </summary>
     public class GetOrderTypesDto
     {
         /// <summary>
@@ -19,6 +22,6 @@ namespace WMS_Web_API.API.DTO
         /// Order type name
         /// </summary>
         [Required]
-        public string OrderTypeName { get; set; }
+        public string OrderTypeName { get; set; } = string.Empty;
     }
 }

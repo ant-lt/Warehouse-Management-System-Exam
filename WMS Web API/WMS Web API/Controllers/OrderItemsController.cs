@@ -20,6 +20,12 @@ namespace WMS_Web_API.Controllers
         private readonly ILogger<OrderItemsController> _logger;
         private readonly IWMSwrapper _wrapper;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OrderItemsController" /> class.
+        /// </summary>
+        /// <param name="orderItemRepo">An instance of the order item repository interface responsible for data access.</param>
+        /// <param name="logger">An instance of the logger interface for logging controller actions and events.</param>
+        /// <param name="wrapper">An instance of the Warehouse Management System (WMS) wrapper interface for integration.</param>
         public OrderItemsController(IOrderItemRepository orderItemRepo, ILogger<OrderItemsController> logger, IWMSwrapper wrapper)
         {
             _orderItemRepo = orderItemRepo ;
@@ -28,18 +34,21 @@ namespace WMS_Web_API.Controllers
         }
 
         /// <summary>
-        /// Create new Order item
+        /// Creates a new Order item using the provided order item data.
         /// </summary>
-        /// <param name="req"> New Order item data</param>
-        /// <returns>Created new Order item</returns>
-        /// <response code="201">Order created</response>
-        /// <response code="500">Error</response>
-        /// <response code="400">Bad request</response>
+        /// <param name="req">The data for the new Order item.</param>
+        /// <returns>The newly created Order item.</returns>
+        /// <response code="201">Created: The Order item was successfully created.</response>
+        /// <response code="400">Bad Request: Indicates an invalid request or missing required data.</response>
+        /// <response code="401">Unauthorized: The client does not have the necessary authentication credentials.</response>
+        /// <response code="403">Forbidden: The client is not allowed to access this resource.</response>        
+        /// <response code="500">Internal Server Error: An error occurred while processing the request on the server.</response>
         [HttpPost("/CreateOrderItem", Name = "CreateNewOrderItem")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(CreateOrderItemDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [Produces(MediaTypeNames.Application.Json)]
         public async Task<ActionResult<CreateOrderItemDto>> Create(CreateOrderItemDto req)
@@ -57,8 +66,6 @@ namespace WMS_Web_API.Controllers
                 await _orderItemRepo.CreateAsync(orderItem);
 
                 return CreatedAtRoute("CreateNewOrderItem", new { id = orderItem.Id }, req);
-
-
             }
 
             catch (Exception e)
@@ -69,16 +76,16 @@ namespace WMS_Web_API.Controllers
         }
 
         /// <summary>
-        /// Delete Order item by Id
+        /// Deletes an Order item by its unique identifier.
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns>Status code</returns>
-        /// <response code="204">Order item deleted</response>
-        /// <response code="400">Bad Request</response>
-        /// <response code="401">Client could not authenticate a request</response>
-        /// <response code="403">Do not have permission to access</response>  
-        /// <response code="404">Order item not found</response>
-        /// <response code="500">Internal server error</response>
+        /// <param name="id">The unique identifier of the Order item to be deleted.</param>
+        /// <returns>The HTTP status code indicating the result of the deletion.</returns>
+        /// <response code="204">No Content: The Order item was successfully deleted.</response>
+        /// <response code="400">Bad Request: Indicates an invalid request or missing required data.</response>
+        /// <response code="401">Unauthorized: The client does not have the necessary authentication credentials.</response>
+        /// <response code="403">Forbidden: The client does not have permission to access this resource.</response>  
+        /// <response code="404">Not Found: The specified Order item to be deleted was not found.</response>
+        /// <response code="500">Internal Server Error: An internal server error occurred while processing the request.</response>
         [HttpDelete("/Delete/OrderItem/{id:int}")]
         [Authorize(Roles = "Administrator, Manager")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -94,11 +101,6 @@ namespace WMS_Web_API.Controllers
 
             try
             {
-                if (id == 0)
-                {
-                    return BadRequest();
-                }
-
                 var orderItem = await _orderItemRepo.GetAsync(d => d.Id == id);
 
                 if (orderItem == null)
@@ -120,17 +122,17 @@ namespace WMS_Web_API.Controllers
 
 
         /// <summary>
-        /// Update Order item by id
+        /// Updates an Order item by its unique identifier.
         /// </summary>
-        /// <param name="id"> Order item Id</param>
-        /// <param name="updateOrderItemDto"></param>
-        /// <returns>Status code</returns>
-        /// <response code="204">Order item updated</response>
-        /// <response code="400">Bad request</response>
-        /// <response code="401">Client could not authenticate a request</response>   
-        /// <response code="403">Do not have permission to access</response> 
-        /// <response code="404">Order item not found</response>
-        /// <response code="500">Internal server error</response> 
+        /// <param name="id">The unique identifier of the Order item to be updated.</param>
+        /// <param name="updateOrderItemDto">The data used for updating the Order item.</param>
+        /// <returns>The HTTP status code indicating the result of the update operation.</returns>
+        /// <response code="204">No Content: The Order item was successfully updated.</response>
+        /// <response code="400">Bad Request: Indicates an invalid request or missing required data.</response>
+        /// <response code="401">Unauthorized: The client does not have the necessary authentication credentials.</response>   
+        /// <response code="403">Forbidden: The client does not have permission to access this resource.</response> 
+        /// <response code="404">Not Found: The specified Order item to be updated was not found.</response>
+        /// <response code="500">Internal Server Error: An internal server error occurred while processing the request.</response>
         [HttpPut("/Update/OrderItem/{id:int}")]
         [Authorize(Roles = "Administrator,Manager")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -146,7 +148,7 @@ namespace WMS_Web_API.Controllers
 
             try
             {
-                if (id == 0 || updateOrderItemDto == null)
+                if (updateOrderItemDto == null)
                 {
                     return BadRequest();
                 }
@@ -171,15 +173,15 @@ namespace WMS_Web_API.Controllers
         }
 
         /// <summary>
-        /// Fetch registered order single item by ID
+        /// Retrieves a registered order item by its unique identifier.
         /// </summary>
-        /// <param name="id">Requested order item ID</param>
-        /// <returns>Order item for specified order item ID</returns>
-        /// <response code="200">OK</response>        
-        /// <response code="400">Order item bad request description</response>
-        /// <response code="401">Client could not authenticate a request</response>
-        /// <response code="404">Order item not found </response>
-        /// <response code="500">Internal server error</response>
+        /// <param name="id">The unique identifier of the requested order item.</param>
+        /// <returns>The order item corresponding to the specified order item ID.</returns>
+        /// <response code="200">OK: Returns the requested order item.</response>        
+        /// <response code="400">Bad Request: Indicates an invalid request or missing required data.</response>
+        /// <response code="401">Unauthorized: The client does not have the necessary authentication credentials.</response>
+        /// <response code="404">Not Found: The specified order item was not found.</response>
+        /// <response code="500">Internal Server Error: An internal server error occurred while processing the request.</response>
         [HttpGet("/GetOrderItemBy/{id:int}", Name = "GetOrderItemById")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetOrderItemDto))]
@@ -194,12 +196,6 @@ namespace WMS_Web_API.Controllers
 
             try
             {
-                if (id == 0)
-                {
-                    return BadRequest();
-                }
-
-               
                 var orderItems = await _orderItemRepo.GetAsync(x => x.Id == id, new List<string> { "Product" });
 
                 if (orderItems == null)
@@ -219,15 +215,15 @@ namespace WMS_Web_API.Controllers
         }
 
         /// <summary>
-        /// Fetch registered order items related to specified order ID
+        /// Retrieves registered order items related to the specified order ID.
         /// </summary>
-        /// <param name="id">Requested order ID</param>
-        /// <returns>Order items for specified order ID</returns>
-        /// <response code="200">OK</response>        
-        /// <response code="400">Order bad request description</response>
-        /// <response code="401">Client could not authenticate a request</response>
-        /// <response code="404">Order not found </response>
-        /// <response code="500">Internal server error</response>
+        /// <param name="id">The unique identifier of the requested order.</param>
+        /// <returns>The order items associated with the specified order ID.</returns>
+        /// <response code="200">OK: Returns the registered order items.</response>        
+        /// <response code="400">Bad Request: Indicates an invalid request or missing required data.</response>
+        /// <response code="401">Unauthorized: The client does not have the necessary authentication credentials.</response>
+        /// <response code="404">Not Found: The specified order was not found.</response>
+        /// <response code="500">Internal Server Error: An internal server error occurred while processing the request.</response>
         [HttpGet("/GetOrderBy/{id:int}/Items", Name = "GetOrderItemsById")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<GetOrderItemDto>))]
@@ -242,11 +238,6 @@ namespace WMS_Web_API.Controllers
 
             try
             {
-                if (id == 0)
-                {
-                    return BadRequest();
-                }
-
                 var order = await _orderItemRepo.GetAsync(d => d.OrderId == id);
 
                 if (order == null)

@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Text;
 using WMS.Domain.Models;
 using WMS.Infastructure.Database;
 using WMS.Infastructure.Interfaces;
@@ -66,7 +65,6 @@ namespace WMS.Infastructure.Repositories
             return user;
         }
 
- 
         /// <summary>
         /// New user registration on WMS
         /// </summary>
@@ -75,7 +73,12 @@ namespace WMS.Infastructure.Repositories
         public async Task<bool> RegisterAsync(WMSuser user)
         {
             _db.WMSusers.Add(user);
-            await _db.SaveChangesAsync();
+            var saveUser = await _db.SaveChangesAsync();
+            if (saveUser == 0)
+            {
+                return false;
+            }
+            else
             return true;
         }
     }
