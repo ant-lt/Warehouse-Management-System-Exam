@@ -83,14 +83,14 @@ namespace WMS_Web_API.Controllers
         /// <response code="500">Internal Server Error: An error occurred while processing the request on the server.</response>
         [HttpPost("/CreateNewCustomer", Name = "CreateNewCustomer")]
         [Authorize(Roles = "Administrator, Manager")]
-        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(CreateCustomerDto))]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(CreateNewResourceResponseDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [Produces(MediaTypeNames.Application.Json)]
-        public async Task<ActionResult<CreateCustomerDto>> Create(CreateCustomerDto req)
+        public async Task<ActionResult<CreateNewResourceResponseDto>> Create(CreateCustomerDto req)
         {
             _logger.LogInformation($"{DateTime.Now} Executed Create new Customer.");
 
@@ -104,7 +104,11 @@ namespace WMS_Web_API.Controllers
                 Customer customer = _wrapper.Bind(req);
                 await _customerRepo.CreateAsync(customer);
 
-                return CreatedAtRoute("CreateNewCustomer", new { id = customer.Id }, req);
+                CreateNewResourceResponseDto createCustomerResponseDto = new CreateNewResourceResponseDto()
+                {
+                    Id = customer.Id
+                };
+                return CreatedAtRoute(nameof(GetCustomerById), new { id = customer.Id }, createCustomerResponseDto);
 
             }
 

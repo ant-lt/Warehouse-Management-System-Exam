@@ -45,13 +45,13 @@ namespace WMS_Web_API.Controllers
         /// <response code="500">Internal Server Error: An error occurred while processing the request on the server.</response>
         [HttpPost("/CreateOrderItem", Name = "CreateNewOrderItem")]
         [Authorize]
-        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(CreateOrderItemDto))]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(CreateNewResourceResponseDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [Produces(MediaTypeNames.Application.Json)]
-        public async Task<ActionResult<CreateOrderItemDto>> Create(CreateOrderItemDto req)
+        public async Task<ActionResult<CreateNewResourceResponseDto>> Create(CreateOrderItemDto req)
         {
             _logger.LogInformation($"{DateTime.Now} Executed Create new Order item.");
 
@@ -64,8 +64,13 @@ namespace WMS_Web_API.Controllers
 
                 OrderItem orderItem = _wrapper.Bind(req);
                 await _orderItemRepo.CreateAsync(orderItem);
+               
+                CreateNewResourceResponseDto createOrderItemResponse = new CreateNewResourceResponseDto()
+                {
+                    Id = orderItem.Id
+                };
 
-                return CreatedAtRoute("CreateNewOrderItem", new { id = orderItem.Id }, req);
+                return CreatedAtRoute(nameof(GetOrderItemById), new { id = orderItem.Id }, createOrderItemResponse);
             }
 
             catch (Exception e)

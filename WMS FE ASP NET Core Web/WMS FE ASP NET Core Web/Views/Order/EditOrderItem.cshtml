@@ -1,0 +1,54 @@
+﻿@model OrderItemViewModel
+
+@{
+    ViewData["Title"] = "EditOrderItem";
+}
+
+<h1>EditOrderItem</h1>
+
+<h4>OrderItemModel</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="EditOrderItem" asp-controller="Order" asp-route-id="@Model.Id" asp-route-orderId="@Model.OrderId">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ProductId" />
+            <div class="form-group">
+                <label asp-for="Id" class="control-label">Order item ID:</label>
+                <input disabled asp-for="Id" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="ProductSKU" class="control-label"></label>
+                <input disabled asp-for="ProductSKU" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="ProductName" class="control-label"></label>
+                <input disabled asp-for="ProductName" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="ProductDescription" class="control-label"></label>
+                <input disabled asp-for="ProductDescription" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Volume" class="control-label"></label>
+                <input disabled asp-for="Volume" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Quantity" class="control-label"></label>
+                <input asp-for="Quantity" class="form-control" />
+                <span asp-validation-for="Quantity" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-controller="Order" asp-action="Edit" asp-route-id="@Model.OrderId">Back to order Nr. @Model.OrderId</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

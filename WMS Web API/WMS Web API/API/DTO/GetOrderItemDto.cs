@@ -34,5 +34,10 @@
         /// Order item product volume
         /// </summary>
         public decimal Volume { get; set; }
+        
+        /// <summary>
+        /// Order item product id
+        /// </summary>
+        public int ProductId { get; set; }
     }
 }

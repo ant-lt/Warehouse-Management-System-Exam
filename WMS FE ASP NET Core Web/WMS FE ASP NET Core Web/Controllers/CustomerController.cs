@@ -51,8 +51,8 @@ namespace WMS_FE_ASP_NET_Core_Web.Controllers
             if (_wmsApiService.IsTokenExpired()) return RedirectToAction("Logout", "Home");
             var customer = _wrapper.Bind(collection);
 
-            var newCustomer = await _wmsApiService.PostWMSDataAsync<CreateCustomerModel>(customer, $"/CreateNewCustomer");
-            if (newCustomer)
+            var newCustomer = await _wmsApiService.PostWMSDataAsync<CreateNewResourceResponse, CreateCustomerModel>(customer, $"/CreateNewCustomer");
+            if (newCustomer is not null)
             {
                 return RedirectToAction("Customers", "Home");
             }

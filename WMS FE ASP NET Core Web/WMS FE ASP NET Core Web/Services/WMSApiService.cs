@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.CodeAnalysis;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Security.Claims;
@@ -27,6 +28,13 @@ namespace WMS_FE_ASP_NET_Core_Web.Services
             _logger = logger;
         }
 
+        /// <summary>
+        /// Logs in the user with the given username and password.
+        /// </summary>
+        /// <param name="username">The username of the user to be logged in.</param>
+        /// <param name="password">The password of the user to be logged in.</param>
+        /// <returns>True if the login is successful and false otherwise.</returns>
+        /// <exception cref="System.Exception">Thrown when an error occurs during the operation.</exception>
         public async Task<bool> LoginAsync(string username, string password)
         {
             try
@@ -37,18 +45,27 @@ namespace WMS_FE_ASP_NET_Core_Web.Services
                 if (response.IsSuccessStatusCode)
                 {                    
                     var loginResponse = await _apiClient.GetDeserializeContent<LoginResponseModel>(response.Content);
-                    // _apiClient.SetBearerToken(loginResponse.Token);
-                    userName = loginResponse.UserName;
-                    role = loginResponse.Role;
-                    userId = loginResponse.UserId;
-                    token = loginResponse.Token;
-                    _logger.LogInformation($"Login {username} in role {role} succeeded.");
-                    return true;
+                    
+                    if (loginResponse != null) 
+                    { 
+                        userName = loginResponse.UserName;
+                        role = loginResponse.Role;
+                        userId = loginResponse.UserId;
+                        token = loginResponse.Token;
+                        _logger.LogInformation($"Login {username} in role {role} succeeded.");
+                        return true;
+                    }
+                    else
+                    {
+                        errorMessage = "Login failed. Login response is null.";
+                        _logger.LogError($"Login {username} failed. Login response is null.");
+                        return false;
+                    }
                 }
                 else
                 {
                     var errorResponse = await _apiClient.GetDeserializeContent<ErrorResponse>(response.Content);
-                    errorMessage = errorResponse.Message;
+                    errorMessage = errorResponse?.Message ?? "Error response is null.";
                     _logger.LogError($"Login {username} failed. Response status code: {response.StatusCode}. Message: {errorMessage}");
                     return false;
                 }
@@ -61,6 +78,11 @@ namespace WMS_FE_ASP_NET_Core_Web.Services
             }
         }
 
+        /// <summary>
+        /// Set API parameters using a collection of claims.
+        /// </summary>
+        /// <param name="claims">Collection of claims containing WMSUserId and WMS API Token values.</param>
+        /// <exception cref="System.Exception">Thrown when an error occurs during the operation.</exception>
         public void SetAPIParams(IEnumerable<Claim> claims)
         {
             try
@@ -88,13 +110,18 @@ namespace WMS_FE_ASP_NET_Core_Web.Services
             }
         }
 
+        /// <summary>
+        /// Checks if the JWT token has expired.
+        /// </summary>
+        /// <returns>Returns true if the token has expired, otherwise returns false.</returns>
+        /// <exception cref="System.Exception">Thrown when an error occurs during the operation.</exception>
         public bool IsTokenExpired()
         {
             try
             {
                 // Decode the JWT token's payload (second part)
                 string[] tokenParts = token.Split('.');
-                string padding = new string('=', (4 - tokenParts[1].Length % 4) % 4); //Add padding
+                string padding = new string('=', (4 - tokenParts[1].Length % 4) % 4); // Add padding
                 string payload = tokenParts[1].Replace("_", "/");
 
                 byte[] payloadBytes = Convert.FromBase64String(payload + padding);
@@ -104,7 +131,7 @@ namespace WMS_FE_ASP_NET_Core_Web.Services
                 var payloadData = JsonConvert.DeserializeObject<Dictionary<string, object>>(payloadJson);
 
                 // Extract the 'exp' claim (expiration timestamp) from the payload
-                if (payloadData.TryGetValue("exp", out var expClaimValue) && expClaimValue is long expUnixTimestamp)
+                if (payloadData != null && payloadData.TryGetValue("exp", out var expClaimValue) && expClaimValue is long expUnixTimestamp)
                 {
                     // Convert the UNIX timestamp to DateTime
                     var expirationTime = DateTimeOffset.FromUnixTimeSeconds(expUnixTimestamp).UtcDateTime;
@@ -113,7 +140,8 @@ namespace WMS_FE_ASP_NET_Core_Web.Services
                     return expirationTime <= DateTime.UtcNow;
                 }
 
-                // 'exp' claim not found or invalid, consider token as expired
+                // 'exp' claim not found or invalid, consider token as expired               
+                _logger.LogError("The JWT token has expired.");
                 return true;
             }
             catch (Exception e)
@@ -123,9 +151,19 @@ namespace WMS_FE_ASP_NET_Core_Web.Services
             }
         }
 
-
-
-        public async Task<bool> PostWMSDataAsync<T>(T data, string url)
+        /// <summary>
+        /// The PostWMSDataAsync method sends a POST request to a specified URL with the data provided as input. 
+        /// It is a generic asynchronous method that can take in two type parameters: TT and T. 
+        /// The TT type parameter is the response type and must be a class. 
+        /// The T type parameter refers to the data type sent in the request and can be any type.
+        /// </summary>
+        /// <typeparam name="TT">Response type TT</typeparam>
+        /// <typeparam name="T">Input data type T</typeparam>
+        /// <param name="data">The data to be sent with the request</param>
+        /// <param name="url">The URL to send the request to</param>
+        /// <returns>The deserialized response as type TT</returns>
+        /// <exception cref="System.Exception">Thrown when an error occurs during the operation.</exception>        
+        public async Task<TT?> PostWMSDataAsync<TT, T>(T data, string url) where TT : class
         {
             try
             {
@@ -133,25 +171,32 @@ namespace WMS_FE_ASP_NET_Core_Web.Services
                 var response = await _apiClient.PostAsync(url, new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"));
                 if (response.IsSuccessStatusCode)
                 {
-                    _logger.LogInformation($"PostWMSDataAsync<{typeof(T).Name}>({url}) succeeded.");
-                    return true;
+                    _logger.LogInformation($"PostWMSDataAsync<{typeof(TT).Name},{typeof(T).Name}>({url}) succeeded. Response code: {response.StatusCode}");
+                    return await _apiClient.GetDeserializeContent<TT>(response.Content);
                 }
                 else
                 {
                     var errorResponse = await _apiClient.GetDeserializeContent<ErrorResponse>(response.Content);
-                    errorMessage = errorResponse.Message;
-                    _logger.LogError($"PostWMSDataAsync<{typeof(T).Name}>({url}) failed. Response status code: {response.StatusCode}. Message: {errorMessage}");
-                    return false;
+                    errorMessage = errorResponse?.Message ?? $"Error on PostWMSDataAsync<{typeof(TT).Name},{typeof(T).Name}>({url})";
+                    _logger.LogError($"PostWMSDataAsync<{typeof(TT).Name},{typeof(T).Name}>({url}) failed. Response status code: {response.StatusCode}. Message: {errorMessage}");
+                    return null;
                 }
             }
             catch (Exception e)
             {
                 errorMessage = e.Message;
                 _logger.LogError($"PostWMSDataAsync<{typeof(T).Name}>({url}) failed. Exception Error: {e.Message}");
-                return false;
+                return null;
             }
         }
 
+        /// <summary>
+        /// Retrieves a list of WMS data asynchronously from a specified URL.
+        /// </summary>
+        /// <typeparam name="T">The type of the data to retrieve.</typeparam>
+        /// <param name="url">The URL to retrieve the data from.</param>
+        /// <returns>A List of retrieved WMS data.</returns>
+        /// <exception cref="System.Exception">Thrown when an error occurs during the operation.</exception>        
         public async Task<List<T>?> GetWMSDataListAsync<T>(string url)
         {
             try
@@ -168,7 +213,7 @@ namespace WMS_FE_ASP_NET_Core_Web.Services
                 else
                 {
                     var errorResponse = await _apiClient.GetDeserializeContent<ErrorResponse>(response.Content);
-                    errorMessage = errorResponse.Message;
+                    errorMessage = errorResponse?.Message ?? "Error response is null.";
                     _logger.LogError($"GetWMSDataListAsync<{typeof(T).Name}>({url}) failed. Response status code: {response.StatusCode}. Message: {errorMessage}");
                     return null;
                 }
@@ -181,6 +226,14 @@ namespace WMS_FE_ASP_NET_Core_Web.Services
             }
         }
 
+        /// <summary>
+        /// A generic HTTP GET method which sends a request to the specified URL and 
+        /// retrieves the response body deserialized as an object of type T.
+        /// </summary>
+        /// <typeparam name="T">Type of the deserialized response object.</typeparam>
+        /// <param name="url">The URL where the HTTP GET request is sent.</param>
+        /// <returns>The deserialized object of type T as the HTTP GET response body.</returns>
+        /// <exception cref="System.Exception">Thrown when an error occurs during the operation.</exception>
         public async Task<T?> GetWMSDataAsync<T>(string url) where T : class
         {
             try
@@ -196,7 +249,7 @@ namespace WMS_FE_ASP_NET_Core_Web.Services
                 else
                 {
                     var errorResponse = await _apiClient.GetDeserializeContent<ErrorResponse>(response.Content);
-                    errorMessage = errorResponse.Message;
+                    errorMessage = errorResponse?.Message ?? "Error response is null.";
                     _logger.LogError($"GetWMSDataAsync<{typeof(T).Name}>({url}) failed. Response status code: {response.StatusCode}. Message: {errorMessage}");
                     return null;
                 }
@@ -209,6 +262,13 @@ namespace WMS_FE_ASP_NET_Core_Web.Services
             }
         }
 
+        /// <summary>
+        /// Updates data in WMS API asynchronously.
+        /// </summary>
+        /// <typeparam name="T">The type of data to be updated.</typeparam>
+        /// <param name="data">The data to be updated.</param>
+        /// <param name="url">The URL of the API endpoint to update the data.</param>
+        /// <returns>A boolean to indicate if the update was successful or not.</returns>
         public async Task<bool> UpdateWMSDataAsync<T>(T data, string url)
         {
             try
@@ -223,7 +283,7 @@ namespace WMS_FE_ASP_NET_Core_Web.Services
                 else
                 {
                     var errorResponse = await _apiClient.GetDeserializeContent<ErrorResponse>(response.Content);
-                    errorMessage = errorResponse.Message;
+                    errorMessage = errorResponse?.Message ?? "Error response is null.";
                     _logger.LogError($"UpdateWMSDataAsync<{typeof(T).Name}>({url}) failed. Response status code: {response.StatusCode}. Message: {errorMessage}");
                     return false;
                 }
@@ -236,6 +296,11 @@ namespace WMS_FE_ASP_NET_Core_Web.Services
             }
         }
 
+        /// <summary>
+        /// Deletes data in the WMS system via the specified URL.
+        /// </summary>
+        /// <param name="url">The URL to delete data from.</param>
+        /// <returns>A Task representing the result of the asynchronous operation. Returns true if the delete operation was successful, or false otherwise.</returns>
         public async Task<bool> DeleteWMSDataAsync(string url)
         {
             try
@@ -250,7 +315,7 @@ namespace WMS_FE_ASP_NET_Core_Web.Services
                 else
                 {
                     var errorResponse = await _apiClient.GetDeserializeContent<ErrorResponse>(response.Content);
-                    errorMessage = errorResponse.Message;
+                    errorMessage = errorResponse?.Message ?? "Error response is null.";
                     _logger.LogError($"DeleteWMSDataAsync({url}) failed. Response status code: {response.StatusCode}. Message: {errorMessage}");
                     return false;
                 }
