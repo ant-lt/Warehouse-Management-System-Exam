@@ -43,6 +43,8 @@ namespace WMS_FE_ASP_NET_Core_Web
        
          
             builder.Services.AddScoped<WMSApiService>();
+            builder.Services.AddScoped<TokenService>();
+            builder.Services.AddScoped<UserService>();
             builder.Services.AddTransient<Iwrapper, Wrapper>();
 
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

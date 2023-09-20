@@ -15,23 +15,26 @@ namespace WMS_FE_ASP_NET_Core_Web.Controllers
         private readonly ILogger<CustomerController> _logger;
         private readonly WMSApiService _wmsApiService;
         private readonly Iwrapper _wrapper;
+        private readonly TokenService _tokenService;
 
-        public CustomerController(ILogger<CustomerController> logger, WMSApiService wmsApiService, Iwrapper wrapper)
+        public CustomerController(ILogger<CustomerController> logger, WMSApiService wmsApiService, Iwrapper wrapper, TokenService tokenService)
         {
             _logger = logger;
             _wmsApiService = wmsApiService;
             _wrapper = wrapper;
+            _tokenService = tokenService;
         }
 
         // GET: Customer/Details/{id}
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Details(int id)
         {
-            _wmsApiService.SetAPIParams(User.Claims);
-            if (_wmsApiService.IsTokenExpired()) return RedirectToAction("Logout", "Home");
+            string apiToken = _tokenService.GetAPIToken(User);
+            
+            if (_tokenService.IsTokenExpired(apiToken)) return RedirectToAction("Logout", "Home");
 
-            var customer = await _wmsApiService.GetWMSDataAsync<CustomerModel>($"/GetCustomerBy/{id}");
-            return View(customer);           
+            var customer = await _wmsApiService.GetWMSDataAsync<CustomerModel>($"/GetCustomerBy/{id}", apiToken);
+            return View(customer);
         }
 
         // GET: Customer/Create
@@ -47,11 +50,12 @@ namespace WMS_FE_ASP_NET_Core_Web.Controllers
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Create(IFormCollection collection)
         {
-            _wmsApiService.SetAPIParams(User.Claims);
-            if (_wmsApiService.IsTokenExpired()) return RedirectToAction("Logout", "Home");
+            string apiToken = _tokenService.GetAPIToken(User);
+
+            if (_tokenService.IsTokenExpired(apiToken)) return RedirectToAction("Logout", "Home");
             var customer = _wrapper.Bind(collection);
 
-            var newCustomer = await _wmsApiService.PostWMSDataAsync<CreateNewResourceResponse, CreateCustomerModel>(customer, $"/CreateNewCustomer");
+            var newCustomer = await _wmsApiService.PostWMSDataAsync<CreateNewResourceResponse, CreateCustomerModel>(customer, $"/CreateNewCustomer", apiToken);
             if (newCustomer is not null)
             {
                 return RedirectToAction("Customers", "Home");
@@ -67,10 +71,11 @@ namespace WMS_FE_ASP_NET_Core_Web.Controllers
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Edit(int id)
         {
-            _wmsApiService.SetAPIParams(User.Claims);
-            if (_wmsApiService.IsTokenExpired()) 
-                return RedirectToAction("Logout", "Home");
-            var customer = await _wmsApiService.GetWMSDataAsync<CustomerModel>($"/GetCustomerBy/{id}");
+            string apiToken = _tokenService.GetAPIToken(User);
+       
+            if (_tokenService.IsTokenExpired(apiToken)) return RedirectToAction("Logout", "Home");
+
+            var customer = await _wmsApiService.GetWMSDataAsync<CustomerModel>($"/GetCustomerBy/{id}", apiToken);
             return View(customer);
         }
 
@@ -79,13 +84,13 @@ namespace WMS_FE_ASP_NET_Core_Web.Controllers
         [ValidateAntiForgeryToken]
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Edit(int id, IFormCollection collection)
-        {             
-            _wmsApiService.SetAPIParams(User.Claims);
-            if (_wmsApiService.IsTokenExpired())
-                return RedirectToAction("Logout", "Home");
+        {
+            string apiToken = _tokenService.GetAPIToken(User);
+
+            if (_tokenService.IsTokenExpired(apiToken)) return RedirectToAction("Logout", "Home");
 
             var updatedCustomer = _wrapper.BindToUpdateCustomer(collection);
-            var updated = await _wmsApiService.UpdateWMSDataAsync<UpdateCustomerModel>(updatedCustomer, $"/Update/Customer/{id}");
+            var updated = await _wmsApiService.UpdateWMSDataAsync<UpdateCustomerModel>(updatedCustomer, $"/Update/Customer/{id}", apiToken);
             if (updated)
             {
                 return RedirectToAction("Customers", "Home");
@@ -101,11 +106,11 @@ namespace WMS_FE_ASP_NET_Core_Web.Controllers
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Delete(int id)
         {
-            _wmsApiService.SetAPIParams(User.Claims);
-            if (_wmsApiService.IsTokenExpired())
-                return RedirectToAction("Logout", "Home");
+            string apiToken = _tokenService.GetAPIToken(User);
 
-            var deleted = await _wmsApiService.DeleteWMSDataAsync($"/Delete/Customer/{id}");
+            if (_tokenService.IsTokenExpired(apiToken)) return RedirectToAction("Logout", "Home");
+
+            var deleted = await _wmsApiService.DeleteWMSDataAsync($"/Delete/Customer/{id}", apiToken);
             if (deleted)
             {
                 return RedirectToAction("Customers", "Home");

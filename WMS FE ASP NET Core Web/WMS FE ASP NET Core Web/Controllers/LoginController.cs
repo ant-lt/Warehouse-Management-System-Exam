@@ -36,14 +36,14 @@ namespace WMS_FE_ASP_NET_Core_Web.Controllers
             if (ModelState.IsValid)
             {
                 var result = await _wmsApiService.LoginAsync(loginModel.UserName, loginModel.Password);
-                if (result)
+                if (result is not null)
                 {
                     var claims = new List<Claim>
                     {
-                        new Claim(ClaimTypes.Name, _wmsApiService.userName),
-                        new Claim(ClaimTypes.Role, _wmsApiService.role),
-                        new Claim("WMSUserId", _wmsApiService.userId.ToString()),
-                        new Claim("APIToken", _wmsApiService.token),
+                        new Claim(ClaimTypes.Name, result.UserName),
+                        new Claim(ClaimTypes.Role, result.Role),
+                        new Claim("WMSUserId", result.UserId.ToString()),
+                        new Claim("APIToken", result.Token),
                     };
                     
                     var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
