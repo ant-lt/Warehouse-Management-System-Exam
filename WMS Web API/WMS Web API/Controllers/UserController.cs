@@ -131,7 +131,11 @@ namespace WMS_Web_API.Controllers
                     return BadRequest(new { message = "Error while new user registering" });
                 }
 
-                return Created(nameof(Login), newUser.Id);
+                CreateNewResourceResponseDto registerUserResponseDto = new CreateNewResourceResponseDto()
+                {
+                    Id = newUser.Id
+                };                
+                return Created(nameof(Register),  registerUserResponseDto);
             }
             catch (Exception ex)
             {

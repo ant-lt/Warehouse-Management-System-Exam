@@ -10,26 +10,30 @@ using WMS_FE_ASP_NET_Core_Web.Services;
 namespace WMS_FE_ASP_NET_Core_Web.Controllers
 {
     [EnableCors("WMSCorsPolicy")]
+    [Authorize(Roles = "Administrator, Supervisor, Manager")]
     public class CustomerController : Controller
     {
         private readonly ILogger<CustomerController> _logger;
         private readonly WMSApiService _wmsApiService;
         private readonly Iwrapper _wrapper;
         private readonly TokenService _tokenService;
+        private readonly ClaimService _claimService;
 
-        public CustomerController(ILogger<CustomerController> logger, WMSApiService wmsApiService, Iwrapper wrapper, TokenService tokenService)
+        public CustomerController(ILogger<CustomerController> logger, WMSApiService wmsApiService, Iwrapper wrapper, TokenService tokenService, ClaimService claimService)
         {
             _logger = logger;
             _wmsApiService = wmsApiService;
             _wrapper = wrapper;
             _tokenService = tokenService;
+            _claimService = claimService;
         }
 
         // GET: Customer/Details/{id}
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Administrator, Supervisor, Manager")]
         public async Task<IActionResult> Details(int id)
         {
-            string apiToken = _tokenService.GetAPIToken(User);
+            string apiToken = _claimService.GetClaimValue( User, "APIToken");
             
             if (_tokenService.IsTokenExpired(apiToken)) return RedirectToAction("Logout", "Home");
 
@@ -39,6 +43,7 @@ namespace WMS_FE_ASP_NET_Core_Web.Controllers
 
         // GET: Customer/Create
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Administrator, Supervisor, Manager")]
         public ActionResult Create()
         {
             return View();
@@ -48,9 +53,10 @@ namespace WMS_FE_ASP_NET_Core_Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Administrator, Supervisor, Manager")]
         public async Task<IActionResult> Create(IFormCollection collection)
         {
-            string apiToken = _tokenService.GetAPIToken(User);
+            string apiToken = _claimService.GetClaimValue(User, "APIToken");
 
             if (_tokenService.IsTokenExpired(apiToken)) return RedirectToAction("Logout", "Home");
             var customer = _wrapper.Bind(collection);
@@ -69,9 +75,10 @@ namespace WMS_FE_ASP_NET_Core_Web.Controllers
 
         // GET: Customer/Edit/5
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Administrator, Supervisor, Manager")]
         public async Task<IActionResult> Edit(int id)
         {
-            string apiToken = _tokenService.GetAPIToken(User);
+            string apiToken = _claimService.GetClaimValue(User, "APIToken");
        
             if (_tokenService.IsTokenExpired(apiToken)) return RedirectToAction("Logout", "Home");
 
@@ -83,9 +90,10 @@ namespace WMS_FE_ASP_NET_Core_Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Administrator, Supervisor, Manager")]
         public async Task<IActionResult> Edit(int id, IFormCollection collection)
         {
-            string apiToken = _tokenService.GetAPIToken(User);
+            string apiToken = _claimService.GetClaimValue(User, "APIToken");
 
             if (_tokenService.IsTokenExpired(apiToken)) return RedirectToAction("Logout", "Home");
 
@@ -104,9 +112,10 @@ namespace WMS_FE_ASP_NET_Core_Web.Controllers
 
         // Delete: Customer/Delete/5
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Administrator, Supervisor, Manager")]
         public async Task<IActionResult> Delete(int id)
         {
-            string apiToken = _tokenService.GetAPIToken(User);
+            string apiToken = _claimService.GetClaimValue(User, "APIToken");
 
             if (_tokenService.IsTokenExpired(apiToken)) return RedirectToAction("Logout", "Home");
 

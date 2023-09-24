@@ -44,7 +44,7 @@ namespace WMS_Web_API.Controllers
         /// <response code="403">Forbidden: The client is not allowed to access this resource.</response>        
         /// <response code="500">Internal Server Error: An error occurred while processing the request on the server.</response>
         [HttpPost("/CreateOrderItem", Name = "CreateNewOrderItem")]
-        [Authorize]
+        [Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(CreateNewResourceResponseDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -92,7 +92,7 @@ namespace WMS_Web_API.Controllers
         /// <response code="404">Not Found: The specified Order item to be deleted was not found.</response>
         /// <response code="500">Internal Server Error: An internal server error occurred while processing the request.</response>
         [HttpDelete("/Delete/OrderItem/{id:int}")]
-        [Authorize(Roles = "Administrator, Manager")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -139,7 +139,7 @@ namespace WMS_Web_API.Controllers
         /// <response code="404">Not Found: The specified Order item to be updated was not found.</response>
         /// <response code="500">Internal Server Error: An internal server error occurred while processing the request.</response>
         [HttpPut("/Update/OrderItem/{id:int}")]
-        [Authorize(Roles = "Administrator,Manager")]
+        [Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using WMS_FE_ASP_NET_Core_Web.DTO;
 using Microsoft.AspNetCore.Cors;
+using System.Security.Claims;
 
 namespace WMS_FE_ASP_NET_Core_Web.Controllers
 {
@@ -16,12 +17,14 @@ namespace WMS_FE_ASP_NET_Core_Web.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly WMSApiService _wmsApiService;
         private readonly TokenService _tokenService;
+        private readonly ClaimService _claimService;
 
-        public HomeController(ILogger<HomeController> logger, WMSApiService wMSApiService, TokenService tokenService)
+        public HomeController(ILogger<HomeController> logger, WMSApiService wMSApiService, TokenService tokenService, ClaimService claimService)
         {
             _logger = logger;
             _wmsApiService = wMSApiService;
             _tokenService = tokenService;
+            _claimService = claimService;
         }
 
         public IActionResult Index()
@@ -49,9 +52,10 @@ namespace WMS_FE_ASP_NET_Core_Web.Controllers
         }
 
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Administrator, Supervisor, Manager")]
         public async Task<IActionResult> Customers()
         {
-            string apiToken = _tokenService.GetAPIToken(User);
+            string apiToken = _claimService.GetClaimValue(User, "APIToken");
 
             if (_tokenService.IsTokenExpired(apiToken)) return RedirectToAction("Logout", "Home");
             
@@ -60,9 +64,10 @@ namespace WMS_FE_ASP_NET_Core_Web.Controllers
         }        
 
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Administrator, Supervisor, Manager")]
         public async Task<IActionResult> Inventory()
         {
-            string apiToken = _tokenService.GetAPIToken(User);
+            string apiToken = _claimService.GetClaimValue(User, "APIToken");
 
             if (_tokenService.IsTokenExpired(apiToken)) return RedirectToAction("Logout", "Home");
             var inventory = await _wmsApiService.GetWMSDataListAsync<InventoryItemModel>("/GetInventories", apiToken);
@@ -72,7 +77,7 @@ namespace WMS_FE_ASP_NET_Core_Web.Controllers
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Orders()
         {  
-            string apiToken = _tokenService.GetAPIToken(User);
+            string apiToken = _claimService.GetClaimValue(User, "APIToken");
 
             if (_tokenService.IsTokenExpired(apiToken)) return RedirectToAction("Logout", "Home");
 
@@ -81,9 +86,10 @@ namespace WMS_FE_ASP_NET_Core_Web.Controllers
         }
 
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Administrator, Supervisor, Manager")]
         public async Task<IActionResult> Products()
         {
-            string apiToken = _tokenService.GetAPIToken(User);
+            string apiToken = _claimService.GetClaimValue(User, "APIToken");
 
             if (_tokenService.IsTokenExpired(apiToken)) return RedirectToAction("Logout", "Home");
 
@@ -92,9 +98,10 @@ namespace WMS_FE_ASP_NET_Core_Web.Controllers
         }
 
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Administrator, Supervisor")]
         public async Task<IActionResult> Reports()
         {
-            string apiToken = _tokenService.GetAPIToken(User);
+            string apiToken = _claimService.GetClaimValue(User, "APIToken");
 
             if (_tokenService.IsTokenExpired(apiToken)) return RedirectToAction("Logout", "Home");
 

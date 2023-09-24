@@ -1,4 +1,7 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using System.Net.Http.Headers;
+using System.Net.Http;
 using System.Text;
 using WMS_FE_ASP_NET_Core_Web.DTO;
 
@@ -9,13 +12,14 @@ namespace WMS_FE_ASP_NET_Core_Web.Services
     /// </summary>
     public class WMSApiService
     {
-        readonly ApiClient _apiClient;
+        //readonly ApiClient _apiClient;
+        private readonly HttpClient _httpClient;
         readonly ILogger<WMSApiService> _logger;
         public string errorMessage { get; private set; } = string.Empty;
 
-        public WMSApiService(ApiClient apiClient, ILogger<WMSApiService> logger)
+        public WMSApiService(HttpClient client, ILogger<WMSApiService> logger)
         {
-            _apiClient = apiClient;
+            _httpClient = client;
             _logger = logger;
         }
 
@@ -32,10 +36,10 @@ namespace WMS_FE_ASP_NET_Core_Web.Services
             { 
                 errorMessage = string.Empty;
                 var login = new LoginRequestModel { Username = username, Password = password };
-                var response = await _apiClient.PostAsync("login", new StringContent(JsonConvert.SerializeObject(login), Encoding.UTF8, "application/json"));
+                var response = await _httpClient.PostAsync("login", new StringContent(JsonConvert.SerializeObject(login), Encoding.UTF8, "application/json"));
                 if (response.IsSuccessStatusCode)
                 {                    
-                    var loginResponse = await _apiClient.GetDeserializeContent<LoginResponseModel>(response.Content);
+                    var loginResponse = await GetDeserializeContent<LoginResponseModel>(response.Content);
                     
                     if (loginResponse != null) 
                     { 
@@ -51,7 +55,7 @@ namespace WMS_FE_ASP_NET_Core_Web.Services
                 }
                 else
                 {
-                    var errorResponse = await _apiClient.GetDeserializeContent<ErrorResponse>(response.Content);
+                    var errorResponse = await GetDeserializeContent<ErrorResponse>(response.Content);
                     errorMessage = errorResponse?.Message ?? "Error response is null.";
                     _logger.LogError($"Login {username} failed. Response status code: {response.StatusCode}. Message: {errorMessage}");
                     return null;
@@ -78,21 +82,32 @@ namespace WMS_FE_ASP_NET_Core_Web.Services
         /// <param name="apiToken">The API token to be used for authentication</param>
         /// <returns>The deserialized response as type TT</returns>
         /// <exception cref="System.Exception">Thrown when an error occurs during the operation.</exception>        
-        public async Task<TT?> PostWMSDataAsync<TT, T>(T data, string url, string apiToken) where TT : class
+        public async Task<TT?> PostWMSDataAsync<TT, T>(T? data, string url, string apiToken) where TT : class
         {
             try
             {
+                StringContent? content = null;
+                HttpResponseMessage? response = null;
+
                 errorMessage = string.Empty;
-                _apiClient.SetBearerToken(apiToken);
-                var response = await _apiClient.PostAsync(url, new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"));
+
+                SetBearerToken(apiToken);
+
+                if (data != null)
+                {
+                    content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");                 
+                }
+
+                response = await _httpClient.PostAsync(url, content);
+                
                 if (response.IsSuccessStatusCode)
                 {
                     _logger.LogInformation($"PostWMSDataAsync<{typeof(TT).Name},{typeof(T).Name}>({url}) succeeded. Response code: {response.StatusCode}");
-                    return await _apiClient.GetDeserializeContent<TT>(response.Content);
+                    return await GetDeserializeContent<TT>(response.Content);
                 }
                 else
                 {
-                    var errorResponse = await _apiClient.GetDeserializeContent<ErrorResponse>(response.Content);
+                    var errorResponse = await GetDeserializeContent<ErrorResponse>(response.Content);
                     errorMessage = errorResponse?.Message ?? $"Error on PostWMSDataAsync<{typeof(TT).Name},{typeof(T).Name}>({url})";
                     _logger.LogError($"PostWMSDataAsync<{typeof(TT).Name},{typeof(T).Name}>({url}) failed. Response status code: {response.StatusCode}. Message: {errorMessage}");
                     return null;
@@ -119,18 +134,18 @@ namespace WMS_FE_ASP_NET_Core_Web.Services
             try
             {
                 errorMessage = string.Empty;
-                _apiClient.SetBearerToken(apiToken);
-                var response = await _apiClient.GetAsync(url);
+                SetBearerToken(apiToken);
+                var response = await _httpClient.GetAsync(url);
                 if (response.IsSuccessStatusCode)
                 {
 
-                    var dataList = await _apiClient.GetDeserializeContent<List<T>>(response.Content);
+                    var dataList = await GetDeserializeContent<List<T>>(response.Content);
                     _logger.LogInformation($"GetWMSDataListAsync<{typeof(T).Name}>({url}) succeeded.");
                     return dataList;
                 }
                 else
                 {
-                    var errorResponse = await _apiClient.GetDeserializeContent<ErrorResponse>(response.Content);
+                    var errorResponse = await GetDeserializeContent<ErrorResponse>(response.Content);
                     errorMessage = errorResponse?.Message ?? "Error response is null.";
                     _logger.LogError($"GetWMSDataListAsync<{typeof(T).Name}>({url}) failed. Response status code: {response.StatusCode}. Message: {errorMessage}");
                     return null;
@@ -158,17 +173,17 @@ namespace WMS_FE_ASP_NET_Core_Web.Services
             try
             {
                 errorMessage = string.Empty;
-                _apiClient.SetBearerToken(apiToken);
-                var response = await _apiClient.GetAsync(url);
+                SetBearerToken(apiToken);
+                var response = await _httpClient.GetAsync(url);
                 if (response.IsSuccessStatusCode)
                 {
-                    var data = await _apiClient.GetDeserializeContent<T>(response.Content);
+                    var data = await GetDeserializeContent<T>(response.Content);
                     _logger.LogInformation($"GetWMSDataAsync<{typeof(T).Name}>({url}) succeeded.");
                     return data;
                 }
                 else
                 {
-                    var errorResponse = await _apiClient.GetDeserializeContent<ErrorResponse>(response.Content);
+                    var errorResponse = await GetDeserializeContent<ErrorResponse>(response.Content);
                     errorMessage = errorResponse?.Message ?? "Error response is null.";
                     _logger.LogError($"GetWMSDataAsync<{typeof(T).Name}>({url}) failed. Response status code: {response.StatusCode}. Message: {errorMessage}");
                     return null;
@@ -195,8 +210,8 @@ namespace WMS_FE_ASP_NET_Core_Web.Services
             try
             {
                 errorMessage = string.Empty;
-                _apiClient.SetBearerToken(apiToken);
-                var response = await _apiClient.PutAsync(url, new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"));
+                SetBearerToken(apiToken);
+                var response = await _httpClient.PutAsync(url, new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"));
                 if (response.IsSuccessStatusCode)
                 {
                     _logger.LogInformation($"UpdateWMSDataAsync<{typeof(T).Name}>({url}) succeeded.");
@@ -204,7 +219,7 @@ namespace WMS_FE_ASP_NET_Core_Web.Services
                 }
                 else
                 {
-                    var errorResponse = await _apiClient.GetDeserializeContent<ErrorResponse>(response.Content);
+                    var errorResponse = await GetDeserializeContent<ErrorResponse>(response.Content);
                     errorMessage = errorResponse?.Message ?? "Error response is null.";
                     _logger.LogError($"UpdateWMSDataAsync<{typeof(T).Name}>({url}) failed. Response status code: {response.StatusCode}. Message: {errorMessage}");
                     return false;
@@ -229,8 +244,8 @@ namespace WMS_FE_ASP_NET_Core_Web.Services
             try
             {
                 errorMessage = string.Empty;
-                _apiClient.SetBearerToken(apiToken);
-                var response = await _apiClient.DeleteAsync(url);
+                SetBearerToken(apiToken);
+                var response = await _httpClient.DeleteAsync(url);
                 if (response.IsSuccessStatusCode)
                 {
                     _logger.LogInformation($"DeleteWMSDataAsync({url}) succeeded.");
@@ -238,7 +253,7 @@ namespace WMS_FE_ASP_NET_Core_Web.Services
                 }
                 else
                 {
-                    var errorResponse = await _apiClient.GetDeserializeContent<ErrorResponse>(response.Content);
+                    var errorResponse = await GetDeserializeContent<ErrorResponse>(response.Content);
                     errorMessage = errorResponse?.Message ?? "Error response is null.";
                     _logger.LogError($"DeleteWMSDataAsync({url}) failed. Response status code: {response.StatusCode}. Message: {errorMessage}");
                     return false;
@@ -249,6 +264,38 @@ namespace WMS_FE_ASP_NET_Core_Web.Services
                 errorMessage = e.Message;
                 _logger.LogError($"DeleteWMSDataAsync({url}) failed. Exception Error: {e.Message}");
                 return false;
+            }
+        }
+
+        internal void SetBearerToken(object? token)
+        {
+            string _bearerToken = token?.ToString() ?? "";
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _bearerToken);
+        }
+
+        internal async Task<T?> GetDeserializeContent<T>(HttpContent content)
+        {
+            // Use a JsonSerializerSettings object to configure the JsonSerializer object.
+            // This can improve performance by reducing the amount of reflection that is performed by the JsonSerializer.
+            var settings = new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.None,
+                MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
+                DateParseHandling = DateParseHandling.None,
+                Converters = new List<JsonConverter> { new StringEnumConverter() }
+            };
+            JsonSerializer serializer = JsonSerializer.Create(settings);
+
+            //Use the ConfigureAwait(false) method when awaiting the ReadAsStreamAsync() method.
+            //This can improve performance by reducing the amount of context switching that occurs when the method is awaited.
+            using (Stream s = await content.ReadAsStreamAsync().ConfigureAwait(false))
+            {
+                //Use a JsonTextReader object instead of a StreamReader object to read the JSON data. This can improve performance by reducing the amount of memory that is used to store the JSON data. 
+                using (JsonTextReader reader = new JsonTextReader(new StreamReader(s)))
+                {
+                    T? resultContent = serializer.Deserialize<T>(reader);
+                    return resultContent;
+                }
             }
         }
     }

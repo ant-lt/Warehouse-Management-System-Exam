@@ -46,7 +46,7 @@ namespace WMS_Web_API.Controllers
         /// <response code="403">Forbidden: The caller is authenticated but not authorized to access orders.</response>  
         /// <response code="500">Internal Server Error: An internal server error occurred while processing the request.</response>
         [HttpGet("/GetOrders",Name = "GetOrders")]
-        [Authorize(Roles = "Administrator, Manager, Supervisor")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<GetOrderDto>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -82,7 +82,7 @@ namespace WMS_Web_API.Controllers
         /// <response code="400">Bad Request: Indicates an invalid request or missing required data.</response>
         /// <response code="500">Internal Server Error: An internal server error occurred while processing the request.</response>
         [HttpPost("/CreateNewOrder", Name = "CreateNewOrder")]
-        [Authorize]
+        [Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(CreateNewResourceResponseDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -128,7 +128,7 @@ namespace WMS_Web_API.Controllers
         /// <response code="404">Not Found: The specified order to be deleted was not found.</response>
         /// <response code="500">Internal Server Error: An internal server error occurred while processing the request.</response>
         [HttpDelete("/Delete/Order/{id:int}")]
-        [Authorize(Roles = "Administrator, Manager")]
+        [Authorize(Roles = "Administrator, Supervisor")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -175,7 +175,7 @@ namespace WMS_Web_API.Controllers
         /// <response code="404">Not Found: The specified order to be updated was not found.</response>
         /// <response code="500">Internal Server Error: An internal server error occurred while processing the request.</response>
         [HttpPut("/Update/Order/{id:int}")]
-        [Authorize(Roles = "Administrator, Manager")]
+        [Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -264,7 +264,7 @@ namespace WMS_Web_API.Controllers
         /// <response code="400">Bad Request: The request is invalid or missing required data.</response>
         /// <response code="500">Internal Server Error: An error occurred while processing the order.</response>
         [HttpPost("/SubmitOrder/{id:int}", Name = "SubmitOrder")]
-        [Authorize]
+        [Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SubmitOrderResponse))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]

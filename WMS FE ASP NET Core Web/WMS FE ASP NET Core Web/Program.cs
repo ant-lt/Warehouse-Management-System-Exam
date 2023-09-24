@@ -29,12 +29,20 @@ namespace WMS_FE_ASP_NET_Core_Web
 
             var WMSApiClientAddress = builder.Configuration.GetSection("WMSAPIAddress").Value;
             
-            builder.Services.AddHttpClient<ApiClient>(client =>
+            builder.Services.AddHttpClient<WMSApiService>(client =>
             {
                 client.BaseAddress = new Uri(WMSApiClientAddress);
                 client.DefaultRequestHeaders.Add("Accept", "application/json");
                 client.DefaultRequestHeaders.Add("Accept", "*/*");
-            });
+            })
+            .ConfigurePrimaryHttpMessageHandler(() => 
+            {
+                return new SocketsHttpHandler()
+                {
+                    PooledConnectionLifetime = TimeSpan.FromMinutes(15)
+                };
+            })
+            .SetHandlerLifetime(Timeout.InfiniteTimeSpan);
 
             var loggerFactory = LoggerFactory.Create(builder =>
             {
@@ -42,9 +50,8 @@ namespace WMS_FE_ASP_NET_Core_Web
             });
        
          
-            builder.Services.AddScoped<WMSApiService>();
             builder.Services.AddScoped<TokenService>();
-            builder.Services.AddScoped<UserService>();
+            builder.Services.AddScoped<ClaimService>();
             builder.Services.AddTransient<Iwrapper, Wrapper>();
 
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

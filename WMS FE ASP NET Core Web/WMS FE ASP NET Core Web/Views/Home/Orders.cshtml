@@ -5,57 +5,74 @@ ViewData["Title"] = "Orders";
 
 <h1>@ViewData["Title"]</h1>
 
-<p>
-    <a asp-controller="Order"  asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Date)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.OrderStatus)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.OrderType)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CustomerName)
-            </th>
-        </tr>
-</thead>
-<tbody>
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.OrderStatus)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.OrderType)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CustomerName)
-            </td>
-            <td>
-                <a asp-controller="Order" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-controller="Order" asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-controller="Order" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-    }
-</tbody>
-</table>
+@if (User?.IsInRole("Customer") == true)
+{
+    <p>
+        <a asp-controller="Order"  asp-action="Create">Create new order</a>
+    </p>
+}
+
+@if (Model != null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Id)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Date)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.OrderStatus)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.OrderType)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CustomerName)
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Id)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Date)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.OrderStatus)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.OrderType)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CustomerName)
+                    </td>
+                    <td>                
+                        @* Only the user with the role of 'customer' is allowed to edit and view order details for orders with the status 'New'.*@
+                        @if (User?.IsInRole("Customer") == true && item.OrderStatus == "New")
+                        {
+                            <a asp-controller="Order" asp-action="Edit" asp-route-id="@item.Id">Edit</a> <span>|</span>
+                            <a asp-controller="Order" asp-action="Details" asp-route-id="@item.Id">Details</a> <span>|</span>
+                            <a asp-controller="Order" asp-action="SubmitOrder" asp-route-id="@item.Id">Submit</a> <span>|</span>
+                        }
+
+                        @*Only the user with the roles: 'Administrator', 'Supervisor' is allowed to delete orders with the status 'New' or 'Canceled'.*@
+                        @if (new[] { "Administrator", "Supervisor" }.Any(role => User?.IsInRole(role) == true) && (item.OrderStatus == "New" || item.OrderStatus == "Canceled"))
+                        {
+                            <a asp-controller="Order" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
 
 
         

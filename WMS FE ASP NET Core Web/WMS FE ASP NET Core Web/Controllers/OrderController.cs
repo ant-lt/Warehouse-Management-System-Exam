@@ -14,23 +14,25 @@ namespace WMS_FE_ASP_NET_Core_Web.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly WMSApiService _wmsApiService;
         private readonly TokenService _tokenService;
-        private readonly UserService _userService;
+        private readonly ClaimService _claimService;
         private readonly Iwrapper _wrapper;
 
-        public OrderController(ILogger<HomeController> logger, WMSApiService wMSApiService, Iwrapper wrapper, TokenService tokenService, UserService userService)
+        public OrderController(ILogger<HomeController> logger, WMSApiService wMSApiService, Iwrapper wrapper, TokenService tokenService, ClaimService claimService)
         {
             _logger = logger;
             _wmsApiService = wMSApiService;
             _wrapper = wrapper;
             _tokenService = tokenService;
-            _userService = userService;
+            _claimService = claimService;
         }
 
         // GET: OrderController/Details/5
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> Details(int id)
         {
-            string apiToken = _tokenService.GetAPIToken(User);
+            // Get the api token from the claims principal
+            string apiToken = _claimService.GetClaimValue(User, "APIToken");
 
             if (_tokenService.IsTokenExpired(apiToken)) 
                 return RedirectToAction("Logout", "Home");
@@ -44,9 +46,10 @@ namespace WMS_FE_ASP_NET_Core_Web.Controllers
 
         // GET: OrderController/Create
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> Create()
         {
-            string apiToken = _tokenService.GetAPIToken(User);
+            string apiToken = _claimService.GetClaimValue(User, "APIToken");
 
             if (_tokenService.IsTokenExpired(apiToken)) 
                 return RedirectToAction("Logout", "Home");            
@@ -62,19 +65,28 @@ namespace WMS_FE_ASP_NET_Core_Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> Create(IFormCollection collection)
         {
-            string apiToken = _tokenService.GetAPIToken(User);
+            string apiToken = _claimService.GetClaimValue(User, "APIToken");
 
             if (_tokenService.IsTokenExpired(apiToken)) 
                 return RedirectToAction("Logout", "Home");
         
             
-            int? userId = _userService.GetUserId(User);
-            if (userId is null)
+            // Get the user id from the claims principal
+            string userIdClaims = _claimService.GetClaimValue(User, "WMSUserId");
+            int? userId;
+            if (userIdClaims == string.Empty)
+            
             {
-                ViewData["ErrorMessage"] = "Could not create order. Please try again.";
+                ViewData["ErrorMessage"] = "Could not create order. Incorrect user id. Please try again.";
                 return View();
+            }
+            else
+            {
+                // Convert the user id to an int
+                userId = int.Parse(userIdClaims);
             }
 
             var order = _wrapper.BindToCreateOrder(collection, (int)userId );
@@ -95,9 +107,10 @@ namespace WMS_FE_ASP_NET_Core_Web.Controllers
         // GET: OrderController/Edit/5
         [HttpGet]
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> Edit(int id)
         {
-            string apiToken = _tokenService.GetAPIToken(User);
+            string apiToken = _claimService.GetClaimValue(User, "APIToken");
 
             if (_tokenService.IsTokenExpired(apiToken)) 
                 return RedirectToAction("Logout", "Home");
@@ -114,9 +127,10 @@ namespace WMS_FE_ASP_NET_Core_Web.Controllers
         // GET: Order/Delete/5
         [HttpGet]
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Administrator, Supervisor")]
         public async Task<IActionResult> Delete(int id)
         {
-            string apiToken = _tokenService.GetAPIToken(User);
+            string apiToken = _claimService.GetClaimValue(User, "APIToken");
 
             if (_tokenService.IsTokenExpired(apiToken)) 
                 return RedirectToAction("Logout", "Home");
@@ -136,11 +150,12 @@ namespace WMS_FE_ASP_NET_Core_Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> AddOrderItem(int orderId, IFormCollection collection)
         {
             if (ModelState.IsValid)
             {
-                string apiToken = _tokenService.GetAPIToken(User);
+                string apiToken = _claimService.GetClaimValue(User, "APIToken");
 
                 if (_tokenService.IsTokenExpired(apiToken)) 
                     return RedirectToAction("Logout", "Home");
@@ -167,9 +182,10 @@ namespace WMS_FE_ASP_NET_Core_Web.Controllers
 
         [HttpGet]        
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> DeleteOrderItem(int orderId, int orderItemId)
         {
-            string apiToken = _tokenService.GetAPIToken(User);
+            string apiToken = _claimService.GetClaimValue(User, "APIToken");
 
             if (_tokenService.IsTokenExpired(apiToken)) 
                 return RedirectToAction("Logout", "Home");
@@ -188,10 +204,11 @@ namespace WMS_FE_ASP_NET_Core_Web.Controllers
 
         [HttpGet]
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Customer")]
         // get order item by id for edit
         public async Task<IActionResult> EditOrderItem(int id, int orderId)
         {
-            string apiToken = _tokenService.GetAPIToken(User);
+            string apiToken = _claimService.GetClaimValue(User, "APIToken");
 
             if (_tokenService.IsTokenExpired(apiToken)) 
                 return RedirectToAction("Logout", "Home");
@@ -210,11 +227,12 @@ namespace WMS_FE_ASP_NET_Core_Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> EditOrderItem(int id, int orderId, IFormCollection collection)
         {
             if (ModelState.IsValid)
             {
-                string apiToken = _tokenService.GetAPIToken(User);
+                string apiToken = _claimService.GetClaimValue(User, "APIToken");
 
                 if (_tokenService.IsTokenExpired(apiToken)) 
                     return RedirectToAction("Logout", "Home");
@@ -236,6 +254,29 @@ namespace WMS_FE_ASP_NET_Core_Web.Controllers
             else
             {
                 ViewData["ErrorMessage"] = $"Could not update order item. Please try again.";
+                return View();
+            }
+        }
+
+        [HttpGet]
+        [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> SubmitOrder(int id)
+        {
+            string apiToken = _claimService.GetClaimValue(User, "APIToken");
+
+            if (_tokenService.IsTokenExpired(apiToken)) 
+                return RedirectToAction("Logout", "Home");
+            
+            var submitOrder = await _wmsApiService.PostWMSDataAsync<SubmitOrderResponse, string>(null, $"/SubmitOrder/{id}", apiToken);
+
+            if (submitOrder != null)
+            {
+                return RedirectToAction("Orders", "Home");
+            }
+            else
+            {
+                ViewData["ErrorMessage"] = $"Could not submit order Id={id}. Please try again.";
                 return View();
             }
         }
