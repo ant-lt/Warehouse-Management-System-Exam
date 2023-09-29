@@ -24,5 +24,6 @@ namespace WMS_Web_API.API
         public GetWarehousesRatioOfOccupiedDto Bind(Warehouse warehouse, double warehouseRatioOfOccupied);
         public GetOrderStatusDto Bind(OrderStatus orderStatus);
         public GetOrderTypesDto Bind(OrderType orderType);
+        public CreateNewResourceResponseDto Bind(int newResourceId);
     }
 }

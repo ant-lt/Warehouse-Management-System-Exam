@@ -294,5 +294,18 @@ namespace WMS_Web_API.API
                 OrderTypeName = orderType.Name,
             };
         }
+
+        /// <summary>
+        /// Bind method for creating a new resource response.
+        /// </summary>
+        /// <param name="newResourceId">New resource ID</param>
+        /// <returns>Return new CreateNewResourceResponseDto object</returns>
+        public CreateNewResourceResponseDto Bind(int newResourceId)
+        {
+            return new CreateNewResourceResponseDto
+            {
+                Id = newResourceId
+            };
+        }
     }
 }

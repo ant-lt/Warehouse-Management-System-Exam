@@ -102,14 +102,15 @@ namespace WMS_Web_API.Controllers
                 }
 
                 Customer customer = _wrapper.Bind(req);
-                await _customerRepo.CreateAsync(customer);
+                var result = await _customerRepo.CreateAsync(customer);
 
-                CreateNewResourceResponseDto createCustomerResponseDto = new CreateNewResourceResponseDto()
+                if (!result)
                 {
-                    Id = customer.Id
-                };
-                return CreatedAtRoute(nameof(GetCustomerById), new { id = customer.Id }, createCustomerResponseDto);
-
+                    return BadRequest();
+                }
+                CreateNewResourceResponseDto createNewResourceResponseDto = _wrapper.Bind(customer.Id);
+                             
+                return CreatedAtAction("Create", createNewResourceResponseDto);
             }
 
             catch (Exception e)
@@ -250,7 +251,9 @@ namespace WMS_Web_API.Controllers
                     return NotFound();
                 }
 
-                return Ok(_wrapper.Bind(customer) as GetCustomerDto);
+                GetCustomerDto getCustomerDto = _wrapper.Bind(customer);
+
+                return Ok(getCustomerDto);
             }
 
             catch (Exception e)

@@ -16,10 +16,13 @@ namespace WMS.Infastructure.Repositories
             _dbSet = _db.Set<TEntity>();
         }
 
-        public async Task CreateAsync(TEntity entity)
+        public async Task<bool> CreateAsync(TEntity entity)
         {
             _dbSet.Add(entity);
-            await SaveAsync();
+            if (await SaveAsync() > 0) 
+                return true;
+            else 
+                return false;
         }
 
         public async Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> filter, bool tracked = true)
@@ -80,9 +83,9 @@ namespace WMS.Infastructure.Repositories
             await SaveAsync();
         }
 
-        public async Task SaveAsync()
+        public async Task<int> SaveAsync()
         {
-            await _db.SaveChangesAsync();
+            return await _db.SaveChangesAsync();
         }
 
         public async Task UpdateAsync(TEntity entity)
