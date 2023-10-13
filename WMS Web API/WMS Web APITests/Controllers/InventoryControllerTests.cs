@@ -96,5 +96,35 @@ namespace WMS_Web_API.Controllers.Tests
             Assert.AreEqual(warehouses.Count(), actualWarehouses.Count());
 
         }
+
+        [TestMethod()]
+        public async Task GetInventories_Returns_Status500InternalServerError()
+        {
+            //Arrange
+            _inventoryRepoMock.Setup(repo => repo.GetAllAsync(null, new List<string> { "Warehouse", "Product" })).ThrowsAsync(new Exception());
+
+            //Act
+            var result = await _inventoryController.GetInventories();
+
+            //Assert
+            var statusCodeResult = result.Result as StatusCodeResult;
+            Assert.IsNotNull(statusCodeResult);
+            Assert.AreEqual(StatusCodes.Status500InternalServerError, statusCodeResult.StatusCode);
+        }
+
+        [TestMethod()]
+        public async Task GetWarehousesRatioOfOccupied_Returns_Status500InternalServerError()
+        {
+            //Arrange
+            _inventoryRepoMock.Setup(repo => repo.GetWarehouseListAsync()).ThrowsAsync(new Exception());
+
+            //Act
+            var result = await _inventoryController.GetWarehousesRatioOfOccupied();
+
+            //Assert
+            var statusCodeResult = result.Result as StatusCodeResult;
+            Assert.IsNotNull(statusCodeResult);
+            Assert.AreEqual(StatusCodes.Status500InternalServerError, statusCodeResult.StatusCode);
+        }
     }
 }

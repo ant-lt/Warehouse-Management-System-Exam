@@ -106,7 +106,7 @@ namespace WMS_Web_API.Controllers
                 { 
                     Id = order.Id
                 };
-                return CreatedAtRoute(nameof(GetOrderById), new { id = order.Id }, createOrderResponseDto);
+                return CreatedAtAction("Create", createOrderResponseDto);
             }
 
             catch (Exception e)
@@ -244,8 +244,8 @@ namespace WMS_Web_API.Controllers
                     _logger.LogInformation($"{DateTime.Now} order with id {id} not found", id);
                     return NotFound();
                 }
-
-                return Ok(_wrapper.Bind(order));
+                GetOrderDto getOrderDto = _wrapper.Bind(order);
+                return Ok(getOrderDto);
             }
             catch (Exception e)
             {
