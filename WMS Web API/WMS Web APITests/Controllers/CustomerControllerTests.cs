@@ -270,7 +270,7 @@ namespace WMS_Web_API.Controllers.Tests
             // Assert
             var actualCustomer = result as NoContentResult;
             Assert.IsNotNull(actualCustomer);
-            Assert.AreEqual(204, actualCustomer.StatusCode);
+            Assert.AreEqual(StatusCodes.Status204NoContent, actualCustomer.StatusCode);
         }
         
         [TestMethod]
@@ -288,7 +288,7 @@ namespace WMS_Web_API.Controllers.Tests
             // Assert
             var notFoundResult = result as NotFoundResult;
             Assert.IsNotNull(notFoundResult);
-            Assert.AreEqual(404, notFoundResult.StatusCode);
+            Assert.AreEqual(StatusCodes.Status404NotFound, notFoundResult.StatusCode);
         }
 
         [TestMethod]
@@ -308,7 +308,7 @@ namespace WMS_Web_API.Controllers.Tests
             // Assert
             var statusCodeResult = result as StatusCodeResult;
             Assert.IsNotNull(statusCodeResult);
-            Assert.AreEqual(500, statusCodeResult.StatusCode);
+            Assert.AreEqual(StatusCodes.Status500InternalServerError, statusCodeResult.StatusCode);
         }
     }
 }

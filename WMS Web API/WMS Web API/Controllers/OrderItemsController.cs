@@ -63,14 +63,18 @@ namespace WMS_Web_API.Controllers
                 }
 
                 OrderItem orderItem = _wrapper.Bind(req);
-                await _orderItemRepo.CreateAsync(orderItem);
+                var result = await _orderItemRepo.CreateAsync(orderItem);
+                if (!result)
+                {
+                    return BadRequest();
+                }
                
-                CreateNewResourceResponseDto createOrderItemResponse = new CreateNewResourceResponseDto()
+                CreateNewResourceResponseDto createNewResourceResponseDto = new CreateNewResourceResponseDto()
                 {
                     Id = orderItem.Id
                 };
 
-                return CreatedAtRoute(nameof(GetOrderItemById), new { id = orderItem.Id }, createOrderItemResponse);
+                return CreatedAtAction("Create", createNewResourceResponseDto);
             }
 
             catch (Exception e)
@@ -165,7 +169,8 @@ namespace WMS_Web_API.Controllers
                     return NotFound();
                 }
 
-                await _orderItemRepo.UpdateAsync(_wrapper.Bind(updateOrderItemDto, foundOrder));
+                var orderItem = _wrapper.Bind(updateOrderItemDto, foundOrder);
+                await _orderItemRepo.UpdateAsync(orderItem);
 
                 return NoContent();
             }
@@ -201,15 +206,15 @@ namespace WMS_Web_API.Controllers
 
             try
             {
-                var orderItems = await _orderItemRepo.GetAsync(x => x.Id == id, new List<string> { "Product" });
+                var orderItem = await _orderItemRepo.GetAsync(x => x.Id == id, new List<string> { "Product" });
 
-                if (orderItems == null)
+                if (orderItem == null)
                 {
                     _logger.LogInformation($"{DateTime.Now} items for order with id {id} not found", id);
                     return NotFound();
                 }
-
-                return Ok(_wrapper.Bind(orderItems));
+                GetOrderItemDto getOrderDto = _wrapper.Bind(orderItem);
+                return Ok(getOrderDto);
             }
             catch (Exception e)
             {

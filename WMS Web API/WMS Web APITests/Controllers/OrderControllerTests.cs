@@ -429,6 +429,7 @@ namespace WMS_Web_API.Controllers.Tests
             var okResult = result.Result as OkObjectResult;
             Assert.IsNotNull(result);
             Assert.AreEqual(StatusCodes.Status200OK, okResult.StatusCode);
+            Assert.AreEqual(expectedGetOrderTypeDto.Count(), (okResult.Value as IEnumerable<GetOrderTypesDto>).Count());
         }
 
         [TestMethod]
