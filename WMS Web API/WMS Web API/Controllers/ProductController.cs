@@ -16,7 +16,7 @@ namespace WMS_Web_API.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProductRepository _productRepo;
-        private readonly ILogger<CustomerController> _logger;
+        private readonly ILogger<ProductController> _logger;
         private readonly IWMSwrapper _wrapper;
 
         /// <summary>
@@ -25,7 +25,7 @@ namespace WMS_Web_API.Controllers
         /// <param name="productRepo">An instance of the product repository interface responsible for data access.</param>
         /// <param name="logger">An instance of the logger interface for logging controller actions and events.</param>
         /// <param name="wmsWrapper">An instance of the Warehouse Management System (WMS) wrapper interface for integration.</param>
-        public ProductController(IProductRepository productRepo, ILogger<CustomerController> logger, IWMSwrapper wmsWrapper)
+        public ProductController(IProductRepository productRepo, ILogger<ProductController> logger, IWMSwrapper wmsWrapper)
         {
             _productRepo = productRepo ;
             _logger = logger;
@@ -97,8 +97,8 @@ namespace WMS_Web_API.Controllers
                     _logger.LogInformation($"{DateTime.Now} product with id {id} not found", id);
                     return NotFound();
                 }
-
-                return Ok(_wrapper.Bind(product));
+                GetProductDto getProductDto = _wrapper.Bind(product);
+                return Ok(getProductDto);
             }
             catch (Exception e)
             {
