@@ -16,6 +16,7 @@ namespace WMS_Web_API.Controllers
     public class ShipmentItemsController : ControllerBase
     {
         private readonly IShipmentItemRepository _shipmentItemRepo;
+        private readonly IShipmentRepository _shipmentRepo;
         private readonly ILogger<ShipmentItemsController> _logger;
         private readonly IWMSwrapper _wrapper;
 
@@ -23,11 +24,13 @@ namespace WMS_Web_API.Controllers
         /// Initializes a new instance of the <see cref="ShipmentItemsController" /> class.
         /// </summary>
         /// <param name="shipmentItemRepo">The shipment item repository interface responsible for data access.</param>
+        /// <param name="shipmentRepository">The shipment repository interface responsible for data access.</param>
         /// <param name="logger">The logger iterface for logging controller actions and events.</param>
         /// <param name="wrapper">The warehouse management system (WMS) wrapper interface for integration.</param>
-        public ShipmentItemsController(IShipmentItemRepository shipmentItemRepo, ILogger<ShipmentItemsController> logger, IWMSwrapper wrapper)
+        public ShipmentItemsController(IShipmentItemRepository shipmentItemRepo, IShipmentRepository shipmentRepository, ILogger<ShipmentItemsController> logger, IWMSwrapper wrapper)
         {
             _shipmentItemRepo = shipmentItemRepo ;
+            _shipmentRepo = shipmentRepository ;
             _logger = logger ;
             _wrapper = wrapper ;
         }
@@ -56,7 +59,7 @@ namespace WMS_Web_API.Controllers
 
             try
             {
-                var shipment = await _shipmentItemRepo.GetAsync(d => d.ShipmentId == id);
+                var shipment = await _shipmentRepo.GetAsync(d => d.Id == id);
 
                 if (shipment == null)
                 {
