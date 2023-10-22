@@ -7,7 +7,7 @@ using WMS_Web_API.API.DTO;
 namespace WMS_Web_API.Controllers
 {
     /// <summary>
-    /// Login to WMS system
+    /// Controller responsible for user authentication and registration.
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
@@ -43,13 +43,13 @@ namespace WMS_Web_API.Controllers
         /// <response code="400">Bad Request: The request was malformed or contained invalid data.</response>
         /// <response code="401">Unauthorized: The client was not authenticated, or the login credentials are invalid.</response>
         /// <response code="500">Internal Server Error: An internal server error occurred while processing the request.</response>
-        [ProducesResponseType(StatusCodes.Status200OK,Type = typeof(LoginResponse))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LoginResponse))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [Produces(MediaTypeNames.Application.Json)]
         [HttpPost("/Login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequest loginData)
+        public async Task<ActionResult<LoginResponse>> Login([FromBody] LoginRequest loginData)
         {
 
             _logger.LogInformation($"Login with username: {loginData.Username}");
@@ -92,7 +92,7 @@ namespace WMS_Web_API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [Produces(MediaTypeNames.Application.Json)]
-        public async Task<IActionResult> Register([FromBody] RegistrationRequest registrationData)
+        public async Task<ActionResult<CreateNewResourceResponseDto>> Register([FromBody] RegistrationRequest registrationData)
         {
             _logger.LogInformation($"Register with username: {registrationData.Username}  role: {registrationData.Role}");
 
@@ -109,7 +109,7 @@ namespace WMS_Web_API.Controllers
 
                 var userRole = await _userRepo.GetRolebyNameAsync(registrationData.Role);
 
-                if (userRole == null) 
+                if (userRole == null)
                 {
                     return BadRequest(new { message = "Role not exists" });
                 }
@@ -134,8 +134,8 @@ namespace WMS_Web_API.Controllers
                 CreateNewResourceResponseDto registerUserResponseDto = new CreateNewResourceResponseDto()
                 {
                     Id = newUser.Id
-                };                
-                return Created(nameof(Register),  registerUserResponseDto);
+                };               
+                return CreatedAtAction("Register", registerUserResponseDto);
             }
             catch (Exception ex)
             {
